@@ -1,6 +1,11 @@
 {
   "name": "kleijnweb/swagger-bundle",
   "type": "project",
+  "authors": [
+    "John Kleijn <john@kleijnweb.nl>"
+  ],
+  "license": "LGPL-3.0",
+  "description": "Makes your Swagger definition into a routing and validation spec",
   "autoload": {
     "psr-4": {
       "KleijnWeb\\SwaggerBundle\\": "src"
