@@ -1,0 +1,47 @@
+services:
+    get_set_method_normalizer:
+        class: Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer
+        tags:
+           - { name: serializer.normalizer }
+
+    swagger.controller.default:
+        class: KleijnWeb\SwaggerBundle\Controller\DefaultController
+
+    swagger.route_loader:
+        class: KleijnWeb\SwaggerBundle\Routing\SwaggerRouteLoader
+        arguments: [@swagger.document.repository]
+        tags:
+            - { name: routing.loader }
+
+    swagger.document.repository:
+        class: KleijnWeb\SwaggerBundle\Document\DocumentRepository
+
+    swagger.response.factory:
+        class: KleijnWeb\SwaggerBundle\Response\ResponseFactory
+        arguments: [@swagger.document.repository, @serializer]
+
+    swagger.request.transformer:
+        class: KleijnWeb\SwaggerBundle\Request\RequestTransformer
+        arguments: [@swagger.request.transformer.content_decoder]
+
+    swagger.request.transformer.content_decoder:
+        class: KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder
+        arguments: [@serializer]
+
+    kernel.listener.swagger.view:
+        class: KleijnWeb\SwaggerBundle\EventListener\ViewListener
+        arguments: [@swagger.response.factory]
+        tags:
+            - { name: kernel.event_listener, event: kernel.view, method: onKernelView }
+
+    kernel.listener.swagger.exception:
+        class: KleijnWeb\SwaggerBundle\EventListener\ExceptionListener
+        arguments: [@logger]
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+
+    kernel.listener.swagger.request:
+        class: KleijnWeb\SwaggerBundle\EventListener\RequestListener
+        arguments: [@swagger.document.repository, @swagger.request.transformer]
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }

@@ -1,0 +1,30 @@
+parameters:
+  test.client.class: KleijnWeb\SwaggerBundle\Test\ApiTestClient
+
+services:
+  swagger.controller.pet:
+    class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller\PetController
+  swagger.controller.store:
+    class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller\StoreController
+
+framework:
+    serializer:
+        enabled: true
+    test: true
+    secret:  test
+    router:
+        resource: "%kernel.root_dir%/routing.yml"
+        strict_requirements: ~
+    fragments:       ~
+    http_method_override: true
+    session:
+        storage_id: session.storage.filesystem
+    profiler:
+        collect: false
+
+monolog:
+    handlers:
+        stderr:
+            type:  stream
+            path:  php://stderr
+            level: notice
