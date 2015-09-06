@@ -1,4 +1,4 @@
-# KleijnWeb\SwaggerBundle
+# KleijnWeb\SwaggerBundle [![Build Status](https://travis-ci.org/kleijnweb/swagger-bundle.svg?branch=master)](https://travis-ci.org/kleijnweb/swagger-bundle)
 
 Invert your workflow (contract first) using Swagger specs and set up a Symfony REST app with minimal config.
 
