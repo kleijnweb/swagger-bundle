@@ -16,7 +16,8 @@
     "fr3d/swagger-assertions": "^0.2.0",
     "sensio/generator-bundle": "~2.3",
     "symfony/monolog-bundle": "~2.6",
-    "mikey179/vfsStream": "^1.5"
+    "mikey179/vfsStream": "^1.5",
+    "zendframework/zend-stdlib": "2.4.*"
   },
   "config": {
     "bin-dir": "bin"
