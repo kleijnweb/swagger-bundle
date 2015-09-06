@@ -1,8 +1,12 @@
 {
   "name": "kleijnweb/swagger-bundle",
-  "type": "project",
+  "type": "symfony-bundle",
   "authors": [
-    "John Kleijn <john@kleijnweb.nl>"
+    {
+      "name": "John Kleijn",
+      "email": "john@kleijnweb.nl",
+      "homepage": "http://www.kleijnweb.nl"
+    }
   ],
   "license": "LGPL-3.0",
   "description": "Makes your Swagger definition into a routing and validation spec",
