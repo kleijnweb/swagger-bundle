@@ -3,3 +3,4 @@ vendor
 src/Tests/Functional/PetStore/app/cache
 src/Tests/Functional/PetStore/app/logs
 composer.lock
+phpunit.xml

@@ -23,8 +23,4 @@
     <php>
         <server name="KERNEL_DIR" value="./src/Tests/Functional/PetStore/app"/>
     </php>
-
-    <logging>
-        <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
-    </logging>
 </phpunit>
