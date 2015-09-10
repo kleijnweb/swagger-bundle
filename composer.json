@@ -25,6 +25,7 @@
     "symfony/http-kernel": "~2.7",
     "symfony/filesystem": "~2.3",
     "symfony/routing": "~2.6,>2.6.4",
+    "symfony/yaml": "^2.7",
     "symfony/serializer": "^2.7",
     "symfony/finder": "^2.7",
     "symfony/property-access": "^2.7",
