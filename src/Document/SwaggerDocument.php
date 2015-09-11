@@ -67,6 +67,14 @@ class SwaggerDocument
     }
 
     /**
+     * @return array
+     */
+    public function getResourceSchemas()
+    {
+        return $this->definition->resources;
+    }
+
+    /**
      * @param string $path
      * @param string $method
      *
