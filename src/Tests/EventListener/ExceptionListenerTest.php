@@ -11,6 +11,7 @@ namespace KleijnWeb\SwaggerBundle\Tests\EventListener;
 use KleijnWeb\SwaggerBundle\EventListener\ExceptionListener;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -202,5 +203,28 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
             $response = $this->event->getResponse();
             $this->assertEquals($logRef, json_decode($response->getContent())->logref);
         }
+    }
+
+    /**
+     * @test
+     */
+    public function willReturnEmpty404Responses()
+    {
+        $event = $this
+            ->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent')
+            ->disableOriginalConstructor()
+            ->setMethods(['getException'])
+            ->getMock();
+
+        $event->expects($this->any())
+            ->method('getException')
+            ->willReturn(new NotFoundHttpException());
+
+        $this->exceptionListener->onKernelException($event);
+
+        $response = $event->getResponse();
+
+        $this->assertEmpty($response->getContent());
+        $this->assertSame(404, $response->getStatusCode());
     }
 }

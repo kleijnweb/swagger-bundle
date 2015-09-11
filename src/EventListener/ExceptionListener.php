@@ -10,7 +10,9 @@ namespace KleijnWeb\SwaggerBundle\EventListener;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -49,6 +51,12 @@ class ExceptionListener
     {
         $logRef = uniqid();
         $exception = $event->getException();
+
+        if ($exception instanceof NotFoundHttpException) {
+            $event->setResponse(new Response('', Response::HTTP_NOT_FOUND));
+
+            return;
+        }
 
         $code = $exception->getCode();
 
