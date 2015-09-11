@@ -10,6 +10,9 @@ namespace KleijnWeb\SwaggerBundle\Dev\Test;
 
 use Symfony\Component\BrowserKit\Request;
 
+/**
+ * @author John Kleijn <john@kleijnweb.nl>
+ */
 class ApiRequest extends Request
 {
     /**

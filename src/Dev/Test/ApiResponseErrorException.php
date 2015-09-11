@@ -8,6 +8,9 @@
 
 namespace KleijnWeb\SwaggerBundle\Dev\Test;
 
+/**
+ * @author John Kleijn <john@kleijnweb.nl>
+ */
 class ApiResponseErrorException extends \Exception
 {
     /**

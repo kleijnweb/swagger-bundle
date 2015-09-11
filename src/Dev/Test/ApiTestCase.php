@@ -16,6 +16,9 @@ use org\bovigo\vfs\vfsStreamWrapper;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * @author John Kleijn <john@kleijnweb.nl>
+ */
 abstract class ApiTestCase extends WebTestCase
 {
     use AssertsTrait;

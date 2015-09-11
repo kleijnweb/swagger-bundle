@@ -8,7 +8,6 @@
 
 namespace KleijnWeb\SwaggerBundle\Document;
 
-use JsonSchema\RefResolver;
 use JsonSchema\Uri\UriRetriever;
 use Symfony\Component\Yaml\Yaml;
 
@@ -18,7 +17,7 @@ use Symfony\Component\Yaml\Yaml;
 class SwaggerDocument
 {
     /**
-     * @var array
+     * @var \ArrayObject
      */
     private $definition;
 
@@ -39,7 +38,10 @@ class SwaggerDocument
         }
         $this->retriever = new UriRetriever();
         $this->retriever->setUriRetriever(new YamlCapableUriRetriever);
-        $this->definition = Yaml::parse(file_get_contents($pathFileName));
+        $this->definition = new \ArrayObject(
+            Yaml::parse(file_get_contents($pathFileName)),
+            \ArrayObject::ARRAY_AS_PROPS | \ArrayObject::STD_PROP_LIST
+        );
     }
 
     /**
@@ -55,7 +57,7 @@ class SwaggerDocument
      */
     public function getPathDefinitions()
     {
-        return $this->definition['paths'];
+        return $this->definition->paths;
     }
 
     /**
@@ -66,7 +68,10 @@ class SwaggerDocument
      */
     public function getOperationDefinition($path, $method)
     {
-        $path = substr($path, strlen($this->definition['basePath']));
+        if (isset($this->definition->basePath)) {
+            $path = substr($path, strlen($this->definition->basePath));
+        }
+
         $paths = $this->getPathDefinitions();
         if (!isset($paths[$path])) {
             throw new \InvalidArgumentException("Path '$path' not in Swagger document");

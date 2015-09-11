@@ -32,9 +32,9 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function willLoadDefinitionIntoArray()
+    public function willLoadDefinitionIntoArrayObject()
     {
-        $this->assertInternalType('array', $this->getPetStoreDocument()->getDefinition());
+        $this->assertInstanceOf('ArrayObject', $this->getPetStoreDocument()->getDefinition());
     }
 
     /**

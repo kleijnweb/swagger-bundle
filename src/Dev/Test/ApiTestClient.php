@@ -12,6 +12,9 @@ use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\BrowserKit\Request;
 use Symfony\Component\DomCrawler\Crawler;
 
+/**
+ * @author John Kleijn <john@kleijnweb.nl>
+ */
 class ApiTestClient extends Client
 {
     /**
