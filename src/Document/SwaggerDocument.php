@@ -54,7 +54,7 @@ class SwaggerDocument
         $retriever = new UriRetriever();
         $retriever->setUriRetriever(new YamlCapableUriRetriever);
         $resolver = new RefResolver($retriever);
-        foreach ($this->getResourceSchemas() as &$schema) {
+        foreach ($this->definition->definitions as &$schema) {
             // TODO Solve this mess
             $schema = json_decode(json_encode($schema));
             $resolver->resolve($schema, 'file://' . realpath($this->pathFileName));
