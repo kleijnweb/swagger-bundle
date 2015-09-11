@@ -8,7 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Functional;
 
-use KleijnWeb\SwaggerBundle\Test\ApiTestCase;
+use KleijnWeb\SwaggerBundle\Dev\Test\ApiTestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>

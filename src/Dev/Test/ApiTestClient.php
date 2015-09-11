@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Test;
+namespace KleijnWeb\SwaggerBundle\Dev\Test;
 
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\BrowserKit\Request;

@@ -1,5 +1,5 @@
 parameters:
-  test.client.class: KleijnWeb\SwaggerBundle\Test\ApiTestClient
+  test.client.class: KleijnWeb\SwaggerBundle\Dev\Test\ApiTestClient
   swagger.document.base_path: ''
 
 services:

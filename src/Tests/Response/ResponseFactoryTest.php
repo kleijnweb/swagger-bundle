@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Tests\Response;
+namespace KleijnWeb\SwaggerBundle\Dev\Tests\Response;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\Response\ResponseFactory;

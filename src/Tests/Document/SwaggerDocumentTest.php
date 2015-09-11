@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Tests\Document;
+namespace KleijnWeb\SwaggerBundle\Dev\Tests\Document;
 
 use KleijnWeb\SwaggerBundle\Document\SwaggerDocument;
 

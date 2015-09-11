@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Tests\EventListener;
+namespace KleijnWeb\SwaggerBundle\Dev\Tests\EventListener;
 
 use KleijnWeb\SwaggerBundle\EventListener\ExceptionListener;
 use Psr\Log\LoggerInterface;

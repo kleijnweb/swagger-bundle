@@ -4,9 +4,6 @@ services:
         tags:
            - { name: serializer.normalizer }
 
-    swagger.controller.default:
-        class: KleijnWeb\SwaggerBundle\Controller\DefaultController
-
     swagger.route_loader:
         class: KleijnWeb\SwaggerBundle\Routing\SwaggerRouteLoader
         arguments: [@swagger.document.repository]
@@ -46,3 +43,9 @@ services:
         arguments: [@swagger.document.repository, @swagger.request.transformer]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    # DEV
+    swagger.dev.command.amend_swagger:
+        class: KleijnWeb\SwaggerBundle\Dev\Command\AmendSwaggerDocumentCommand
+        tags:
+            -  { name: console.command }

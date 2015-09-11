@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Tests\Request\Transformer;
+namespace KleijnWeb\SwaggerBundle\Dev\Tests\Request\Transformer;
 
 use KleijnWeb\SwaggerBundle\Request\Transformer\ParameterCoercer;
 
