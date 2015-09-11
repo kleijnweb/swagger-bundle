@@ -1,5 +1,6 @@
 parameters:
   test.client.class: KleijnWeb\SwaggerBundle\Test\ApiTestClient
+  swagger.document.base_path: ''
 
 services:
   swagger.controller.pet:

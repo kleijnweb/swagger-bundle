@@ -34,4 +34,14 @@ class DocumentRepositoryTest extends \PHPUnit_Framework_TestCase
         $document = $repository->get('src/Tests/Functional/PetStore/app/petstore.yml');
         $this->assertInstanceOf('KleijnWeb\SwaggerBundle\Document\SwaggerDocument', $document);
     }
+
+    /**
+     * @test
+     */
+    public function canUsePathPrefix()
+    {
+        $repository = new DocumentRepository('src/Tests/Functional/PetStore');
+        $document = $repository->get('app/petstore.yml');
+        $this->assertInstanceOf('KleijnWeb\SwaggerBundle\Document\SwaggerDocument', $document);
+    }
 }

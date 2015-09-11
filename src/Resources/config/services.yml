@@ -15,6 +15,7 @@ services:
 
     swagger.document.repository:
         class: KleijnWeb\SwaggerBundle\Document\DocumentRepository
+        arguments: [%swagger.document.base_path%]
 
     swagger.response.factory:
         class: KleijnWeb\SwaggerBundle\Response\ResponseFactory
