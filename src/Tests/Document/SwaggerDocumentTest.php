@@ -19,11 +19,6 @@ use org\bovigo\vfs\vfsStreamWrapper;
 class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var SwaggerDocument
-     */
-    private static $petStoreDocument;
-
-    /**
      * @test
      * @expectedException \InvalidArgumentException
      */
@@ -37,7 +32,7 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
      */
     public function willLoadDefinitionIntoArrayObject()
     {
-        $this->assertInstanceOf('ArrayObject', $this->getPetStoreDocument()->getDefinition());
+        $this->assertInstanceOf('ArrayObject', self::getPetStoreDocument()->getDefinition());
     }
 
     /**
@@ -45,7 +40,7 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
      */
     public function canGetPathDefinitions()
     {
-        $actual = $this->getPetStoreDocument()->getPathDefinitions();
+        $actual = self::getPetStoreDocument()->getPathDefinitions();
         $this->assertInternalType('array', $actual);
 
         // Check a few keys
@@ -60,7 +55,7 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
      */
     public function getOperationDefinition()
     {
-        $actual = $this->getPetStoreDocument()->getOperationDefinition('/v2/store/inventory', 'get');
+        $actual = self::getPetStoreDocument()->getOperationDefinition('/v2/store/inventory', 'get');
         $this->assertInternalType('array', $actual);
 
         // Check a few keys
@@ -74,7 +69,7 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
      */
     public function getOperationDefinitionHttpMethodIsCaseInsensitive()
     {
-        $this->getPetStoreDocument()->getOperationDefinition('/v2/store/inventory', 'GET');
+        self::getPetStoreDocument()->getOperationDefinition('/v2/store/inventory', 'GET');
     }
 
 
@@ -84,7 +79,7 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
      */
     public function getOperationDefinitionWillFailOnUnknownHttpMethod()
     {
-        $this->getPetStoreDocument()->getOperationDefinition('/v2/store/inventory', 'post');
+        self::getPetStoreDocument()->getOperationDefinition('/v2/store/inventory', 'post');
     }
 
     /**
@@ -93,7 +88,7 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
      */
     public function getOperationDefinitionWillFailOnUnknownPath()
     {
-        $this->getPetStoreDocument()->getOperationDefinition('/this/is/total/bogus', 'post');
+        self::getPetStoreDocument()->getOperationDefinition('/this/is/total/bogus', 'post');
     }
 
     /**
@@ -103,7 +98,7 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
     {
         $originalHash = md5_file('src/Tests/Functional/PetStore/app/petstore.yml');
 
-        $document = $this->getPetStoreDocument();
+        $document = self::getPetStoreDocument();
         $document->write();
 
         $newHash = md5_file('src/Tests/Functional/PetStore/app/petstore.yml');
@@ -122,7 +117,7 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
 
         $modifiedPath = vfsStream::url('canWriteModifiedYamlToFileSystem/modified.yml');
 
-        $document = $this->getPetStoreDocument();
+        $document = self::getPetStoreDocument();
         $definition = $document->getDefinition();
         $definition->version = '0.0.2';
         $document->write($modifiedPath);
@@ -133,14 +128,24 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function canResolveResourceSchemaReferences()
+    {
+        $document = self::getPetStoreDocument();
+        $document->resolveReferences();
+        $schemas = $document->getResourceSchemas();
+        $propertySchema = $schemas['Pet']['properties']['category'];
+        $this->assertArrayNotHasKey('$ref', $propertySchema);
+        $this->assertArrayHasKey('id', $propertySchema);
+        $this->assertSame('object', $propertySchema['type']);
+    }
+
+    /**
      * @return SwaggerDocument
      */
-    private function getPetStoreDocument()
+    public static function getPetStoreDocument()
     {
-        if (!self::$petStoreDocument) {
-            self::$petStoreDocument = new SwaggerDocument('src/Tests/Functional/PetStore/app/petstore.yml');
-        }
-
-        return self::$petStoreDocument;
+        return new SwaggerDocument('src/Tests/Functional/PetStore/app/petstore.yml');
     }
 }

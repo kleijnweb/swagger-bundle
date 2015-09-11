@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Generator;
+namespace KleijnWeb\SwaggerBundle\Dev\Generator;
 
 use KleijnWeb\SwaggerBundle\Document\SwaggerDocument;
 use Sensio\Bundle\GeneratorBundle\Generator\Generator;
@@ -19,26 +19,24 @@ class ResourceGenerator extends Generator
 {
     /**
      * @param BundleInterface $bundle
-     * @param SwaggerDocument $swaggerDoc
+     * @param SwaggerDocument $document
      */
-    public function generate(BundleInterface $bundle, SwaggerDocument $swaggerDoc)
+    public function generate(BundleInterface $bundle, SwaggerDocument $document)
     {
         $dir = $bundle->getPath();
 
         $parameters = [
-            'namespace' => $bundle->getNamespace(),
-            'bundle'    => $bundle->getName(),
+            'namespace'          => $bundle->getNamespace(),
+            'bundle'             => $bundle->getName(),
+            'resource_namespace' => 'Model\Resources'
         ];
 
-        foreach ($swaggerDoc->getResourceSchemas() as $typeName => $spec) {
-            $controllerFile = "$dir/Model/Resources/$typeName.php";
-            if (file_exists($controllerFile)) {
-                throw new \RuntimeException(sprintf('Resource class "%s" already exists', $typeName));
-            }
+        foreach ($document->getResourceSchemas() as $typeName => $spec) {
+            $resourceFile = "$dir/Model/Resources/$typeName.php";
             $this->renderFile(
                 'resource.php.twig',
-                $controllerFile,
-                array_merge($parameters, $spec)
+                $resourceFile,
+                array_merge($parameters, $spec, ['resource' => $typeName, 'resource_class' => $typeName])
             );
         }
     }

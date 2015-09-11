@@ -21,6 +21,10 @@ class YamlCapableUriRetriever extends AbstractRetriever
      * TODO This is of course terribly inefficient
      *
      * @see \JsonSchema\Uri\Retrievers\UriRetrieverInterface::retrieve()
+     *
+     * @param string $uri
+     *
+     * @return string
      */
     public function retrieve($uri)
     {

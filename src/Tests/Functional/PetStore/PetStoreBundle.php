@@ -28,6 +28,14 @@ class PetStoreBundle extends Bundle
     }
 
     /**
+     * @return string
+     */
+    public function getNamespace()
+    {
+        return __NAMESPACE__;
+    }
+
+    /**
      * Gets the Bundle directory path.
      *
      * @return string The Bundle absolute path
@@ -36,9 +44,17 @@ class PetStoreBundle extends Bundle
      */
     public function getPath()
     {
-        vfsStreamWrapper::register();
-        vfsStreamWrapper::setRoot(new vfsStreamDirectory('PetStoreBundle'));
+        if (!$this->path) {
+            vfsStreamWrapper::register();
+            vfsStreamWrapper::setRoot(new vfsStreamDirectory('root'));
 
-        return $this->path = vfsStream::url('PetStoreBundle');
+            $this->path = vfsStream::url('root/PetStoreBundle');
+
+            if (!is_dir($this->path)) {
+                mkdir($this->path);
+            }
+        }
+
+        return $this->path;
     }
 }

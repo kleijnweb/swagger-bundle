@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Document;
 
+use JsonSchema\RefResolver;
 use JsonSchema\Uri\UriRetriever;
 use Symfony\Component\Yaml\Yaml;
 
@@ -27,11 +28,6 @@ class SwaggerDocument
     private $definition;
 
     /**
-     * @var UriRetriever
-     */
-    private $retriever;
-
-    /**
      * @param $pathFileName
      */
     public function __construct($pathFileName)
@@ -42,12 +38,28 @@ class SwaggerDocument
             );
         }
         $this->pathFileName = $pathFileName;
-        $this->retriever = new UriRetriever();
-        $this->retriever->setUriRetriever(new YamlCapableUriRetriever);
         $this->definition = new \ArrayObject(
             Yaml::parse(file_get_contents($pathFileName)),
             \ArrayObject::ARRAY_AS_PROPS | \ArrayObject::STD_PROP_LIST
         );
+    }
+
+    /**
+     * Resolve all references
+     *
+     * @return void
+     */
+    public function resolveReferences()
+    {
+        $retriever = new UriRetriever();
+        $retriever->setUriRetriever(new YamlCapableUriRetriever);
+        $resolver = new RefResolver($retriever);
+        foreach ($this->getResourceSchemas() as &$schema) {
+            // TODO Solve this mess
+            $schema = json_decode(json_encode($schema));
+            $resolver->resolve($schema, 'file://' . realpath($this->pathFileName));
+            $schema = json_decode(json_encode($schema), true);
+        }
     }
 
     /**
@@ -71,7 +83,7 @@ class SwaggerDocument
      */
     public function getResourceSchemas()
     {
-        return $this->definition->resources;
+        return $this->definition->definitions;
     }
 
     /**
@@ -106,5 +118,12 @@ class SwaggerDocument
     public function write($targetPath = null)
     {
         file_put_contents($targetPath ?: $this->pathFileName, Yaml::dump($this->definition->getArrayCopy(), 10, 2));
+    }
+
+    /**
+     * Cloning will break things
+     */
+    private function __clone()
+    {
     }
 }

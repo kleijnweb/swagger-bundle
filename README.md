@@ -2,9 +2,11 @@
 
 Invert your workflow (contract first) using Swagger specs and set up a Symfony REST app with minimal config.
 
-Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig.
+Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig (except for dev purposes).
 
 SwaggerBundle only supports json in- and ouput, and only YAML Swagger defintions.
+
+__TIP:__ Want to build an API-only app using this bundle? Try [kleijnweb/symfony-swagger-microservice-edition](https://github.com/kleijnweb/symfony-swagger-microservice-edition]).
 
 # Usage
 
@@ -31,8 +33,6 @@ The path here is relative to the `swagger.document.base_path` parameter. The abo
 parameters:
   swagger.document.base_path: "%kernel.root_dir%"
 ```
-
-
 # Functional Details
 
 ## Controllers

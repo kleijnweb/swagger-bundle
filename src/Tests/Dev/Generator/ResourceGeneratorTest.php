@@ -8,6 +8,13 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Dev\Generator;
 
+use KleijnWeb\SwaggerBundle\Dev\Tests\Document\SwaggerDocumentTest;
+use KleijnWeb\SwaggerBundle\Dev\Generator\ResourceGenerator;
+use KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\PetStoreBundle;
+use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
+use org\bovigo\vfs\vfsStreamWrapper;
+
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
@@ -18,6 +25,28 @@ class ResourceGeneratorTest extends \PHPUnit_Framework_TestCase
      */
     public function canRenderResourcesFromPetStore()
     {
-        $this->markTestIncomplete();
+        $bundle = new PetStoreBundle();
+        $document = SwaggerDocumentTest::getPetStoreDocument();
+        $document->resolveReferences();
+        $generator = new ResourceGenerator();
+        $generator->setSkeletonDirs('src/Dev/Resources/skeleton');
+        $generator->generate($bundle, $document);
+
+        $files = [
+            'User.php',
+            'Category.php',
+            'Pet.php',
+            'Order.php',
+        ];
+
+        foreach ($files as $file) {
+            $filePathName = $bundle->getPath() . '/Model/Resources/' . $file;
+            $this->assertTrue(
+                file_exists($filePathName),
+                sprintf('%s has not been generated', $filePathName)
+            );
+            $content = file_get_contents($filePathName);
+            $this->assertContains("namespace {$bundle->getNamespace()}\\Model\\Resources;", $content);
+        }
     }
 }

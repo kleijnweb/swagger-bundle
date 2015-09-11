@@ -39,7 +39,9 @@
     "symfony/monolog-bundle": "~2.6",
     "mikey179/vfsStream": "^1.5",
     "zendframework/zend-stdlib": "2.4.*",
-    "symfony/browser-kit": "^2.7"
+    "symfony/browser-kit": "^2.7",
+    "twig/twig": "^1.21"
+
   },
   "config": {
     "bin-dir": "bin"
