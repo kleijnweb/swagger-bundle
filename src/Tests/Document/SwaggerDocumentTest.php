@@ -9,6 +9,9 @@
 namespace KleijnWeb\SwaggerBundle\Dev\Tests\Document;
 
 use KleijnWeb\SwaggerBundle\Document\SwaggerDocument;
+use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
+use org\bovigo\vfs\vfsStreamWrapper;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -91,6 +94,42 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
     public function getOperationDefinitionWillFailOnUnknownPath()
     {
         $this->getPetStoreDocument()->getOperationDefinition('/this/is/total/bogus', 'post');
+    }
+
+    /**
+     * @test
+     */
+    public function canWriteValidYamlToFileSystem()
+    {
+        $originalHash = md5_file('src/Tests/Functional/PetStore/app/petstore.yml');
+
+        $document = $this->getPetStoreDocument();
+        $document->write();
+
+        $newHash = md5_file('src/Tests/Functional/PetStore/app/petstore.yml');
+
+        $this->assertSame($originalHash, $newHash);
+    }
+
+    /**
+     * @test
+     */
+    public function canWriteModifiedYamlToFileSystem()
+    {
+        $originalHash = md5_file('src/Tests/Functional/PetStore/app/petstore.yml');
+        vfsStreamWrapper::register();
+        vfsStreamWrapper::setRoot(new vfsStreamDirectory('canWriteModifiedYamlToFileSystem'));
+
+        $modifiedPath = vfsStream::url('canWriteModifiedYamlToFileSystem/modified.yml');
+
+        $document = $this->getPetStoreDocument();
+        $definition = $document->getDefinition();
+        $definition->version = '0.0.2';
+        $document->write($modifiedPath);
+
+        $newHash = md5_file($modifiedPath);
+
+        $this->assertNotSame($originalHash, $newHash);
     }
 
     /**

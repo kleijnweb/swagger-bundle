@@ -17,6 +17,11 @@ use Symfony\Component\Yaml\Yaml;
 class SwaggerDocument
 {
     /**
+     * @var string
+     */
+    private $pathFileName;
+
+    /**
      * @var \ArrayObject
      */
     private $definition;
@@ -36,6 +41,7 @@ class SwaggerDocument
                 "Document file '$pathFileName' does not exist'"
             );
         }
+        $this->pathFileName = $pathFileName;
         $this->retriever = new UriRetriever();
         $this->retriever->setUriRetriever(new YamlCapableUriRetriever);
         $this->definition = new \ArrayObject(
@@ -82,5 +88,15 @@ class SwaggerDocument
         }
 
         return $paths[$path][$method];
+    }
+
+    /**
+     * @param null $targetPath
+     *
+     * @return void
+     */
+    public function write($targetPath = null)
+    {
+        file_put_contents($targetPath ?: $this->pathFileName, Yaml::dump($this->definition->getArrayCopy(), 10, 2));
     }
 }
