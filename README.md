@@ -44,7 +44,7 @@ to the HTTP method name, but may be overridden by including `operationId` in you
 
 ## Exception Handling
 
-Any exceptions are caught, logged by the @logger service, and result in `application/vnd.error+json`.
+Any exceptions are caught, logged by the `@logger` service, and result in `application/vnd.error+json`. Routing failure results in an empty 404 response.
 
 ## Input Validation
 
