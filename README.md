@@ -4,7 +4,7 @@ Invert your workflow (contract first) using Swagger specs and set up a Symfony R
 
 Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig.
 
-__IMPORTANT NOTE__: This development version of SwaggerBundle only support json in- and ouput, and only YAML Swagger defintions.
+SwaggerBundle only supports json in- and ouput, and only YAML Swagger defintions.
 
 # Usage
 
@@ -21,12 +21,17 @@ Install using composer (`composer require kleijnweb/swagger-bundle`). Add Swagge
  
 ```yml
 test:
-    resource: "%kernel.root_dir%/../web/yourapp.yml"
+    resource: "config/yourapp.yml"
     type: swagger
 ```
-## Functional Testing Your API
 
-TODO
+The path here is relative to the `swagger.document.base_path` parameter. The above example would require something like this in your config:
+
+```yml
+parameters:
+  swagger.document.base_path: "%kernel.root_dir%"
+```
+
 
 # Functional Details
 
@@ -39,8 +44,7 @@ to the HTTP method name, but may be overridden by including `operationId` in you
 
 ## Exception Handling
 
-Any exceptions are caught, logged by the @logger service, and result in `application/vnd.error+json` or `application/vnd.error+xml`,
-depending on Content Negotiation rules (__NOT IMPLEMENTED YET__).
+Any exceptions are caught, logged by the @logger service, and result in `application/vnd.error+json`.
 
 ## Input Validation
 
@@ -58,6 +62,16 @@ __NOTE__: SwaggerBundle currently does not support `multi` for `collectionFormat
 
 If the content cannot be deserialized using the format specified by the request's Content-Type header, or if validation
 of the content using the resource schema failed, SwaggerBundle will return a `vnd.error` response with a 400 status code.
+
+# Developing
+
+## Amending Your Swagger Document
+ 
+SwaggerBundle adds some standardized behavior, this should be reflected in your Swagger document. Instead of doing this manually, you can use the 'swagger:document:amend' command.
+
+## Functional Testing Your API
+
+TODO
    
 ## License
 

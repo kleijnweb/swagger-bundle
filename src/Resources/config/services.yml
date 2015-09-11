@@ -45,7 +45,11 @@ services:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
     # DEV
+    swagger.dev.fixer.swagger_bundle_response:
+        class: KleijnWeb\SwaggerBundle\Dev\DocumentFixer\Fixers\SwaggerBundleResponseFixer
+
     swagger.dev.command.amend_swagger:
         class: KleijnWeb\SwaggerBundle\Dev\Command\AmendSwaggerDocumentCommand
+        arguments: [@swagger.document.repository, @swagger.dev.fixer.swagger_bundle_response]
         tags:
             -  { name: console.command }

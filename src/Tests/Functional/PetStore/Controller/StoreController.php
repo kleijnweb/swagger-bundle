@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 class StoreController
 {
     /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      * @param Request $request
      *
      * @return array

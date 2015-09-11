@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 class PetController
 {
     /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      * @param Request $request
      *
      * @return array

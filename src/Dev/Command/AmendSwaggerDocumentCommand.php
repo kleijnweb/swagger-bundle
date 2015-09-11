@@ -7,6 +7,7 @@
  */
 namespace KleijnWeb\SwaggerBundle\Dev\Command;
 
+use KleijnWeb\SwaggerBundle\Dev\DocumentFixer\Fixer;
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -27,21 +28,37 @@ class AmendSwaggerDocumentCommand extends Command
     private $documentRepository;
 
     /**
-     * @param DocumentRepository $documentRepository
+     * @var Fixer
      */
-    public function __construct(DocumentRepository $documentRepository)
-    {
-        $this->documentRepository = $documentRepository;
+    private $fixer;
 
+    /**
+     * @param DocumentRepository $documentRepository
+     * @param Fixer              $fixer
+     */
+    public function __construct(DocumentRepository $documentRepository, Fixer $fixer)
+    {
         parent::__construct(self::NAME);
 
         $this
             ->setDescription('Amend a Swagger definition with predefined SwaggerBundle responses')
-            ->setHelp('This is a development tool and will only work with require-dev dependencies included');
+            ->setHelp('This is a development tool and will only work with require-dev dependencies included')
+            ->addArgument('file', InputArgument::REQUIRED, 'File path to the Swagger document')
+            ->addOption(
+                'out',
+                'o',
+                InputOption::VALUE_REQUIRED,
+                'Write the resulting document to this location (will overwrite existing by default'
+            );
+
+        $this->documentRepository = $documentRepository;
+        $this->fixer = $fixer;
     }
 
 
     /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     *
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
@@ -49,5 +66,8 @@ class AmendSwaggerDocumentCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $document = $this->documentRepository->get($input->getArgument('file'));
+        $this->fixer->fix($document);
+        $document->write($input->getOption('out'));
     }
 }
