@@ -87,9 +87,57 @@ __NOTE__: SwaggerBundle currently does not support `multi` for `collectionFormat
 If the content cannot be deserialized using the format specified by the request's Content-Type header, or if validation
 of the content using the resource schema failed, SwaggerBundle will return a `vnd.error` response with a 400 status code.
 
-### Using JMS\Serializer For Resources
+### Object (De-) Serialization
 
-SwaggerBundle can optionally serialize your resources using JMS\Serializer instead of the standard Symfony serializer. In order to use annotations, you should make sure you use an autoload bootstrap
+By default Swagger bundle will only serialize and deserialize arrays. This means your controllers can expect `$request->getContent()`
+ to contain an associative array, and are expected to return those as well.
+ 
+Optionally SwaggerBundle can do object de- serialization. You'll need to pass the Symfony Components Serializer or JMS\Serializer to the SerializerAdapter:
+
+``yaml
+swagger.serializer:
+    class: KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter
+    arguments: [@swagger.serializer.array]
+```
+
+Replace `@swagger.serializer.array` with `@swagger.serializer.symfony` or `@swagger.serializer.jms` to use the Symfony or JMS Serializer respectively. 
+
+__NOTE:__ You do not need to install `JMSSerializerBundle`. Just `composer require jms/serializer` (or `composer require symfony/serializer`).
+
+```yaml
+swagger.serializer:
+    class: KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter
+    arguments: [@swagger.serializer.array]
+```
+
+You will also need to set a *base namespace* for your resource classes:
+
+```yaml
+swagger.request.transformer.content_decoder:
+    class: KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder
+    arguments: [@swagger.serializer, 'My\Bundle\Resource\Namespace']
+```
+
+SwaggerBundle will try to deserialize request data using the last section of the `$ref` or `id` of the schema for the 200 response.
+  Eg `#/definitions/Pet` will resolve to `My\Bundle\Resource\Namespace\Pet`. Currently only a single namespace is supported.
+  
+This will only work for operations where there is a `in: body` parameter defined, for example:
+
+```yaml
+parameters:
+  - in: body
+    name: body
+    description: Pet object that needs to be added to the store
+    required: false
+    schema:
+      $ref: '#/definitions/Pet'
+```
+
+The `ResponseFactory` will try to deserialize any objects of a class other than `\stdClass`. 
+  
+#### Using Annotations
+
+In order to use annotations, you should make sure you use an autoload bootstrap
  that will initialize doctrine/annotations:
  
 ```php
@@ -117,7 +165,8 @@ SwaggerBundle adds some standardized behavior, this should be reflected in your 
 ## Generating Resource Classes
  
 SwaggerBundle can generate classes for you based on your Swagger resource definitions. 
-You can use the resulting classes as DTO-like objects for your services, or create Doctrine mapping config for them.
+You can use the resulting classes as DTO-like objects for your services, or create Doctrine mapping config for them. Obviously this requires you to enable object serialization.
+The resulting classes will have JMS\Serializer annotations by default, the use of which is optional, remove them if you're using the standard Symfony serializer.
 
 See `app/console swagger:generate:resources --help` for more details.
 

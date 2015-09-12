@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Dev\Tests\DocumentFixer;
+namespace KleijnWeb\SwaggerBundle\Tests\Dev\DocumentFixer;
 
 use KleijnWeb\SwaggerBundle\Document\SwaggerDocument;
 use KleijnWeb\SwaggerBundle\Dev\DocumentFixer\Fixers\SwaggerBundleResponseFixer;

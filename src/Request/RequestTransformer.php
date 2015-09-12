@@ -114,6 +114,9 @@ class RequestTransformer
     /**
      * @param Request $request
      * @param array   $operationDefinition
+     *
+     * @throws MalformedContentException
+     * @throws UnsupportedException
      */
     public function coerceRequestParameters(Request $request, array $operationDefinition)
     {
@@ -154,12 +157,12 @@ class RequestTransformer
     /**
      * @param Request $request
      * @param array   $operationDefinition
-     * @param array   $content
+     * @param mixed   $content
      *
      * @return \stdClass
      * @throws UnsupportedException
      */
-    public function assembleParameterData(Request $request, array $operationDefinition, array $content = null)
+    public function assembleParameterData(Request $request, array $operationDefinition, $content = null)
     {
         if (!isset($operationDefinition['parameters'])) {
             return new \stdClass;

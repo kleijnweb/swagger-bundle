@@ -1,14 +1,24 @@
 services:
-    get_set_method_normalizer:
-        class: Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer
-        tags:
-           - { name: serializer.normalizer }
-
     swagger.route_loader:
         class: KleijnWeb\SwaggerBundle\Routing\SwaggerRouteLoader
         arguments: [@swagger.document.repository]
         tags:
             - { name: routing.loader }
+
+    swagger.serializer:
+        class: KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter
+        arguments: [@swagger.serializer.array]
+
+    swagger.serializer.array:
+        class: KleijnWeb\SwaggerBundle\Serializer\ArraySerializer
+
+    swagger.serializer.jms:
+        class:   JMS\Serializer\Serializer\Serializer
+        factory: [KleijnWeb\SwaggerBundle\Serializer\JmsSerializerFactory, factory]
+
+    swagger.serializer.symfony:
+        class:   JMS\Serializer\Serializer\SymfonySerializerFactory
+        factory: [KleijnWeb\SwaggerBundle\Serializer\SymfonySerializerFactory, factory]
 
     swagger.document.repository:
         class: KleijnWeb\SwaggerBundle\Document\DocumentRepository
@@ -16,7 +26,7 @@ services:
 
     swagger.response.factory:
         class: KleijnWeb\SwaggerBundle\Response\ResponseFactory
-        arguments: [@swagger.document.repository, @serializer]
+        arguments: [@swagger.document.repository, @swagger.serializer]
 
     swagger.request.transformer:
         class: KleijnWeb\SwaggerBundle\Request\RequestTransformer
@@ -24,7 +34,7 @@ services:
 
     swagger.request.transformer.content_decoder:
         class: KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder
-        arguments: [@serializer]
+        arguments: [@swagger.serializer]
 
     kernel.listener.swagger.view:
         class: KleijnWeb\SwaggerBundle\EventListener\ViewListener

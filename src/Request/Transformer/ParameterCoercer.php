@@ -98,7 +98,6 @@ class ParameterCoercer
 
                 return $value;
             default:
-                // TODO 'date'
                 return $value;
         }
     }

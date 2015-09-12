@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Dev\Tests\Request;
+namespace KleijnWeb\SwaggerBundle\Tests\Request;
 
 use KleijnWeb\SwaggerBundle\Request\RequestTransformer;
 use KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder;

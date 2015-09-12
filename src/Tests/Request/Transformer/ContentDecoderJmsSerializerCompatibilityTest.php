@@ -8,15 +8,17 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Request\Transformer;
 
+use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializerBuilder;
 use KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder;
-use KleijnWeb\SwaggerBundle\Serializer\ArraySerializer;
+use KleijnWeb\SwaggerBundle\Serializer\JmsSerializerFactory;
 use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class ContentDecoderTest extends \PHPUnit_Framework_TestCase
+class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var ContentDecoder
@@ -24,33 +26,53 @@ class ContentDecoderTest extends \PHPUnit_Framework_TestCase
     private $contentDecoder;
 
     /**
-     * @var SerializerAdapter
+     * @var Serializer
      */
     private $serializer;
 
     /**
-     * Set content decoder with default serializer
+     * Create serializer
      */
     protected function setUp()
     {
-        $this->serializer = new SerializerAdapter(new ArraySerializer());
-        $this->contentDecoder = new ContentDecoder($this->serializer);
+        $this->serializer = new SerializerAdapter(JmsSerializerFactory::factory());
+        $this->contentDecoder = new ContentDecoder(
+            $this->serializer,
+            'KleijnWeb\SwaggerBundle\Tests\Request\Transformer'
+        );
     }
 
     /**
      * @test
+     * @SuppressWarnings(PHPMD.EvalExpression)
      */
-    public function canDecodeValidJson()
+    public function canDeserializeIntoObject()
     {
-        $content = '{ "foo": "bar" }';
-        $request = new Request([], [], [], [], [], [], $content);
+        $content = [
+            'foo' => 'bar'
+        ];
+        $request = new Request([], [], [], [], [], [], json_encode($content));
         $request->headers->set('Content-Type', 'application/json');
 
-        $operationDefinition = [];
+
+        $operationDefinition = [
+            'parameters' => [
+                [
+                    "in"       => "body",
+                    "name"     => "body",
+                    "schema"   => [
+                        '$ref' => "#/definitions/JmsAnnotatedResourceStub"
+                    ]
+                ]
+            ]
+        ];
 
         $actual = $this->contentDecoder->decodeContent($request, $operationDefinition);
-        $expected = ['foo' => 'bar'];
-        $this->assertSame($expected, $actual);
+
+        $className = 'KleijnWeb\SwaggerBundle\Tests\Request\Transformer\JmsAnnotatedResourceStub';
+        $expected = (new $className)->setFoo('bar');
+
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -60,7 +82,7 @@ class ContentDecoderTest extends \PHPUnit_Framework_TestCase
      */
     public function willThrowMalformedContentExceptionWhenDecodingFails()
     {
-        $content = 'NOT VALID JSON';
+        $content = 'lkjhlkj';
         $request = new Request([], [], [], [], [], [], $content);
         $request->headers->set('Content-Type', 'application/json');
 

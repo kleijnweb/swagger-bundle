@@ -8,7 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Dev\Generator;
 
-use KleijnWeb\SwaggerBundle\Dev\Tests\Document\SwaggerDocumentTest;
+use KleijnWeb\SwaggerBundle\Tests\Dev\Document\SwaggerDocumentTest;
 use KleijnWeb\SwaggerBundle\Dev\Generator\ResourceGenerator;
 use KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\PetStoreBundle;
 

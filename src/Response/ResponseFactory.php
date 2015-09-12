@@ -9,11 +9,10 @@
 namespace KleijnWeb\SwaggerBundle\Response;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
+use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -21,7 +20,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class ResponseFactory
 {
     /**
-     * @var SerializerInterface
+     * @var SerializerAdapter
      */
     private $serializer;
 
@@ -32,9 +31,9 @@ class ResponseFactory
 
     /**
      * @param DocumentRepository $documentRepository
-     * @param Serializer         $serializer
+     * @param SerializerAdapter         $serializer
      */
-    public function __construct(DocumentRepository $documentRepository, Serializer $serializer)
+    public function __construct(DocumentRepository $documentRepository, SerializerAdapter $serializer)
     {
         $this->serializer = $serializer;
         $this->documentRepository = $documentRepository;

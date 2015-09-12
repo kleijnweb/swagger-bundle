@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Dev\Tests\Document;
+namespace KleijnWeb\SwaggerBundle\Tests\Dev\Document;
 
 use KleijnWeb\SwaggerBundle\Document\YamlCapableUriRetriever;
 

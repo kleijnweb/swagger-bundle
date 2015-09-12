@@ -6,10 +6,11 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Dev\Tests\Response;
+namespace KleijnWeb\SwaggerBundle\Tests\Dev\Response;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\Response\ResponseFactory;
+use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Serializer;
 
@@ -41,7 +42,7 @@ class ResponseFactoryTest extends \PHPUnit_Framework_TestCase
             ->method('supportsEncoding')
             ->willReturn(true);
 
-        $serializer = new Serializer([], [$jsonEncoderMock]);
+        $serializer = new SerializerAdapter(new Serializer([], [$jsonEncoderMock]));
         $factory = new ResponseFactory(new DocumentRepository(), $serializer);
         $response = $factory->createResponse(new Request(), [1, 2, 3]);
         $this->assertSame($response->getContent(), '[1,2,3]');

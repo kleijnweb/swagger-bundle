@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Dev\Tests\EventListener;
+namespace KleijnWeb\SwaggerBundle\Tests\Dev\EventListener;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\EventListener\RequestListener;

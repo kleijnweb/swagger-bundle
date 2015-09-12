@@ -10,8 +10,8 @@ namespace KleijnWeb\SwaggerBundle\Request\Transformer;
 
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
 use KleijnWeb\SwaggerBundle\Exception\UnsupportedContentTypeException;
+use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\Serializer;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -19,16 +19,23 @@ use Symfony\Component\Serializer\Serializer;
 class ContentDecoder
 {
     /**
-     * @var Serializer
+     * @var SerializerAdapter
      */
     private $serializer;
 
     /**
-     * @param Serializer $serializer
+     * @var string
      */
-    public function __construct(Serializer $serializer)
+    private $resourceNamespace;
+
+    /**
+     * @param SerializerAdapter $serializer
+     * @param string            $resourceNamespace
+     */
+    public function __construct(SerializerAdapter $serializer, $resourceNamespace = null)
     {
         $this->serializer = $serializer;
+        $this->resourceNamespace = $resourceNamespace;
     }
 
     /**
@@ -41,16 +48,29 @@ class ContentDecoder
      */
     public function decodeContent(Request $request, array $operationDefinition)
     {
-        $decodedContent = null;
         if ($content = $request->getContent()) {
-            $subType = $request->getContentType();
+            $type = null;
+            if (isset($operationDefinition['parameters'])) {
+                foreach ($operationDefinition['parameters'] as $parameterDefinition) {
+                    if ($parameterDefinition['in'] == 'body') {
+                        $reference = isset($parameterDefinition['schema']['$ref'])
+                            ? $parameterDefinition['schema']['$ref']
+                            : $parameterDefinition['schema']['id'];
+                        $type = ltrim(
+                            $this->resourceNamespace . '\\' . substr($reference, strrpos($reference, '/') + 1),
+                            '\\'
+                        );
+                    }
+                }
+            }
+
             try {
-                $decodedContent = $this->serializer->decode($content, $subType);
+                return $this->serializer->deserialize($content, $type, $request->getContentType());
             } catch (\Exception $e) {
                 throw new MalformedContentException("Unable to decode payload", 400, $e);
             }
         }
 
-        return $decodedContent;
+        return null;
     }
 }
