@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -20,7 +21,7 @@ use Symfony\Component\Serializer\Serializer;
 class ResponseFactory
 {
     /**
-     * @var Serializer
+     * @var SerializerInterface
      */
     private $serializer;
 
@@ -49,7 +50,7 @@ class ResponseFactory
      */
     public function createResponse(Request $request, $data)
     {
-        $this->serializer->encode($data, 'json');
+        $this->serializer->serialize($data, 'json');
 
         return new JsonResponse($data, 200);
     }

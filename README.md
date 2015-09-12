@@ -87,6 +87,27 @@ __NOTE__: SwaggerBundle currently does not support `multi` for `collectionFormat
 If the content cannot be deserialized using the format specified by the request's Content-Type header, or if validation
 of the content using the resource schema failed, SwaggerBundle will return a `vnd.error` response with a 400 status code.
 
+### Using JMS\Serializer For Resources
+
+SwaggerBundle can optionally serialize your resources using JMS\Serializer instead of the standard Symfony serializer. In order to use annotations, you should make sure you use an autoload bootstrap
+ that will initialize doctrine/annotations:
+ 
+```php
+use Doctrine\Common\Annotations\AnnotationRegistry;
+use Composer\Autoload\ClassLoader;
+
+/**
+ * @var ClassLoader $loader
+ */
+$loader = require __DIR__.'/../vendor/autoload.php';
+
+AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
+
+return $loader;
+```
+
+Good chance you are already using a bootstrap file like this, but if the annotations won't load, this is where to look.
+
 # Developing
 
 ## Amending Your Swagger Document

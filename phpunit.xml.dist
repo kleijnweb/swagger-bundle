@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit bootstrap="./vendor/autoload.php"
+<phpunit bootstrap="./src/Tests/Functional/PetStore/app/autoload.php"
          colors="true"
          syntaxCheck="true">
     <testsuites>
