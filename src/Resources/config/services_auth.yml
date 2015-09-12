@@ -1,6 +1,7 @@
 services:
   swagger.auth.key.jwt.authenticator:
-      class:  KleijnWeb\SwaggerBundle\Security\Key\Jwt\JwtAuthenticator
+      class:  KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator
       public: false
-  swagger.auth.key.jwt.user_provider:
-      class: KleijnWeb\SwaggerBundle\Security\Key\Jwt\JwtUserProvider
+
+  swagger.auth.key.transient_user_provider:
+      class: KleijnWeb\SwaggerBundle\Security\Transient\KeyUserProvider

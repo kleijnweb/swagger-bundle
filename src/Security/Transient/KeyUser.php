@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Security\Key;
+namespace KleijnWeb\SwaggerBundle\Security\Transient;
 
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\EquatableInterface;
@@ -15,7 +15,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class TransientKeyUser implements UserInterface, EquatableInterface
+class KeyUser implements UserInterface, EquatableInterface
 {
     /**
      * @var string
@@ -67,7 +67,7 @@ class TransientKeyUser implements UserInterface, EquatableInterface
      */
     public function isEqualTo(UserInterface $user)
     {
-        if ($user instanceof TransientKeyUser
+        if ($user instanceof KeyUser
             && $this->username === $user->getUsername()
             && $this->roles == $user->getRoles()
         ) {

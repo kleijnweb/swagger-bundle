@@ -7,12 +7,15 @@ swagger:
 security:
     firewalls:
         secured_area:
-            pattern: ^/admin
+            pattern: ^/
             stateless: true
             simple_preauth:
-                authenticator: Key_authenticator
-            provider: api_key_user_provider
+                authenticator: swagger.auth.key.jwt.authenticator
+            provider: transient_user_provider
 
     providers:
-        api_key_user_provider:
-            id: api_key_user_provider
+        transient_user_provider:
+            id: swagger.auth.key.transient_user_provider
+
+    access_control:
+        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }

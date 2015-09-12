@@ -25,7 +25,7 @@ abstract class UserProvider implements UserProviderInterface
     /**
      * @param array $defaultRoles
      */
-    public function __construct($defaultRoles = ['ROLE_USER'])
+    public function __construct($defaultRoles = ['IS_AUTHENTICATED_FULLY'])
     {
         $this->defaultRoles = $defaultRoles;
     }
@@ -41,6 +41,8 @@ abstract class UserProvider implements UserProviderInterface
     }
 
     /**
+     * Should be implemented when the user's roles might have changed
+     *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      * @param UserInterface $user
      *
@@ -48,6 +50,6 @@ abstract class UserProvider implements UserProviderInterface
      */
     public function refreshUser(UserInterface $user)
     {
-        throw new UnsupportedUserException("Authentication method is stateless");
+        // NOOP
     }
 }

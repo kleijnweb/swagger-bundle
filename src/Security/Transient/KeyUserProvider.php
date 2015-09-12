@@ -6,16 +6,15 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Security\Key;
+namespace KleijnWeb\SwaggerBundle\Security\Transient;
 
 use KleijnWeb\SwaggerBundle\Security\UserProvider;
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class TransientKeyUserProvider extends UserProvider
+class KeyUserProvider extends UserProvider
 {
     /**
      * @param string $username
@@ -24,6 +23,6 @@ class TransientKeyUserProvider extends UserProvider
      */
     public function loadUserByUsername($username)
     {
-        return new TransientKeyUser($username, $this->defaultRoles);
+        return new KeyUser($username, $this->defaultRoles);
     }
 }

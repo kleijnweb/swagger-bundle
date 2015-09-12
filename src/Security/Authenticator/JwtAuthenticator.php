@@ -8,7 +8,6 @@
 
 namespace KleijnWeb\SwaggerBundle\Security\Key\Jwt;
 
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Authentication\SimplePreAuthenticatorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
