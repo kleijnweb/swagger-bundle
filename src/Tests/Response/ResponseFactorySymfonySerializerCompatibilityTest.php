@@ -6,24 +6,38 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Tests\Dev\Response;
+namespace KleijnWeb\SwaggerBundle\Tests\Response;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\Response\ResponseFactory;
 use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
+use KleijnWeb\SwaggerBundle\Serializer\SymfonySerializerFactory;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\Serializer;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class ResponseFactoryTest extends \PHPUnit_Framework_TestCase
+class ResponseFactorySymfonySerializerCompatibilityTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
+     * @SuppressWarnings(PHPMD.EvalExpression)
      */
-    public function willCreateJsonResponseFromData()
+    public function willCreateJsonResponseFromObject()
     {
+        $className = 'CreateJsonResponseFromObject';
+        $number = 0;
+        while (class_exists($className)) {
+            $className .= ++$number;
+        }
+
+        eval("
+            class $className {
+                public function setFoo(\$foo){ \$this->foo = \$foo; return \$this;}
+                public function getFoo(){ return \$this->foo; }
+            }
+        ");
+
         $jsonEncoderMock = $this
             ->getMockBuilder('Symfony\Component\Serializer\Encoder\EncoderInterface')
             ->getMockForAbstractClass();
@@ -35,6 +49,7 @@ class ResponseFactoryTest extends \PHPUnit_Framework_TestCase
                 if (is_null($data)) {
                     throw new \Exception();
                 }
+                return $data;
             });
 
         $jsonEncoderMock
@@ -42,9 +57,14 @@ class ResponseFactoryTest extends \PHPUnit_Framework_TestCase
             ->method('supportsEncoding')
             ->willReturn(true);
 
-        $serializer = new SerializerAdapter(new Serializer([], [$jsonEncoderMock]));
+        $serializer = new SerializerAdapter(SymfonySerializerFactory::factory($jsonEncoderMock));
         $factory = new ResponseFactory(new DocumentRepository(), $serializer);
-        $response = $factory->createResponse(new Request(), [1, 2, 3]);
-        $this->assertSame($response->getContent(), '[1,2,3]');
+
+        $response = $factory->createResponse(new Request(), (new $className)->setFoo('bar'));
+
+        $expected = json_encode(
+            ['foo' => 'bar']
+        );
+        $this->assertEquals($expected, $response->getContent());
     }
 }

@@ -31,7 +31,7 @@ class ResponseFactory
 
     /**
      * @param DocumentRepository $documentRepository
-     * @param SerializerAdapter         $serializer
+     * @param SerializerAdapter  $serializer
      */
     public function __construct(DocumentRepository $documentRepository, SerializerAdapter $serializer)
     {
@@ -49,8 +49,8 @@ class ResponseFactory
      */
     public function createResponse(Request $request, $data)
     {
-        $this->serializer->serialize($data, 'json');
+        $data = $this->serializer->serialize($data, 'json');
 
-        return new JsonResponse($data, 200);
+        return new Response($data, 200, ['Content-Type' => 'application/json']);
     }
 }

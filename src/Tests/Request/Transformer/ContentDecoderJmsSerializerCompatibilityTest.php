@@ -44,7 +44,6 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
 
     /**
      * @test
-     * @SuppressWarnings(PHPMD.EvalExpression)
      */
     public function canDeserializeIntoObject()
     {
