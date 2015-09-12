@@ -6,6 +6,30 @@ Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig (e
 
 SwaggerBundle only supports json in- and ouput, and only YAML Swagger defintions.
 
+# This Bundle..
+
+## WILL:
+
+ * Validate content and parameters based on your Swagger spec.
+ * Configure routing based on your Swagger spec. 
+ * Handle standard responses such as 500, 400 and 404.
+ * Return vnd.error responses.
+ * Utilize vnd.error's `logref` to make errors traceable.
+ * Resolve JSON-Schema `$ref`s in your Swagger spec to allow reusable partial specs.
+ 
+## CAN:
+
+ * Amend your Swagger spec to include the error responses added by SwaggerBundle.
+ * Generate DTO-like classes representing resources in your Swagger spec.
+ * Update the resource schemas in your Swagger spec when these classes change.
+
+## WILL NOT:
+
+ * Handle Form posts. JSON in and output ONLY.
+ * Generate your API documentation. Use your Swagger document, plenty of options.
+ * Mix well with GUI bundles. The bundle is biased towards lightweight API-only apps.
+ * Do content negotiation. May support XML in the future (low priority).
+
 __TIP:__ Want to build an API-only app using this bundle? Try [kleijnweb/symfony-swagger-microservice-edition](https://github.com/kleijnweb/symfony-swagger-microservice-edition).
 
 # Usage
