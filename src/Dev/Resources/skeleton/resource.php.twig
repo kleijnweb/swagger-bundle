@@ -14,7 +14,7 @@ use JMS\Serializer\Annotation\Accessor;
 class {{ resource_class }}
 {% endblock class_definition %}
 {
-{% block class_body %}
+{%- block class_body -%}
     {%- for name, property in properties -%}
     {% if property.type == 'object' %}
     {% set typeName = property.id|split('/')|last %}
@@ -54,7 +54,6 @@ class {{ resource_class }}
     private ${{ name }};
     {% endif %}
     {% endfor %}
-
     {% for name, property in properties %}
     {%- if property.type == 'object' %}
     {%- set typeName = property.id|split('/')|last %}
@@ -132,11 +131,8 @@ class {{ resource_class }}
 
     public function get{{ name|capitalize }}()
     {
-        $this->{{ name }} = ${{ name }};
-
-        return $this;
-    }
-    {% endfor %}
-{% endblock class_body %}
-
-}
+        return $this->{{ name }};
+    }{{- "\n" -}}
+    {%- endfor -%}
+{%- endblock class_body -%}{{- '}' -}}
+{{- "\n" -}}
