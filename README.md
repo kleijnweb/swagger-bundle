@@ -4,7 +4,7 @@ Invert your workflow (contract first) using Swagger specs and set up a Symfony R
 
 Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig (except for dev purposes).
 
-SwaggerBundle only supports json in- and ouput, and only YAML Swagger defintions.
+*SwaggerBundle only supports json in- and ouput, and only YAML Swagger defintions.*
 
 # This Bundle..
 
@@ -15,7 +15,7 @@ SwaggerBundle only supports json in- and ouput, and only YAML Swagger defintions
  * Configure routing based on your Swagger spec. 
  * Handle standard status codes such as 500, 400 and 404.
  * Encode response data as JSON.
- * Return application/vnd.error+json responses when errors occur.
+ * Return `application/vnd.error+json` responses when errors occur.
  * Utilize vnd.error's `logref` to make errors traceable.
  * Resolve JSON-Schema `$ref`s in your Swagger spec to allow reusable partial specs.
  
