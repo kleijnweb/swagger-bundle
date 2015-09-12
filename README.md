@@ -24,13 +24,13 @@ Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig (e
  * Amend your Swagger spec to include the error responses added by SwaggerBundle.
  * (De-) Serialize objects using either the Symfony Component Serializer or JMS\Serializer
  * Generate DTO-like classes representing resources in your Swagger spec.
- * Update the resource schemas in your Swagger spec when these classes change.
 
 ## Won't:
 
  * Handle Form posts.
  * Generate your API documentation. Use your Swagger document, plenty of options.
  * Mix well with GUI bundles. The bundle is biased towards lightweight API-only apps.
+ * Update the resource schemas in your Swagger spec when these classes change (not yet, but __soon__, see [#3](https://github.com/kleijnweb/swagger-bundle/issues/3)).
  * Work with JSON Swagger documents (yet, see [#10](https://github.com/kleijnweb/swagger-bundle/issues/10)).
  * Do content negotiation. May support XML in the future (low priority, see [#1](https://github.com/kleijnweb/swagger-bundle/issues/1)).
 
