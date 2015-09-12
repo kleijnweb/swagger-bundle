@@ -8,7 +8,7 @@ SwaggerBundle only supports json in- and ouput, and only YAML Swagger defintions
 
 # This Bundle..
 
-## WILL:
+## Will:
 
  * Validate content and parameters based on your Swagger spec.
  * Configure routing based on your Swagger spec. 
@@ -17,13 +17,13 @@ SwaggerBundle only supports json in- and ouput, and only YAML Swagger defintions
  * Utilize vnd.error's `logref` to make errors traceable.
  * Resolve JSON-Schema `$ref`s in your Swagger spec to allow reusable partial specs.
  
-## CAN:
+## Can:
 
  * Amend your Swagger spec to include the error responses added by SwaggerBundle.
  * Generate DTO-like classes representing resources in your Swagger spec.
  * Update the resource schemas in your Swagger spec when these classes change.
 
-## WILL NOT:
+## Won't:
 
  * Handle Form posts. JSON in and output ONLY.
  * Generate your API documentation. Use your Swagger document, plenty of options.
