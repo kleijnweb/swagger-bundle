@@ -71,22 +71,51 @@ and looks for a service with the key `swagger.controller.%resource_name%`. The c
 to the HTTP method name, but may be overridden by including `operationId` in your spec. Controller methods that expect content can either
  get the content from the `Request` object, or add a parameter named identical to the parameter with `in: body` set:
  
+Any of these will work (assuming the `in: body` parameter is named `body` in your spec):
+
 ```php
 public function placeOrder(Request $request)
 {
     /** @var array $order */
     $order = $request->getContent();
 
-   /...
+   //...
+}
+
+public function placeOrder(Request $request)
+{
+    /** @var array $order */
+    $order = $request->get('body');
+
+   //...
+}
+
+public function placeOrder(array $body)
+{
+    //...
 }
 ```
 
+Your controllers do not need to implement any interfaces or extend any classes. A controller might look like this (using object deserialization, see section below):
+
 ```php
-public function placeOrder(Order $body)
+class StoreController
 {
-    /...
+    /**
+     * @param Order $body
+     *
+     * @return Order
+     */
+    public function placeOrder(Order $body)
+    {
+        return $body
+            ->setId(rand())
+            ->setStatus('placed');
+    }
 }
 ```
+
+It would make more sense to name the parameter `order` instead of `body`, but this is how it is in the pet store example provided by Swagger.
 
 Other parameters can be added to the signature as well, this is standard Symfony behaviour.
 
@@ -165,14 +194,14 @@ public function placeOrder(Request $request)
     /** @var Order $order */
     $order = $request->getContent();
 
-   /...
+   //...
 }
 ```
 
 ```php
 public function placeOrder(Order $body)
 {
-    /...
+    //...
 }
 ```
   

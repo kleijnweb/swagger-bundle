@@ -9,7 +9,6 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller;
 
 use KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Model\Resources\Order;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -17,17 +16,13 @@ use Symfony\Component\HttpFoundation\Request;
 class StoreController
 {
     /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     * @param Request $request
+     * @param Order $body
      *
      * @return Order
      */
-    public function placeOrder(Request $request)
+    public function placeOrder(Order $body)
     {
-        /** @var Order $order */
-        $order = $request->getContent();
-
-        return $order
+        return $body
             ->setId(rand())
             ->setStatus('placed');
     }
