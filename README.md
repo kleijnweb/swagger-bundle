@@ -20,6 +20,7 @@ SwaggerBundle only supports json in- and ouput, and only YAML Swagger defintions
 ## Can:
 
  * Amend your Swagger spec to include the error responses added by SwaggerBundle.
+ * (De-) Serialize objects using either the Symfony Component Serializer or JMS\Serializer
  * Generate DTO-like classes representing resources in your Swagger spec.
  * Update the resource schemas in your Swagger spec when these classes change.
 
@@ -94,7 +95,7 @@ By default Swagger bundle will only serialize and deserialize arrays. This means
  
 Optionally SwaggerBundle can do object de- serialization. You'll need to pass the Symfony Components Serializer or JMS\Serializer to the SerializerAdapter:
 
-``yaml
+```yml
 swagger.serializer:
     class: KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter
     arguments: [@swagger.serializer.array]
@@ -104,7 +105,7 @@ Replace `@swagger.serializer.array` with `@swagger.serializer.symfony` or `@swag
 
 __NOTE:__ You do not need to install `JMSSerializerBundle`. Just `composer require jms/serializer` (or `composer require symfony/serializer`).
 
-```yaml
+```yml
 swagger.serializer:
     class: KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter
     arguments: [@swagger.serializer.array]
@@ -112,7 +113,7 @@ swagger.serializer:
 
 You will also need to set a *base namespace* for your resource classes:
 
-```yaml
+```yml
 swagger.request.transformer.content_decoder:
     class: KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder
     arguments: [@swagger.serializer, 'My\Bundle\Resource\Namespace']
@@ -123,7 +124,7 @@ SwaggerBundle will try to deserialize request data using the last section of the
   
 This will only work for operations where there is a `in: body` parameter defined, for example:
 
-```yaml
+```yml
 parameters:
   - in: body
     name: body
