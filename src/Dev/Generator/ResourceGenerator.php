@@ -20,19 +20,20 @@ class ResourceGenerator extends Generator
     /**
      * @param BundleInterface $bundle
      * @param SwaggerDocument $document
+     * @param string          $relativeNamespace
      */
-    public function generate(BundleInterface $bundle, SwaggerDocument $document)
+    public function generate(BundleInterface $bundle, SwaggerDocument $document, $relativeNamespace = 'Model\Resources')
     {
         $dir = $bundle->getPath();
 
         $parameters = [
             'namespace'          => $bundle->getNamespace(),
             'bundle'             => $bundle->getName(),
-            'resource_namespace' => 'Model\Resources'
+            'resource_namespace' => $relativeNamespace
         ];
 
         foreach ($document->getResourceSchemas() as $typeName => $spec) {
-            $resourceFile = "$dir/Model/Resources/$typeName.php";
+            $resourceFile = "$dir/" . str_replace('\\', '/', $relativeNamespace) . "/$typeName.php";
             $this->renderFile(
                 'resource.php.twig',
                 $resourceFile,

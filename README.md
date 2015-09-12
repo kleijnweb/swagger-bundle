@@ -6,7 +6,7 @@ Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig (e
 
 SwaggerBundle only supports json in- and ouput, and only YAML Swagger defintions.
 
-__TIP:__ Want to build an API-only app using this bundle? Try [kleijnweb/symfony-swagger-microservice-edition](https://github.com/kleijnweb/symfony-swagger-microservice-edition]).
+__TIP:__ Want to build an API-only app using this bundle? Try [kleijnweb/symfony-swagger-microservice-edition](https://github.com/kleijnweb/symfony-swagger-microservice-edition).
 
 # Usage
 
@@ -67,7 +67,14 @@ of the content using the resource schema failed, SwaggerBundle will return a `vn
 
 ## Amending Your Swagger Document
  
-SwaggerBundle adds some standardized behavior, this should be reflected in your Swagger document. Instead of doing this manually, you can use the 'swagger:document:amend' command.
+SwaggerBundle adds some standardized behavior, this should be reflected in your Swagger document. Instead of doing this manually, you can use the `swagger:document:amend` command.
+
+## Generating Resource Classes
+ 
+SwaggerBundle can generate classes for you based on your Swagger resource definitions. 
+You can use the resulting classes as DTO-like objects for your services, or create Doctrine mapping config for them.
+
+See `app/console swagger:generate:resources --help` for more details.
 
 ## Functional Testing Your API
 
