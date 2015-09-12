@@ -105,12 +105,6 @@ Replace `@swagger.serializer.array` with `@swagger.serializer.symfony` or `@swag
 
 __NOTE:__ You do not need to install `JMSSerializerBundle`. Just `composer require jms/serializer` (or `composer require symfony/serializer`).
 
-```yml
-swagger.serializer:
-    class: KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter
-    arguments: [@swagger.serializer.array]
-```
-
 You will also need to set a *base namespace* for your resource classes:
 
 ```yml
@@ -119,10 +113,10 @@ swagger.request.transformer.content_decoder:
     arguments: [@swagger.serializer, 'My\Bundle\Resource\Namespace']
 ```
 
-SwaggerBundle will try to deserialize request data using the last section of the `$ref` or `id` of the schema for the 200 response.
+SwaggerBundle will try to deserialize request data using the last segment of the `$ref` of the schema for the `in: body` parameter.
   Eg `#/definitions/Pet` will resolve to `My\Bundle\Resource\Namespace\Pet`. Currently only a single namespace is supported.
   
-This will only work for operations where there is a `in: body` parameter defined, for example:
+This will only work for operations where the `in: body` parameter is defined, for example:
 
 ```yml
 parameters:
