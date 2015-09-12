@@ -177,18 +177,18 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function logRefInResponseAndLogMatch()
+    public function logrefInResponseAndLogMatch()
     {
         foreach ([400, 500] as $code) {
-            $logRef = null;
+            $logref = null;
             $logger = $this->getMockForAbstractClass('Psr\Log\LoggerInterface');
             $logger
                 ->expects($this->once())
                 ->method($this->anything())
-                ->with($this->callback(function ($message) use (&$logRef) {
+                ->with($this->callback(function ($message) use (&$logref) {
                     $matches = [];
                     if (preg_match('/logref ([a-z0-9]*)/', $message, $matches)) {
-                        $logRef = $matches[1];
+                        $logref = $matches[1];
 
                         return true;
                     }
@@ -201,14 +201,14 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
             $this->codeProperty->setValue($this->exception, $code);
             $this->exceptionListener->onKernelException($this->event);
             $response = $this->event->getResponse();
-            $this->assertEquals($logRef, json_decode($response->getContent())->logref);
+            $this->assertEquals($logref, json_decode($response->getContent())->logref);
         }
     }
 
     /**
      * @test
      */
-    public function willReturnEmpty404Responses()
+    public function willReturn404Responses()
     {
         $event = $this
             ->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent')
@@ -224,7 +224,6 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
 
         $response = $event->getResponse();
 
-        $this->assertEmpty($response->getContent());
         $this->assertSame(404, $response->getStatusCode());
     }
 }

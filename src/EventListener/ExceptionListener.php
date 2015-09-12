@@ -8,11 +8,13 @@
 
 namespace KleijnWeb\SwaggerBundle\EventListener;
 
+use KleijnWeb\SwaggerBundle\Response\VndErrorResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -53,10 +55,18 @@ class ExceptionListener
         $exception = $event->getException();
 
         if ($exception instanceof NotFoundHttpException) {
-            $event->setResponse(new Response('', Response::HTTP_NOT_FOUND));
+            $event->setResponse(new VndErrorResponse("Not found", Response::HTTP_NOT_FOUND));
 
             return;
         }
+
+        if ($exception instanceof AuthenticationException) {
+            $event->setResponse(new VndErrorResponse("Unauthorized", Response::HTTP_UNAUTHORIZED));
+
+            return;
+        }
+
+        new VndErrorResponse("Authentication Failure", Response::HTTP_UNAUTHORIZED);
 
         $code = $exception->getCode();
 
@@ -77,16 +87,7 @@ class ExceptionListener
             }
         }
 
-        $event->setResponse(
-            new JsonResponse(
-                [
-                    "message" => $message,
-                    "logref"  => $logRef
-                ],
-                $code,
-                ['Content-Type' => 'application/vnd.error+json']
-            )
-        );
+        $event->setResponse(new VndErrorResponse($message, $code, $logRef));
     }
 
     /**

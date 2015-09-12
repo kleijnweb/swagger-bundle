@@ -1,0 +1,18 @@
+imports:
+    - { resource: config.yml }
+
+swagger:
+    dev: true
+
+security:
+    firewalls:
+        secured_area:
+            pattern: ^/admin
+            stateless: true
+            simple_preauth:
+                authenticator: Key_authenticator
+            provider: api_key_user_provider
+
+    providers:
+        api_key_user_provider:
+            id: api_key_user_provider
