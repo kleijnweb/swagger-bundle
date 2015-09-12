@@ -1,6 +1,13 @@
 parameters:
   test.client.class: KleijnWeb\SwaggerBundle\Dev\Test\ApiTestClient
-  swagger.document.base_path: ''
+
+swagger:
+    dev: true
+    document:
+        base_path: ''
+    serializer:
+        type: array
+        namespace: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Model\Resources
 
 services:
   swagger.controller.pet:
@@ -9,13 +16,7 @@ services:
   swagger.controller.store:
     class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller\StoreController
 
-  swagger.serializer.type_resolver:
-      class:   KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver
-      arguments: ['KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Model\Resources']
-
 framework:
-    serializer:
-        enabled: true
     test: true
     secret:  test
     router:

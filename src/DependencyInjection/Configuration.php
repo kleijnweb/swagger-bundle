@@ -22,8 +22,32 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $treeBuilder->root('swagger');
+        $rootNode = $treeBuilder->root('swagger');
 
+        $rootNode
+            ->children()
+                ->scalarNode('dev')
+                    ->defaultFalse()
+                ->end()
+                ->arrayNode('serializer')
+                    ->children()
+                        ->enumNode('type')
+                            ->values(array('array', 'jms', 'symfony'))
+                            ->defaultValue('array')
+                            ->cannotBeEmpty()
+                        ->end()
+                        ->scalarNode('namespace')
+                        ->end()
+                    ->end()
+                ->end()
+                ->arrayNode('document')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('base_path')->defaultValue('')->end()
+                    ->end()
+                ->end()
+            ->end()
+            ;
         return $treeBuilder;
     }
 }

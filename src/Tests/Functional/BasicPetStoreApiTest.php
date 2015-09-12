@@ -16,11 +16,19 @@ use KleijnWeb\SwaggerBundle\Dev\Test\ApiTestCase;
 class BasicPetStoreApiTest extends ApiTestCase
 {
     /**
+     * Use config_basic.yml
+     *
+     * @var bool
+     */
+    protected $env = 'basic';
+
+    /**
      * TODO Temporary workaround
      *
      * @var bool
      */
     protected $validateErrorResponse = false;
+
 
     public static function setUpBeforeClass()
     {

@@ -1,0 +1,10 @@
+imports:
+    - { resource: config.yml }
+
+swagger:
+    dev: true
+    document:
+        base_path: ''
+    serializer:
+        type: jms
+        namespace: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Model\Resources

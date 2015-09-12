@@ -18,6 +18,14 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 class KleijnWebSwaggerBundle extends Bundle
 {
     /**
+     * @return string The Bundle namespace
+     */
+    public function getNamespace()
+    {
+        return __NAMESPACE__;
+    }
+
+    /**
      * @return ExtensionInterface
      */
     public function getContainerExtension()

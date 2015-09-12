@@ -20,6 +20,13 @@ use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
 class SerializationPetStoreApiTest extends ApiTestCase
 {
     /**
+     * Use config_jms.yml
+     *
+     * @var bool
+     */
+    protected $env = 'jms';
+
+    /**
      * TODO Temporary workaround
      *
      * @var bool
@@ -32,26 +39,6 @@ class SerializationPetStoreApiTest extends ApiTestCase
     public static function setUpBeforeClass()
     {
         parent::initSchemaManager(__DIR__ . '/PetStore/app/petstore.yml');
-    }
-
-    /**
-     * Enable serialization
-     */
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $container = $this->client->getContainer();
-        /** @var SerializerAdapter $serializer */
-        $serializerAdapter = $container->get('swagger.serializer');
-        /** @var Serializer $serializer */
-        $jmsSerializer = $container->get('swagger.serializer.jms');
-        $serializerAdapter->setTarget($jmsSerializer);
-        /** @var SerializationTypeResolver $typeResolver */
-        $typeResolver = $container->get('swagger.serializer.type_resolver');
-        /** @var ContentDecoder $contentDecoder */
-        $contentDecoder = $container->get('swagger.request.transformer.content_decoder');
-        $contentDecoder->setTypeResolver($typeResolver);
     }
 
     /**

@@ -55,12 +55,14 @@ test:
     type: swagger
 ```
 
-The path here is relative to the `swagger.document.base_path` parameter. The above example would require something like this in your config:
+The path here is relative to the `swagger.document.base_path` configuration option. The above example would require something like this in your config:
 
 ```yml
-parameters:
-  swagger.document.base_path: "%kernel.root_dir%"
+swagger:
+    document: 
+        base_path: "%kernel.root_dir%"
 ```
+
 # Functional Details
 
 ## Controllers
@@ -145,29 +147,22 @@ of the content using the resource schema failed, SwaggerBundle will return a `vn
 By default Swagger bundle will only serialize and deserialize arrays. This means your controllers can expect `$request->getContent()`
  to contain an associative array, and are expected to return those as well.
  
-Optionally SwaggerBundle can do object de- serialization. You'll need to pass the Symfony Components Serializer or JMS\Serializer to the SerializerAdapter:
+Optionally SwaggerBundle can do object de- serialization. Just add the following  
+
+You'll need to pass the Symfony Components Serializer or JMS\Serializer to the SerializerAdapter, which can be done by configuration:
 
 ```yml
-swagger.serializer:
-    class: KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter
-    arguments: [@swagger.serializer.array]
+swagger:
+    serializer: 
+        type: symfony
+        namespace: My\Bundle\Resource\Namespace
 ```
 
-Replace `@swagger.serializer.array` with `@swagger.serializer.symfony` or `@swagger.serializer.jms` to use the Symfony or JMS Serializer respectively. 
+Replace `symfony` with `jms` to use the JMS Serializer. 
 
 __NOTE:__ You do not need to install `JMSSerializerBundle`. Just `composer require jms/serializer` (or `composer require symfony/serializer`).
 
-You will also need to set a type class name resolver for your resource classes:
-
-```yml
-swagger.serializer.type_resolver:
-    class:   KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver
-    arguments: ['My\Bundle\Resource\Namespace']
-    
-swagger.request.transformer.content_decoder:
-    class: KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder
-    arguments: [@swagger.serializer, @swagger.serializer.type_resolver]
-```
+The `namespace` value is used to configure `@swagger.serializer.type_resolver`.
 
 `SerializationTypeResolver` will use the last segment of the `$ref` (or `id`) of the schema for the `in: body` parameter.
   Eg `#/definitions/Pet` will resolve to `My\Bundle\Resource\Namespace\Pet`. Currently `SerializationTypeResolver` supports only a single namespace.
@@ -227,6 +222,13 @@ return $loader;
 Good chance you are already using a bootstrap file like this, but if the annotations won't load, this is where to look.
 
 # Developing
+
+__NOTE:__ In order to use development tools, the `require-dev` dependencies are needed, as well as setting the `dev` configration option:
+
+```yml
+swagger:
+    dev: true # Or perhaps "%kernel.debug%"
+```
 
 ## Amending Your Swagger Document
  

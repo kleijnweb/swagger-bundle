@@ -7,7 +7,7 @@ services:
 
     swagger.serializer:
         class: KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter
-        arguments: [@swagger.serializer.array]
+        arguments: [@swagger.serializer.target]
 
     swagger.serializer.array:
         class: KleijnWeb\SwaggerBundle\Serializer\ArraySerializer
@@ -22,7 +22,7 @@ services:
 
     swagger.serializer.type_resolver:
         class:   KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver
-        arguments: ['']
+        arguments: [%swagger.serializer.namespace%]
 
     swagger.document.repository:
         class: KleijnWeb\SwaggerBundle\Document\DocumentRepository
@@ -38,7 +38,7 @@ services:
 
     swagger.request.transformer.content_decoder:
         class: KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder
-        arguments: [@swagger.serializer]
+        arguments: [@swagger.serializer, @swagger.serializer.type_resolver]
 
     kernel.listener.swagger.view:
         class: KleijnWeb\SwaggerBundle\EventListener\ViewListener
@@ -57,16 +57,3 @@ services:
         arguments: [@swagger.document.repository, @swagger.request.transformer]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
-
-    # DEV
-    swagger.dev.fixer.resource_definitions:
-        class: KleijnWeb\SwaggerBundle\Dev\DocumentFixer\Fixers\ResourceDefinitionFixer
-
-    swagger.dev.fixer.swagger_bundle_response:
-        class: KleijnWeb\SwaggerBundle\Dev\DocumentFixer\Fixers\SwaggerBundleResponseFixer
-
-    swagger.dev.command.amend_swagger:
-        class: KleijnWeb\SwaggerBundle\Dev\Command\AmendSwaggerDocumentCommand
-        arguments: [@swagger.document.repository, @swagger.dev.fixer.swagger_bundle_response]
-        tags:
-            -  { name: console.command }

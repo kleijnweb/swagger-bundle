@@ -8,8 +8,11 @@
 
 namespace KleijnWeb\SwaggerBundle\DependencyInjection;
 
+use KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder;
+use KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
@@ -23,9 +26,31 @@ class KleijnWebSwaggerExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $configuration = new Configuration();
-        $this->processConfiguration($configuration, $configs);
+        $config = $this->processConfiguration(new Configuration(), $configs);
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
+
+        if ($config['dev']) {
+            $loader->load('services_dev.yml');
+        }
+
+        $container->setParameter('swagger.document.base_path', $config['document']['base_path']);
+        $container->setParameter('swagger.serializer.namespace', $config['serializer']['namespace']);
+
+        $serializerType = $config['serializer']['type'];
+        $container->setAlias('swagger.serializer.target', 'swagger.serializer.' . $serializerType);
+
+        if ($serializerType !== 'array') {
+            $resolverDefinition = $container->getDefinition('swagger.request.transformer.content_decoder');
+            $resolverDefinition->addArgument(new Reference('swagger.serializer.type_resolver'));
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getAlias()
+    {
+        return "swagger";
     }
 }

@@ -25,6 +25,11 @@ abstract class ApiTestCase extends WebTestCase
     use AssertsTrait;
 
     /**
+     * @var string
+     */
+    protected $env = 'test';
+
+    /**
      * @var SchemaManager
      */
     protected static $schemaManager;
@@ -69,7 +74,7 @@ abstract class ApiTestCase extends WebTestCase
 
     protected function setUp()
     {
-        $this->client = static::createClient();
+        $this->client = static::createClient(['environment' => $this->env]);
 
         parent::setUp();
     }
