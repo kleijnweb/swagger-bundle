@@ -13,7 +13,7 @@ use KleijnWeb\SwaggerBundle\Dev\Test\ApiTestCase;
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class PetStoreApiTest extends ApiTestCase
+class BasicPetStoreApiTest extends ApiTestCase
 {
     /**
      * TODO Temporary workaround
@@ -37,14 +37,19 @@ class PetStoreApiTest extends ApiTestCase
         $this->get('/v2/pet/findByStatus', $params);
     }
 
-
     /**
      * @test
      */
-    public function canPlaceOrder()
+    public function canAddPet()
     {
-        $params = ['status' => 'available'];
+        $params = [
+            'name' => 'Joe',
+            'photoUrls' => ['foobar']
+        ];
 
-        $this->post('/v2/store/order', $params);
+        $responseData = $this->post('/v2/pet', $params);
+
+        $this->assertSame('Joe', $responseData->name);
+        $this->assertSame('available', $responseData->status);
     }
 }

@@ -20,7 +20,7 @@ use JMS\Serializer\SerializerInterface as JmsSerializer;
 class SerializerAdapter
 {
     /**
-     * @var SymfonySerializer|JmsSerializer
+     * @var SymfonySerializer|JmsSerializer|ArraySerializer
      */
     private $target;
 
@@ -34,10 +34,22 @@ class SerializerAdapter
      */
     public function __construct($target)
     {
+        $this->setTarget($target);
+    }
+
+    /**
+     * @param SymfonySerializer|JmsSerializer|ArraySerializer $target
+     *
+     * @return $this
+     */
+    public function setTarget($target)
+    {
         $this->target = $target;
         if ($target instanceof SymfonySerializer) {
             $this->expectsEmptyArray = true;
         }
+
+        return $this;
     }
 
     /**

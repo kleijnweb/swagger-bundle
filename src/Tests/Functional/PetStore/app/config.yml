@@ -5,8 +5,13 @@ parameters:
 services:
   swagger.controller.pet:
     class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller\PetController
+
   swagger.controller.store:
     class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller\StoreController
+
+  swagger.serializer.type_resolver:
+      class:   KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver
+      arguments: ['KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Model\Resources']
 
 framework:
     serializer:

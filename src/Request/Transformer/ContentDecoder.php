@@ -10,6 +10,7 @@ namespace KleijnWeb\SwaggerBundle\Request\Transformer;
 
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
 use KleijnWeb\SwaggerBundle\Exception\UnsupportedContentTypeException;
+use KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver;
 use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -24,18 +25,31 @@ class ContentDecoder
     private $serializer;
 
     /**
-     * @var string
+     * @var SerializationTypeResolver
      */
-    private $resourceNamespace;
+    private $typeResolver;
 
     /**
-     * @param SerializerAdapter $serializer
-     * @param string            $resourceNamespace
+     * @param SerializerAdapter         $serializer
+     * @param SerializationTypeResolver $typeResolver
      */
-    public function __construct(SerializerAdapter $serializer, $resourceNamespace = null)
+    public function __construct(SerializerAdapter $serializer, SerializationTypeResolver $typeResolver = null)
     {
         $this->serializer = $serializer;
-        $this->resourceNamespace = $resourceNamespace;
+        $this->setTypeResolver($typeResolver);
+        $this->typeResolver = $typeResolver;
+    }
+
+    /**
+     * @param SerializationTypeResolver $typeResolver
+     *
+     * @return $this
+     */
+    public function setTypeResolver(SerializationTypeResolver $typeResolver = null)
+    {
+        $this->typeResolver = $typeResolver;
+
+        return $this;
     }
 
     /**
@@ -49,20 +63,7 @@ class ContentDecoder
     public function decodeContent(Request $request, array $operationDefinition)
     {
         if ($content = $request->getContent()) {
-            $type = null;
-            if (isset($operationDefinition['parameters'])) {
-                foreach ($operationDefinition['parameters'] as $parameterDefinition) {
-                    if ($parameterDefinition['in'] == 'body') {
-                        $reference = isset($parameterDefinition['schema']['$ref'])
-                            ? $parameterDefinition['schema']['$ref']
-                            : $parameterDefinition['schema']['id'];
-                        $type = ltrim(
-                            $this->resourceNamespace . '\\' . substr($reference, strrpos($reference, '/') + 1),
-                            '\\'
-                        );
-                    }
-                }
-            }
+            $type = $this->typeResolver ? $this->typeResolver->resolve($operationDefinition) : null;
 
             try {
                 return $this->serializer->deserialize($content, $type, $request->getContentType());

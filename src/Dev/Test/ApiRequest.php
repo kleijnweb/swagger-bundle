@@ -16,7 +16,7 @@ use Symfony\Component\BrowserKit\Request;
 class ApiRequest extends Request
 {
     /**
-     * @param mixed $uri
+     * @param string $uri
      *
      * @return $this
      */
@@ -28,7 +28,7 @@ class ApiRequest extends Request
     }
 
     /**
-     * @param mixed $method
+     * @param string $method
      *
      * @return $this
      */
@@ -40,11 +40,11 @@ class ApiRequest extends Request
     }
 
     /**
-     * @param mixed $parameters
+     * @param array $parameters
      *
      * @return $this
      */
-    public function setParameters($parameters)
+    public function setParameters(array $parameters)
     {
         $this->parameters = $parameters;
 
@@ -52,11 +52,11 @@ class ApiRequest extends Request
     }
 
     /**
-     * @param mixed $files
+     * @param array $files
      *
      * @return $this
      */
-    public function setFiles($files)
+    public function setFiles(array $files)
     {
         $this->files = $files;
 
@@ -64,11 +64,11 @@ class ApiRequest extends Request
     }
 
     /**
-     * @param mixed $cookies
+     * @param array $cookies
      *
      * @return $this
      */
-    public function setCookies($cookies)
+    public function setCookies(array $cookies)
     {
         $this->cookies = $cookies;
 
@@ -76,11 +76,11 @@ class ApiRequest extends Request
     }
 
     /**
-     * @param mixed $server
+     * @param array $server
      *
      * @return $this
      */
-    public function setServer($server)
+    public function setServer(array $server)
     {
         $this->server = $server;
 

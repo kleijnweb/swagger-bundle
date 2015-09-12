@@ -41,8 +41,12 @@ class AmendSwaggerDocumentCommand extends Command
         parent::__construct(self::NAME);
 
         $this
-            ->setDescription('Amend a Swagger definition with predefined SwaggerBundle responses')
-            ->setHelp('This is a development tool and will only work with require-dev dependencies included')
+            ->setDescription('Make your Swagger definition reflect your apps in- and output')
+            ->setHelp(
+                "Will update your definition with predefined SwaggerBundle responses,"
+                . " as well as update it to reflect any changes in your DTOs, should they exist.\n\n"
+                . "This is a development tool and will only work with require-dev dependencies included"
+            )
             ->addArgument('file', InputArgument::REQUIRED, 'File path to the Swagger document')
             ->addOption(
                 'out',

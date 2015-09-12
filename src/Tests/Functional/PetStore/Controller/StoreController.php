@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller;
 
+use KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Model\Resources\Order;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -19,17 +20,15 @@ class StoreController
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      * @param Request $request
      *
-     * @return array
+     * @return Order
      */
     public function placeOrder(Request $request)
     {
-        return [
-            'id'       => 12345679,
-            'petId'    => 987654321,
-            'quantity' => 10,
-            'shipDate' => (new \DateTime())->format(\DateTime::W3C),
-            'status'   => 'placed',
-            'complete' => true,
-        ];
+        /** @var Order $order */
+        $order = $request->getContent();
+
+        return $order
+            ->setId(rand())
+            ->setStatus('placed');
     }
 }

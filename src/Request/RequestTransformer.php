@@ -47,11 +47,11 @@ class RequestTransformer
     {
         $content = $this->contentDecoder->decodeContent($request, $operationDefinition);
 
-        // This modifies the Request object
-        $this->coerceRequestParameters($request, $operationDefinition);
+        // This modifies the Request object (and adds the content to the 'attributes' ParameterBag
+        $this->coerceRequestParameters($request, $operationDefinition, $content);
 
-        // This retrieves the modified parameters from the request object and content
-        $parameters = $this->assembleParameterData($request, $operationDefinition, $content);
+        // This retrieves the modified parameters
+        $parameters = $this->assembleParameterData($request, $operationDefinition);
 
         // Validate the parameters using a schema created from the operation definition
         $validator = new Validator();
@@ -114,11 +114,12 @@ class RequestTransformer
     /**
      * @param Request $request
      * @param array   $operationDefinition
+     * @param mixed   $content
      *
      * @throws MalformedContentException
      * @throws UnsupportedException
      */
-    public function coerceRequestParameters(Request $request, array $operationDefinition)
+    public function coerceRequestParameters(Request $request, array $operationDefinition, $content = null)
     {
         if (!isset($operationDefinition['parameters'])) {
             return;
@@ -132,6 +133,7 @@ class RequestTransformer
             $paramName = $paramDefinition['name'];
 
             if ($paramDefinition['in'] === 'body') {
+                $bodyParameterName = $paramName;
                 continue;
             }
 
@@ -152,17 +154,20 @@ class RequestTransformer
                 )
             );
         }
+
+        if (isset($bodyParameterName)) {
+            $request->attributes->set($bodyParameterName, $content);
+        }
     }
 
     /**
      * @param Request $request
      * @param array   $operationDefinition
-     * @param mixed   $content
      *
      * @return \stdClass
      * @throws UnsupportedException
      */
-    public function assembleParameterData(Request $request, array $operationDefinition, $content = null)
+    public function assembleParameterData(Request $request, array $operationDefinition)
     {
         if (!isset($operationDefinition['parameters'])) {
             return new \stdClass;
@@ -172,16 +177,11 @@ class RequestTransformer
         $paramBagMapping = [
             'query'  => 'query',
             'path'   => 'attributes',
+            'body'   => 'attributes',
             'header' => 'headers'
         ];
         foreach ($operationDefinition['parameters'] as $paramDefinition) {
             $paramName = $paramDefinition['name'];
-
-            if ($paramDefinition['in'] === 'body') {
-                // This should be handled by the schema validation
-                $parameters[$paramName] = $content ? $content : null;
-                continue;
-            }
 
             if (!isset($paramBagMapping[$paramDefinition['in']])) {
                 throw new UnsupportedException(
@@ -192,10 +192,7 @@ class RequestTransformer
             if (!$request->$paramBagName->has($paramName)) {
                 continue;
             }
-            if (!$request->query->has($paramName)) {
-                continue;
-            }
-            $parameters[$paramName] = $request->query->get($paramName);
+            $parameters[$paramName] = $request->$paramBagName->get($paramName);
         }
 
         return (object)$parameters;

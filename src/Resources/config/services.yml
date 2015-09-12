@@ -20,6 +20,10 @@ services:
         class:   JMS\Serializer\Serializer\SymfonySerializerFactory
         factory: [KleijnWeb\SwaggerBundle\Serializer\SymfonySerializerFactory, factory]
 
+    swagger.serializer.type_resolver:
+        class:   KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver
+        arguments: ['']
+
     swagger.document.repository:
         class: KleijnWeb\SwaggerBundle\Document\DocumentRepository
         arguments: [%swagger.document.base_path%]
@@ -55,6 +59,9 @@ services:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
     # DEV
+    swagger.dev.fixer.resource_definitions:
+        class: KleijnWeb\SwaggerBundle\Dev\DocumentFixer\Fixers\ResourceDefinitionFixer
+
     swagger.dev.fixer.swagger_bundle_response:
         class: KleijnWeb\SwaggerBundle\Dev\DocumentFixer\Fixers\SwaggerBundleResponseFixer
 

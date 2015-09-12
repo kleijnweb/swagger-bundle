@@ -68,7 +68,27 @@ parameters:
 When a call is made that is satisfiable by SwaggerBundle, it uses Symfony Dependency Injection service keys to find the
 delegation target of the request. It will assume the first segment in the Swagger paths is a resource name,
 and looks for a service with the key `swagger.controller.%resource_name%`. The class method to be called by defaults corresponds
-to the HTTP method name, but may be overridden by including `operationId` in your spec.
+to the HTTP method name, but may be overridden by including `operationId` in your spec. Controller methods that expect content can either
+ get the content from the `Request` object, or add a parameter named identical to the parameter with `in: body` set:
+ 
+```php
+public function placeOrder(Request $request)
+{
+    /** @var array $order */
+    $order = $request->getContent();
+
+   /...
+}
+```
+
+```php
+public function placeOrder(Order $body)
+{
+    /...
+}
+```
+
+Other parameters can be added to the signature as well, this is standard Symfony behaviour.
 
 ## Exception Handling
 
@@ -108,16 +128,20 @@ Replace `@swagger.serializer.array` with `@swagger.serializer.symfony` or `@swag
 
 __NOTE:__ You do not need to install `JMSSerializerBundle`. Just `composer require jms/serializer` (or `composer require symfony/serializer`).
 
-You will also need to set a *base namespace* for your resource classes:
+You will also need to set a type class name resolver for your resource classes:
 
 ```yml
+swagger.serializer.type_resolver:
+    class:   KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver
+    arguments: ['My\Bundle\Resource\Namespace']
+    
 swagger.request.transformer.content_decoder:
     class: KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder
-    arguments: [@swagger.serializer, 'My\Bundle\Resource\Namespace']
+    arguments: [@swagger.serializer, @swagger.serializer.type_resolver]
 ```
 
-SwaggerBundle will try to deserialize request data using the last segment of the `$ref` of the schema for the `in: body` parameter.
-  Eg `#/definitions/Pet` will resolve to `My\Bundle\Resource\Namespace\Pet`. Currently only a single namespace is supported.
+`SerializationTypeResolver` will use the last segment of the `$ref` (or `id`) of the schema for the `in: body` parameter.
+  Eg `#/definitions/Pet` will resolve to `My\Bundle\Resource\Namespace\Pet`. Currently `SerializationTypeResolver` supports only a single namespace.
   
 This will only work for operations where the `in: body` parameter is defined, for example:
 
@@ -132,6 +156,25 @@ parameters:
 ```
 
 The `ResponseFactory` will try to deserialize any objects of a class other than `\stdClass`. 
+
+Similar to arrays, you may use the reference the parameter in your controller signature, or use `$request->getContent()`:
+
+```php
+public function placeOrder(Request $request)
+{
+    /** @var Order $order */
+    $order = $request->getContent();
+
+   /...
+}
+```
+
+```php
+public function placeOrder(Order $body)
+{
+    /...
+}
+```
   
 #### Using Annotations
 
@@ -159,6 +202,15 @@ Good chance you are already using a bootstrap file like this, but if the annotat
 ## Amending Your Swagger Document
  
 SwaggerBundle adds some standardized behavior, this should be reflected in your Swagger document. Instead of doing this manually, you can use the `swagger:document:amend` command.
+
+This command can also amend your document to reflect changes in your resource classes. This requires a little configuration:
+
+```yml
+swagger.dev.fixer.swagger_bundle_response:
+    class: KleijnWeb\SwaggerBundle\Dev\DocumentFixer\Fixers\SwaggerBundleResponseFixer
+    calls: [chain, [@swagger.dev.fixer.resource_definitions]]
+```
+The `ResourceDefinitionFixer` depends on valid `@return` PHPDoc tags (it'll handle arrays of objects, eg `Pet[]`).
 
 ## Generating Resource Classes
  

@@ -9,6 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Request\Transformer;
 
 use KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder;
+use KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver;
 use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
 use KleijnWeb\SwaggerBundle\Serializer\SymfonySerializerFactory;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,6 +53,7 @@ class ContentDecoderSymfonySerializerCompatibilityTest extends \PHPUnit_Framewor
                 if (is_null($data)) {
                     throw new \Exception();
                 }
+
                 return $data;
             });
         $this->jsonDecoderMock
@@ -60,7 +62,10 @@ class ContentDecoderSymfonySerializerCompatibilityTest extends \PHPUnit_Framewor
             ->willReturn(true);
 
         $this->serializer = new SerializerAdapter(SymfonySerializerFactory::factory($this->jsonDecoderMock));
-        $this->contentDecoder = new ContentDecoder($this->serializer);
+        $this->contentDecoder = new ContentDecoder(
+            $this->serializer,
+            new SerializationTypeResolver()
+        );
     }
 
     /**
@@ -91,9 +96,9 @@ class ContentDecoderSymfonySerializerCompatibilityTest extends \PHPUnit_Framewor
         $operationDefinition = [
             'parameters' => [
                 [
-                    "in"       => "body",
-                    "name"     => "body",
-                    "schema"   => [
+                    "in"     => "body",
+                    "name"   => "body",
+                    "schema" => [
                         '$ref' => "#/definitions/$className"
                     ]
                 ]

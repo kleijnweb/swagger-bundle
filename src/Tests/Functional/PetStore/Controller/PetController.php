@@ -25,4 +25,16 @@ class PetController
     {
         return [];
     }
+
+    /**
+     * @param array $body
+     *
+     * @return array
+     */
+    public function addPet(array $body)
+    {
+        $body['status'] = 'available';
+
+        return $body;
+    }
 }

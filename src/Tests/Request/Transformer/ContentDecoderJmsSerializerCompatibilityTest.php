@@ -12,6 +12,7 @@ use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder;
 use KleijnWeb\SwaggerBundle\Serializer\JmsSerializerFactory;
+use KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver;
 use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -38,7 +39,7 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
         $this->serializer = new SerializerAdapter(JmsSerializerFactory::factory());
         $this->contentDecoder = new ContentDecoder(
             $this->serializer,
-            'KleijnWeb\SwaggerBundle\Tests\Request\Transformer'
+            new SerializationTypeResolver('KleijnWeb\SwaggerBundle\Tests\Request\Transformer')
         );
     }
 

@@ -19,7 +19,11 @@ class ApiResponseErrorException extends \Exception
      */
     public function __construct($json, $httpStatusCode)
     {
-        $this->message = "$json->message [logref $json->logref]";
+        $this->message = "Returned $httpStatusCode";
+        if ($json) {
+            $this->message = "$json->message [logref $json->logref]";
+        }
+
         $this->code = $httpStatusCode;
     }
 }

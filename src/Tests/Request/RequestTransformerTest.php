@@ -32,7 +32,7 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
             ->willReturnCallback(function (Request $request) {
                 $data = json_decode($request->getContent());
                 if (is_null($data)) {
-                    throw new \Exception("failed to json_decode '$string'");
+                    throw new \Exception("Failed to json_decode '{$request->getContent()}'");
                 }
 
                 return $data;
@@ -49,6 +49,45 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
         $transformer->coerceRequest($request, $operationDefinition);
 
         $this->assertSame([], $request->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function willAddContentAsAttribute()
+    {
+        $this->contentDecoderMock = $this
+            ->getMockBuilder('KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->contentDecoderMock
+            ->expects($this->any())
+            ->method('decodeContent')
+            ->willReturnCallback(function (Request $request) {
+                $data = json_decode($request->getContent());
+                if (is_null($data)) {
+                    throw new \Exception("Failed to json_decode '{$request->getContent()}'");
+                }
+
+                return $data;
+            });
+
+        $transformer = new RequestTransformer($this->contentDecoderMock);
+        $content = '[1,2,3,4]';
+        $request = new Request([], [], [], [], [], [], $content);
+
+        $operationDefinition = [
+            'parameters' => [
+                [
+                    'name' => 'myContent',
+                    'in' => 'body'
+                ]
+            ]
+        ];
+
+        $transformer->coerceRequest($request, $operationDefinition);
+
+        $this->assertSame([1, 2, 3, 4], $request->attributes->get('myContent'));
     }
 
     /**
