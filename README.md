@@ -232,15 +232,6 @@ Good chance you are already using a bootstrap file like this, but if the annotat
  
 SwaggerBundle adds some standardized behavior, this should be reflected in your Swagger document. Instead of doing this manually, you can use the `swagger:document:amend` command.
 
-This command can also amend your document to reflect changes in your resource classes. This requires a little configuration:
-
-```yml
-swagger.dev.fixer.swagger_bundle_response:
-    class: KleijnWeb\SwaggerBundle\Dev\DocumentFixer\Fixers\SwaggerBundleResponseFixer
-    calls: [chain, [@swagger.dev.fixer.resource_definitions]]
-```
-The `ResourceDefinitionFixer` depends on valid `@return` PHPDoc tags (it'll handle arrays of objects, eg `Pet[]`).
-
 ## Generating Resource Classes
  
 SwaggerBundle can generate classes for you based on your Swagger resource definitions. 
