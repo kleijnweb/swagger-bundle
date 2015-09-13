@@ -21,7 +21,7 @@ Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig (e
  
 ## Can:
 
- * Integrate OAuth 2.0 compatible JWT API tokens for authentication
+ * Integrate OAuth 2.0 compatible JWT API tokens for authentication.
  * Amend your Swagger spec to include the error responses added by SwaggerBundle.
  * (De-) Serialize objects using either the Symfony Component Serializer or JMS\Serializer
  * Generate DTO-like classes representing resources in your Swagger spec.
@@ -244,7 +244,7 @@ The token is validated using standard (reserved) JWT claims:
  - [2] The `leeway` allows a difference in seconds between the issuer of the token and the server running your app with SwaggerBundle. Keep at a low number, defaults to 0.
  - [3] Mark any claim required, including custom (non-reserved) ones, using the `require` configuration option.
  
-All other claims encountered are ignored. 
+All other claims encountered are ignored. The JWT header is checked for `kid` (see below) and `alg`, which must match the `type` value of the key configuration.
 
 ### Keys
 
@@ -262,6 +262,14 @@ swagger:
             leeway: 5 # Allow 5 seconds of time de-synchronization between this server and api.server.com
     
 ```
+
+Clients should pass the token using an `Authentication: Bearer` header, eg:
+
+```
+Authentication: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
+```
+
+While this is compatible with OAuth 2.0, use of such a protocol is outside of the scope of SwaggerBundle and entirely optional. For more information on using JWT Bearer tokens in OAuth, refer to [this spec](http://tools.ietf.org/html/draft-ietf-oauth-jwt-bearer-07).
 
 SwaggerBundle and the issuer must share a secret in order for SwaggerBundle to be able to verify tokens. You can choose between a *pre shared key* (PSK) or *asymmetric keys*. 
 
@@ -289,16 +297,8 @@ swagger:
     
 ```
 
-To use *asymmetric keys*, `type` MUST be set to `RS256` or `RS512` and the `algo` JWT header MUST match. The secret in this case is the public key of the issuer.
+To use *asymmetric keys*, `type` MUST be set to `RS256` or `RS512`. The secret in this case is the public key of the issuer.
 
-Clients should pass the token using an `Authentication: Bearer` header, eg:
-
-```
-Authentication: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
-```
-
-While this is compatible with OAuth 2.0, use of such a protocol is outside of the scope of SwaggerBundle and entirely optional. For more information on using JWT Bearer tokens in OAuth, refer to [this spec](http://tools.ietf.org/html/draft-ietf-oauth-jwt-bearer-07).
- 
 ### Integration Into Symfony Security
 
 When enabled, `JwtAuthenticator` will be used for any operations referencing a `SecurityDefinition` of type `apiKey` or `oath2`. You will need a *user provider*, which will be passed the
@@ -322,9 +322,7 @@ security:
                         roles: 'IS_AUTHENTICATED_FULLY'
 ```
 
-With JWT enabled, SwaggerBundle will configure `access_control` to match Swagger paths, and require the `IS_AUTHENTICATED_FULLY` role.
-
-When using `SecurityDefinition` type `oauth2`, it would be possible to translate *scopes* to Symfony roles and add them to the user. This is not currently implemented (yet). 
+When using `SecurityDefinition` type `oauth2`, it would be possible to translate *scopes* to Symfony roles, add them to the user, and automatically configure `access_control`. This is not currently implemented (yet, see [#15](https://github.com/kleijnweb/swagger-bundle/issues/15)). 
 
 # Developing
 
