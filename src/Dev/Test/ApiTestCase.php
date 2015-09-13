@@ -45,6 +45,11 @@ abstract class ApiTestCase extends WebTestCase
     protected $client;
 
     /**
+     * @var array
+     */
+    protected $defaultServerVars = [];
+
+    /**
      * @var bool
      */
     protected $validateErrorResponse = true;
@@ -89,7 +94,9 @@ abstract class ApiTestCase extends WebTestCase
     protected function get($path, array $params = [])
     {
         $method = 'GET';
-        $this->client->request($method, $this->assembleUri($path, $params));
+        $request = new ApiRequest($this->assembleUri($path, $params), $method);
+        $request->setServer($this->defaultServerVars);
+        $this->client->requestFromRequest($request);
 
         return $this->getJsonForLastRequest($path, $method);
     }
@@ -106,7 +113,7 @@ abstract class ApiTestCase extends WebTestCase
     {
         $method = 'POST';
         $request = new ApiRequest($this->assembleUri($path, $params), $method);
-        $request->setServer(['CONTENT_TYPE' => 'application/json']);
+        $request->setServer(array_merge($this->defaultServerVars, ['CONTENT_TYPE' => 'application/json']));
         $request->setContent(json_encode($content));
         $this->client->requestFromRequest($request);
 

@@ -1,0 +1,43 @@
+imports:
+    - { resource: config.yml }
+
+swagger:
+    dev: true
+    auth:
+       keys:
+          keyOne: # Must match 'kid'
+            issuer: http://api.server1.com/oauth2/token
+            secret: 'A Pre-Shared Key'
+            type: HS256 # HMAC SHA256, this is the default. All options: HS256, HS512, RS256 and RS512
+          keyTwo: # Must match 'kid'
+            issuer: http://api.server2.com/oauth2/token
+            type: RS256 # RSA SHA256, needed for asymmetric keys
+            secret: |
+                    -----BEGIN PUBLIC KEY-----
+                    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwND1VMVJ3BC/aM38tQRH
+                    2GDHecXE8EsGoeAeBR5dFt3QC1/Eoub/F2kee3RBtI6I+kDBjrSDz5lsqh3Sm7N/
+                    47fTKZLvdBaHbCuYXVBQ2tZeEiUBESnsY2HUzXDlqSyDWohuiYeeL6gewxe1CnSE
+                    0l8gYZ0Tx4ViPFYulva6siew0f4tBuSEwSPiKZQnGcssQYJ/VevTD6L4wGoDhkXV
+                    VvJ+qiNgmXXssgCl5vHs22y/RIgeOnDhkj81aB9Evx9iR7DOtyRBxnovrbN5gDwX
+                    m6IDw3fRhZQrVwZ816/eN+1sqpIMZF4oo4kRA4b64U04ex67A/6BwDDQ3LH0mD4d
+                    EwIDAQAB
+                    -----END PUBLIC KEY-----
+
+security:
+    firewalls:
+        secured_area:
+            pattern: ^/
+            stateless: true
+            simple_preauth:
+                authenticator: swagger.auth.authenticator.jwt
+            provider: in_memory
+
+    providers:
+        in_memory:
+            memory:
+                users:
+                    john:
+                        roles: 'IS_AUTHENTICATED_FULLY'
+
+    access_control:
+        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }

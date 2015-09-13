@@ -21,7 +21,11 @@ class ApiResponseErrorException extends \Exception
     {
         $this->message = "Returned $httpStatusCode";
         if ($json) {
-            $this->message = "$json->message [logref $json->logref]";
+            $this->message = $json->message;
+            if (isset($json->logref)) {
+                $this->message = "$json->message [logref $json->logref]";
+            }
+
         }
 
         $this->code = $httpStatusCode;

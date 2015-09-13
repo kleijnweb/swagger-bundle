@@ -10,13 +10,19 @@ class TestKernel extends Kernel
      */
     public function registerBundles()
     {
-        return [
+        $bundles = [
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Symfony\Bundle\MonologBundle\MonologBundle(),
             new Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle(),
             new KleijnWeb\SwaggerBundle\KleijnWebSwaggerBundle(),
             new KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\PetStoreBundle()
         ];
+
+        if (0 === strpos($this->getEnvironment(), 'secured')) {
+            $bundles[] = new Symfony\Bundle\SecurityBundle\SecurityBundle();
+        }
+
+        return $bundles;
     }
 
     /**
