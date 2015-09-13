@@ -72,7 +72,7 @@ When a call is made that is satisfiable by SwaggerBundle, it uses Symfony Depend
 delegation target of the request. It will assume the first segment in the Swagger paths is a resource name,
 and looks for a service with the key `swagger.controller.%resource_name%`. The class method to be called by defaults corresponds
 to the HTTP method name, but may be overridden by including `operationId` in your spec. Controller methods that expect content can either
- get the content from the `Request` object, or add a parameter named identical to the parameter with `in: body` set:
+ get the content from the `Request` object, or add a parameter named identical to the parameter with `in: body` set.
  
 Any of these will work (assuming the `in: body` parameter is named `body` in your spec):
 
@@ -124,7 +124,7 @@ Other parameters can be added to the signature as well, this is standard Symfony
 
 ## Exception Handling
 
-Any exceptions are caught, logged by the `@logger` service, and result in `application/vnd.error+json`. Routing failure results in an empty 404 response.
+Any exceptions are caught, logged by the `@logger` service, and result in `application/vnd.error+json`. Routing failure results in a 404 response without `logref`.
 
 ## Input Validation
 
@@ -162,7 +162,7 @@ Replace `symfony` with `jms` to use the JMS Serializer.
 
 __NOTE:__ You do not need to install `JMSSerializerBundle`. Just `composer require jms/serializer` (or `composer require symfony/serializer`).
 
-The `namespace` value is used to configure `@swagger.serializer.type_resolver`.
+The `namespace` value is used to configure `@swagger.serializer.type_resolver` (`SerializationTypeResolver`).
 
 `SerializationTypeResolver` will use the last segment of the `$ref` (or `id`) of the schema for the `in: body` parameter.
   Eg `#/definitions/Pet` will resolve to `My\Bundle\Resource\Namespace\Pet`. Currently `SerializationTypeResolver` supports only a single namespace.
@@ -178,8 +178,6 @@ parameters:
     schema:
       $ref: '#/definitions/Pet'
 ```
-
-The `ResponseFactory` will try to deserialize any objects of a class other than `\stdClass`. 
 
 Similar to arrays, you may use the reference the parameter in your controller signature, or use `$request->getContent()`:
 
