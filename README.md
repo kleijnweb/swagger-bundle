@@ -155,7 +155,7 @@ or JMS\Serializer to the SerializerAdapter, which can be done by configuration:
 swagger:
     serializer: 
         type: symfony # Overriding the default: array
-        namespace: My\Bundle\Resource\Namespace # Required fot 'symfony' and 'jms'
+        namespace: My\Bundle\Resource\Namespace # Required for 'symfony' and 'jms' serializers
 ```
 
 Replace `symfony` with `jms` to use the JMS Serializer. 
@@ -321,7 +321,10 @@ security:
                         roles: 'IS_AUTHENTICATED_FULLY'
 ```
 
-When using `SecurityDefinition` type `oauth2`, it would be possible to translate *scopes* to Symfony roles, add them to the user, and automatically configure `access_control`. This is not currently implemented (yet, see [#15](https://github.com/kleijnweb/swagger-bundle/issues/15)). 
+When using `SecurityDefinition` type `oauth2`, it would be possible to translate *scopes* to Symfony roles, 
+ add them to the user, and automatically configure `access_control`. 
+ This is not currently implemented (yet, see [#15](https://github.com/kleijnweb/swagger-bundle/issues/15)).
+ 
 
 # Developing
 
