@@ -9,8 +9,8 @@
 namespace KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator;
 
 use KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\SignatureValidator\SignatureValidator;
-use KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\Validator\HmacValidator;
-use KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\Validator\RsaValidator;
+use KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\SignatureValidator\HmacValidator;
+use KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\SignatureValidator\RsaValidator;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -104,7 +104,7 @@ class JwtKey
     /**
      * @param array $header
      */
-    private function validateHeader(array $header)
+    public function validateHeader(array $header)
     {
         throw new \InvalidArgumentException("Invalid header");
     }
@@ -112,7 +112,7 @@ class JwtKey
     /**
      * @param array $header
      */
-    private function validateClaims(array $header)
+    public function validateClaims(array $header)
     {
         throw new \InvalidArgumentException("Invalid claims");
     }
@@ -121,7 +121,7 @@ class JwtKey
     /**
      * @return SignatureValidator
      */
-    private function getSignatureValidator()
+    public function getSignatureValidator()
     {
         if ($this->type == self::TYPE_RSA) {
             return new RsaValidator();
