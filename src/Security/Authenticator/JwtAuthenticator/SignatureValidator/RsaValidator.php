@@ -31,20 +31,13 @@ class RsaValidator
 
     /**
      * @param string $payload
-     * @param string $secret
+     * @param string $publicKey
      * @param string $signature
      *
      * @return bool
      */
-    public function isValid($payload, $secret, $signature)
+    public function isValid($payload, $publicKey, $signature)
     {
-        $key = openssl_pkey_get_public($secret);
-        $details = openssl_pkey_get_details($key);
-
-        if (!isset($details['key']) || $details['type'] !== OPENSSL_KEYTYPE_RSA) {
-            throw new \InvalidArgumentException('Not an RSA key');
-        }
-
-        return openssl_verify($payload, $signature, $key, $this->hashAlgorithm) === 1;
+        return openssl_verify($payload, $signature, $publicKey, $this->hashAlgorithm) === 1;
     }
 }

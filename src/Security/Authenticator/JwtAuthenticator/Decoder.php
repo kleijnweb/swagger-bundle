@@ -13,17 +13,22 @@ namespace KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator;
 class Decoder
 {
     /**
-     * @param string $data
+     * @param string $base64Encoded
+     *
      * @return array
      */
-    public function decode($data)
+    public function decode($base64Encoded)
     {
-        if ($remainder = strlen($data) % 4) {
-            $data .= str_repeat('=', 4 - $remainder);
-        }
+        $this->jsonDecode($this->base64Decode($base64Encoded));
+    }
 
-        $plain = base64_decode(strtr($data, '-_', '+/'));
-
+    /**
+     * @param string $plain
+     *
+     * @return array
+     */
+    public function jsonDecode($plain)
+    {
         $data = json_decode($plain, true);
 
         if (json_last_error() != JSON_ERROR_NONE) {
@@ -31,5 +36,19 @@ class Decoder
         }
 
         return $data;
+    }
+
+    /**
+     * @param string $base64Encoded
+     *
+     * @return array
+     */
+    public function base64Decode($base64Encoded)
+    {
+        if ($remainder = strlen($base64Encoded) % 4) {
+            $base64Encoded .= str_repeat('=', 4 - $remainder);
+        }
+
+        return base64_decode(strtr($base64Encoded, '-_', '+/'));
     }
 }

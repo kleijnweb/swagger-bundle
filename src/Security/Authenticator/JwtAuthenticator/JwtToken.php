@@ -46,13 +46,14 @@ class JwtToken
             throw new \InvalidArgumentException("Not a JWT token string");
         }
 
-        list($headerString, $claimsString, $this->signature) = each($segments);
+        list($headerBase64, $claimsBase64, $signatureBase64) = each($segments);
 
-        $this->payload = "{$headerString}.{$claimsString}";
+        $this->payload = "{$headerBase64}.{$claimsBase64}";
 
         $decoder = new Decoder();
-        $this->header = $decoder->decode($headerString);
-        $this->claims = $decoder->decode($claimsString);
+        $this->header = $decoder->decode($headerBase64);
+        $this->claims = $decoder->decode($claimsBase64);
+        $this->signature = $decoder->base64Decode($signatureBase64);
     }
 
     /**
