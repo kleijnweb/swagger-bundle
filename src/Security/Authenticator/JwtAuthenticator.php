@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Security\Key\Jwt;
+namespace KleijnWeb\SwaggerBundle\Security\Authenticator;
 
 use KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\JwtKey;
 use KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\JwtToken;
@@ -67,7 +67,7 @@ class JwtAuthenticator implements SimplePreAuthenticatorInterface
     public function getUsername(array $claims)
     {
         if (!isset($claims['prn'])) {
-            throw new \InvalidArgumentException(
+            throw new AuthenticationException(
                 "Cannot extract username: missing principle claim"
             );
         }

@@ -11,7 +11,7 @@ namespace KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\Signat
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class RsaValidator
+class RsaValidator implements SignatureValidator
 {
     const SHA256 = OPENSSL_ALGO_SHA256;
     const SHA512 = OPENSSL_ALGO_SHA512;

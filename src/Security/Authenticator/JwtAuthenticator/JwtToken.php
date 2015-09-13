@@ -86,76 +86,10 @@ class JwtToken
     }
 
     /**
-     * @param array $claims
-     *
-     * @return $this
-     */
-    public function setClaims($claims)
-    {
-        $this->claims = $claims;
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
     public function getHeader()
     {
         return $this->header;
     }
-
-    /**
-     * @param array $header
-     *
-     * @return $this
-     */
-    public function setHeader($header)
-    {
-        $this->header = $header;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPayload()
-    {
-        return $this->payload;
-    }
-
-    /**
-     * @param int $payload
-     *
-     * @return $this
-     */
-    public function setPayload($payload)
-    {
-        $this->payload = $payload;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSignature()
-    {
-        return $this->signature;
-    }
-
-    /**
-     * @param string $signature
-     *
-     * @return $this
-     */
-    public function setSignature($signature)
-    {
-        $this->signature = $signature;
-
-        return $this;
-    }
-
-
 }

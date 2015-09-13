@@ -15,7 +15,16 @@ use KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\Decoder;
 class DecoderTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     *
+     * @test
+     * @expectedException \RuntimeException
+     */
+    public function willThrowExceptionWhenJsonDecodeFails()
+    {
+        $decoder = new Decoder();
+        $decoder->jsonDecode('lkjhhkjjhkl');
+    }
+
+    /**
      * @param string $data
      * @param array  $source
      *

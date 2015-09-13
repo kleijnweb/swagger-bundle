@@ -16,6 +16,54 @@ class JwtKeyTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
+     * @expectedException \InvalidArgumentException
+     */
+    public function constructionWillFailWhenSecretNotInOptions()
+    {
+        new JwtKey([]);
+    }
+
+    /**
+     * @test
+     */
+    public function serializingWillClearSecret()
+    {
+        $key = new JwtKey(['secret' => 'Buy the book']);
+        $actual = unserialize(serialize($key));
+        $refl = new \ReflectionClass($actual);
+        $property = $refl->getProperty('secret');
+        $property->setAccessible(true);
+        $this->assertNull($property->getValue($actual));
+    }
+
+    /**
+     * @test
+     */
+    public function validateTokenWillCallVerifySignatureOnToken()
+    {
+        $key = new JwtKey(['secret' => 'Buy the book']);
+        $token = $this->getMockBuilder(
+            'KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\JwtToken'
+        )->disableOriginalConstructor()->getMock();
+
+        $token->expects($this->once())
+            ->method('validateSignature')
+            ->with('Buy the book', $key->getSignatureValidator());
+
+        $token->expects($this->once())
+            ->method('getClaims')
+            ->willReturn([]);
+
+        $token->expects($this->once())
+            ->method('getHeader')
+            ->willReturn([]);
+
+
+        $key->validateToken($token);
+    }
+
+    /**
+     * @test
      */
     public function willGetRsaSignatureValidatorWhenTypeIsNotSpecified()
     {

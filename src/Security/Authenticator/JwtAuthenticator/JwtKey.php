@@ -103,18 +103,18 @@ class JwtKey
 
     /**
      * @param array $header
+     * @throws \InvalidArgumentException
      */
     public function validateHeader(array $header)
     {
-        throw new \InvalidArgumentException("Invalid header");
     }
 
     /**
      * @param array $header
+     * @throws \InvalidArgumentException
      */
     public function validateClaims(array $header)
     {
-        throw new \InvalidArgumentException("Invalid claims");
     }
 
 
@@ -135,6 +135,6 @@ class JwtKey
      */
     final public function __sleep()
     {
-        $this->secret = null;
+        return [];
     }
 }

@@ -11,7 +11,7 @@ namespace KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\Signat
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class HmacValidator
+class HmacValidator implements SignatureValidator
 {
     const SHA256 = 'sha256';
     const SHA512 = 'sha512';
@@ -38,7 +38,6 @@ class HmacValidator
      */
     public function isValid($payload, $secret, $signature)
     {
-        $actual = hash_hmac($this->hashAlgorithm, $payload, $secret);
-        return $signature === $actual;
+        return $signature === hash_hmac($this->hashAlgorithm, $payload, $secret, true);
     }
 }

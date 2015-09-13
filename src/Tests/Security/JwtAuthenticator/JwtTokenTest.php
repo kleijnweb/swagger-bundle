@@ -8,7 +8,6 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Security\Authenticator\JwtAuthenticator;
 
 use KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\JwtToken;
-use KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\SignatureValidator\SignatureValidator;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
