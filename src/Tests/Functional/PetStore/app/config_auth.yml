@@ -11,11 +11,14 @@ security:
             stateless: true
             simple_preauth:
                 authenticator: swagger.auth.key.jwt.authenticator
-            provider: transient_user_provider
+            provider: in_memory
 
     providers:
-        transient_user_provider:
-            id: swagger.auth.key.transient_user_provider
+        in_memory:
+            memory:
+                users:
+                    joe:
+                        roles: 'IS_AUTHENTICATED_FULLY'
 
     access_control:
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
