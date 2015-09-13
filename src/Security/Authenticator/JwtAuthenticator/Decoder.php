@@ -19,7 +19,7 @@ class Decoder
      */
     public function decode($base64Encoded)
     {
-        $this->jsonDecode($this->base64Decode($base64Encoded));
+        return $this->jsonDecode($this->base64Decode($base64Encoded));
     }
 
     /**

@@ -42,11 +42,11 @@ class JwtToken
     {
         $segments = explode('.', $tokenString);
 
-        if (!count($segments) === 3) {
+        if (count($segments) !== 3) {
             throw new \InvalidArgumentException("Not a JWT token string");
         }
 
-        list($headerBase64, $claimsBase64, $signatureBase64) = each($segments);
+        list($headerBase64, $claimsBase64, $signatureBase64) = $segments;
 
         $this->payload = "{$headerBase64}.{$claimsBase64}";
 

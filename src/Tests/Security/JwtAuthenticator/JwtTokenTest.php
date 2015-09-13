@@ -7,6 +7,7 @@
  */
 namespace KleijnWeb\SwaggerBundle\Tests\Security\Authenticator\JwtAuthenticator;
 
+use KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\JwtToken;
 use KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\SignatureValidator\SignatureValidator;
 
 /**
@@ -14,146 +15,96 @@ use KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\SignatureVal
  */
 class JwtTokenTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var array
-     */
-    private $claims = [];
+    // @codingStandardsIgnoreStart
+    const EXAMPLE_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ';
+    const KID_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtleU9uZSJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.Zhhr_UtsTzjrBZmi8AAgJYqCINiiEc45v94_3nvxW1A';
+    // @codingStandardsIgnoreEnd
 
     /**
-     * @var array
+     * @test
      */
-    private $header = [];
-
-    /**
-     * @var int
-     */
-    private $payload;
-
-    /**
-     * @var string
-     */
-    private $signature;
-
-    /**
-     * @param string $tokenString
-     */
-    public function __construct($tokenString)
+    public function willDecodeClaimsOnConstruction()
     {
-        $segments = explode('.', $tokenString);
-
-        if (!count($segments) === 3) {
-            throw new \InvalidArgumentException("Not a JWT token string");
-        }
-
-        list($headerString, $claimsString, $this->signature) = each($segments);
-
-        $this->payload = "{$headerString}.{$claimsString}";
-
-        $decoder = new Decoder();
-        $this->header = $decoder->decode($headerString);
-        $this->claims = $decoder->decode($claimsString);
+        $token = new JwtToken(self::EXAMPLE_TOKEN);
+        $this->assertSame([
+            'sub'   => '1234567890',
+            'name'  => 'John Doe',
+            'admin' => true,
+        ], $token->getClaims());
     }
 
     /**
-     * @return string|null
+     * @test
      */
-    public function getKeyId()
+    public function willDecodeHeadersOnConstruction()
     {
-        return isset($this->header['kid']) ? $this->header['kid'] : null;
+        $token = new JwtToken(self::EXAMPLE_TOKEN);
+        $this->assertSame([
+            'alg' => 'HS256',
+            'typ' => 'JWT',
+        ], $token->getHeader());
+    }
+
+
+    /**
+     * @test
+     */
+    public function willResultNullWhenKidOmitted()
+    {
+        $token = new JwtToken(self::EXAMPLE_TOKEN);
+        $this->assertNull($token->getKeyId());
     }
 
     /**
-     * @param string             $secret
-     * @param SignatureValidator $validator
-     *
-     * @throws \InvalidArgumentException
+     * @test
      */
-    public function validateSignature($secret, SignatureValidator $validator)
+    public function canGetKidWhenPresent()
     {
-        if (!$validator->isValid($this->payload, $secret, $this->signature)) {
-            throw new \InvalidArgumentException("Invalid signature");
-        }
+        $token = new JwtToken(self::KID_TOKEN);
+        $this->assertSame('keyOne', $token->getKeyId());
+    }
+
+
+    /**
+     * @test
+     * @expectedException \InvalidArgumentException
+     */
+    public function willFailWhenSignatureValidationIsUnsuccessful()
+    {
+        $validator = $this
+            ->getMockBuilder(
+                'KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\SignatureValidator\SignatureValidator'
+            )
+            ->getMockForAbstractClass();
+        $token = new JwtToken(self::EXAMPLE_TOKEN);
+        $validator->expects($this->once())->method('isValid')->willReturn(false);
+        $token->validateSignature('foobar', $validator);
+    }
+
+
+    /**
+     * @test
+     */
+    public function willNitFailWhenSignatureValidationIsSuccessful()
+    {
+        $validator = $this
+            ->getMockBuilder(
+                'KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\SignatureValidator\SignatureValidator'
+            )
+            ->getMockForAbstractClass();
+        $token = new JwtToken(self::EXAMPLE_TOKEN);
+        $validator->expects($this->once())->method('isValid')->willReturn(true);
+        $token->validateSignature('foobar', $validator);
     }
 
     /**
-     * @return array
+     * @test
+     * @expectedException \InvalidArgumentException
      */
-    public function getClaims()
+    public function willFailWhenTokenDoesNotContain3Segments()
     {
-        return $this->claims;
+        $segments = explode('.', self::EXAMPLE_TOKEN);
+
+        new JwtToken("{$segments[0]}.{$segments[1]}");
     }
-
-    /**
-     * @param array $claims
-     *
-     * @return $this
-     */
-    public function setClaims($claims)
-    {
-        $this->claims = $claims;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getHeader()
-    {
-        return $this->header;
-    }
-
-    /**
-     * @param array $header
-     *
-     * @return $this
-     */
-    public function setHeader($header)
-    {
-        $this->header = $header;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPayload()
-    {
-        return $this->payload;
-    }
-
-    /**
-     * @param int $payload
-     *
-     * @return $this
-     */
-    public function setPayload($payload)
-    {
-        $this->payload = $payload;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSignature()
-    {
-        return $this->signature;
-    }
-
-    /**
-     * @param string $signature
-     *
-     * @return $this
-     */
-    public function setSignature($signature)
-    {
-        $this->signature = $signature;
-
-        return $this;
-    }
-
-
 }

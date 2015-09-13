@@ -7,29 +7,50 @@
  */
 namespace KleijnWeb\SwaggerBundle\Tests\Security\Authenticator\JwtAuthenticator;
 
+use KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\Decoder;
+
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
 class DecoderTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     *
      * @param string $data
+     * @param array  $source
+     *
+     * @test
+     * @dataProvider testSetProvider
+     */
+    public function willDecodeTestCasesFromJwtDotIo($source, $data)
+    {
+        $decoder = new Decoder();
+        $this->assertSame($source, $decoder->decode($data));
+    }
+
+    /**
+     * @see          http://jwt.io/
      * @return array
      */
-    public function decode($data)
+    public static function testSetProvider()
     {
-        if ($remainder = strlen($data) % 4) {
-            $data .= str_repeat('=', 4 - $remainder);
-        }
-
-        $plain = base64_decode(strtr($data, '-_', '+/'));
-
-        $data = json_decode($plain, true);
-
-        if (json_last_error() != JSON_ERROR_NONE) {
-            throw new \RuntimeException(json_last_error_msg());
-        }
-
-        return $data;
+        return [
+            [
+                [
+                    'alg' => 'HS256',
+                    'typ' => 'JWT',
+                ],
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9'
+            ],
+            [
+                [
+                    'sub'   => '1234567890',
+                    'name'  => 'John Doe',
+                    'admin' => true,
+                ]
+                ,
+                'eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9'
+            ]
+        ];
     }
 }
