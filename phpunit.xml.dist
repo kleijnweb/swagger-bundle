@@ -14,8 +14,10 @@
             <directory>./src/</directory>
             <exclude>
                 <directory>./src/Resources</directory>
+                <directory>./src/Resources</directory>
                 <directory>./src/Tests</directory>
-                <directory>./src/vendor</directory>
+                <directory>./src/DependencyInjection</directory>
+                <file>./src/KleijnWebSwaggerBundle.php</file>
             </exclude>
         </whitelist>
     </filter>

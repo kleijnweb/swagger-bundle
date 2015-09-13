@@ -40,7 +40,7 @@ class Configuration implements ConfigurationInterface
                                 ->children()
                                     ->scalarNode('issuer')->isRequired()->end()
                                     ->scalarNode('secret')->isRequired()->end()
-                                    ->scalarNode('type')->isRequired()->end()
+                                    ->scalarNode('type')->defaultValue('HS256')->end()
                                 ->end()
                             ->end()
                         ->end()

@@ -5,13 +5,12 @@ swagger:
     dev: true
     auth:
        keys:
-          keyOne: # Must match 'kid'
+          keyOne:
             issuer: http://api.server1.com/oauth2/token
             secret: 'A Pre-Shared Key'
-            type: HS256 # HMAC SHA256, this is the default. All options: HS256, HS512, RS256 and RS512
-          keyTwo: # Must match 'kid'
+          keyTwo:
             issuer: http://api.server2.com/oauth2/token
-            type: RS256 # RSA SHA256, needed for asymmetric keys
+            type: RS256
             secret: |
                     -----BEGIN PUBLIC KEY-----
                     MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwND1VMVJ3BC/aM38tQRH

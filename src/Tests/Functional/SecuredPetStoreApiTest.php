@@ -9,6 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Functional;
 
 use KleijnWeb\SwaggerBundle\Dev\Test\ApiTestCase;
+use KleijnWeb\SwaggerBundle\Tests\Security\Authenticator\JwtAuthenticatorTest;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -16,8 +17,8 @@ use KleijnWeb\SwaggerBundle\Dev\Test\ApiTestCase;
 class SecuredPetStoreApiTest extends ApiTestCase
 {
     // @codingStandardsIgnoreStart
-    const KEY_ONE_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtleU9uZSJ9.eyJwcm4iOiJqb2huIn0.jLAsPUHRZuV7X403lhaHoj6Ld77cxg9Q9Lg3sDa-rTA';
-    const KEY_TWO_TOKEN = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtleVR3byJ9.eyJwcm4iOiJqb2huIn0.IqAnXTaVbeIkQgZ5o0waUgyiE44IySnvR6Qrm-Sq5NP-vt2ATpDKSlHmBoUqm1yD6CZNXP-vVnr_bau3ecw4YHAPjWSe8gA2OU2K59lcRn6vuKpO4V2pLZxCR5KGRxfb04yLhxnDHK6OUwsai8Ll29_Xudkly9OSr7QROObkIzUJdz0nBoDDDDTKlLkiKX1bP7irmEq37ys-mP4CEG3fIS4s1QyxFcJm5LvFCdcuMztwpmhGfJWRNuG2rOPY9_z0vwp_eg4tD-hZRLCxmtIli_RYCYIhbv9bojR6Nuh3t3dk3ttww0DuuHHAepV97Plwb46jch0gwg_XWwKaDTudCw';
+    const KEY_ONE_TOKEN = JwtAuthenticatorTest::TEST_TOKEN;
+    const KEY_TWO_TOKEN = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtleVR3byJ9.eyJwcm4iOiJqb2huIiwiaXNzIjoiaHR0cDovL2FwaS5zZXJ2ZXIyLmNvbS9vYXV0aDIvdG9rZW4ifQ.vdGhD5E4Ibj2Tndlh_0pPgJsOuRUpAn1QYu5miB6qwjrXhKCicuTKOuC9x2_2ErUOApv5KiblYds_gcWONdGKx1tQyQa1dsuhrkiVn_VJAsaaix8nJiHAuNv-ukm8mnSWJoVuOcTQIQG8IaupviyphEAEdjrm9QQhvzERgdFUT4bdCdfywrC37oYEAH5bHpiiUK2UzyNuUIHwOP_gWODodbEWRJOxtefwJ_vdpqHvSZzyW7Vei4mCtr2vE1k2qBvG_Qjw2ebLfEdX58k6-eYa7phle9hYjA_q-I8Y-S1ulBiVf_tpvayk8-4lWup9Wbg_BT2vDJOidQgM4l9jV9QHg';
     // @codingStandardsIgnoreEnd
 
     /**

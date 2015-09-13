@@ -95,26 +95,69 @@ class JwtKey
      */
     public function validateToken(JwtToken $token)
     {
-        $token->validateSignature($this->secret, $this->getSignatureValidator());
-
         $this->validateHeader($token->getHeader());
+        $token->validateSignature($this->secret, $this->getSignatureValidator());
         $this->validateClaims($token->getClaims());
     }
 
     /**
      * @param array $header
+     *
      * @throws \InvalidArgumentException
      */
     public function validateHeader(array $header)
     {
+        if (!isset($header['alg'])) {
+            throw new \InvalidArgumentException("Missing 'alg' in header");
+        }
+        if (!isset($header['typ'])) {
+            throw new \InvalidArgumentException("Missing 'typ' in header");
+        }
+        if ($this->type !== $header['alg']) {
+            throw new \InvalidArgumentException("Algorithm mismatch");
+        }
     }
 
     /**
-     * @param array $header
+     * @param array $claims
+     *
      * @throws \InvalidArgumentException
      */
-    public function validateClaims(array $header)
+    public function validateClaims(array $claims)
     {
+        if ($this->requiredClaims) {
+            $missing = array_diff_key(array_flip($this->requiredClaims), $claims);
+            if (count($missing)) {
+                throw new \InvalidArgumentException("Missing claims: " . implode(', ', $missing));
+            }
+        }
+        if ($this->issuer && !isset($claims['iss'])) {
+            throw new \InvalidArgumentException("Claim 'iss' is required");
+        }
+        if ($this->minIssueTime && !isset($claims['iat'])) {
+            throw new \InvalidArgumentException("Claim 'iat' is required");
+        }
+        if ($this->audience && !isset($claims['aud'])) {
+            throw new \InvalidArgumentException("Claim 'aud' is required");
+        }
+        if (!isset($claims['prn']) || empty($claims['prn'])) {
+            throw new \InvalidArgumentException("Missing principle claim");
+        }
+        if (isset($claims['exp']) && $claims['exp'] < time()) {
+            throw new \InvalidArgumentException("Token is expired by 'exp'");
+        }
+        if (isset($claims['iat']) && $claims['iat'] < $this->minIssueTime) {
+            throw new \InvalidArgumentException("Server deemed your token too old");
+        }
+        if (isset($claims['nbf']) && $claims['nbf'] > time()) {
+            throw new \InvalidArgumentException("Token not valid yet");
+        }
+        if (isset($claims['iss']) && $claims['iss'] !== $this->issuer) {
+            throw new \InvalidArgumentException("Issuer mismatch");
+        }
+        if (isset($claims['aud']) && $claims['aud'] !== $this->audience) {
+            throw new \InvalidArgumentException("Audience mismatch");
+        }
     }
 
 

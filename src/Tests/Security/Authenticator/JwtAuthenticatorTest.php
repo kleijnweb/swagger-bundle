@@ -7,9 +7,7 @@
  */
 namespace KleijnWeb\SwaggerBundle\Tests\Security\Authenticator;
 
-use KleijnWeb\SwaggerBundle\Dev\Test\ApiRequest;
 use KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator;
-use KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\JwtKey;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 use Symfony\Component\Security\Core\User\User;
@@ -24,7 +22,7 @@ class JwtAuthenticatorTest extends \PHPUnit_Framework_TestCase
     /**
      * Created using jwt.io
      */
-    const TEST_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtleU9uZSJ9.eyJwcm4iOiJqb2huIn0.jLAsPUHRZuV7X403lhaHoj6Ld77cxg9Q9Lg3sDa-rTA';
+    const TEST_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtleU9uZSJ9.eyJwcm4iOiJqb2huIiwiaXNzIjoiaHR0cDovL2FwaS5zZXJ2ZXIxLmNvbS9vYXV0aDIvdG9rZW4ifQ._jXjAWMzwwG1v5N3ZOEUoLGSINtmwLsvQdfYkYAcWiY';
 
     const JKEY_CLASS = 'KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\JwtKey';
     
@@ -167,7 +165,7 @@ class JwtAuthenticatorTest extends \PHPUnit_Framework_TestCase
         $request->headers->set('Authorization', 'Bearer ' . self::TEST_TOKEN);
         $token = $authenticator->createToken($request, 'myprovider');
 
-        $expected = ["prn" => "john"];
+        $expected = ["prn" => "john", 'iss' => 'http://api.server1.com/oauth2/token'];
         $this->assertSame($expected, $token->getCredentials());
     }
 }
