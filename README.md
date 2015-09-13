@@ -228,15 +228,17 @@ SwaggerBundle comes with an optional `JwtAuthenticator` which implements a OAuth
 The role of the server with SwaggerBundle in OAuth terms is "Resource Server" (ie your app has some resources belonging to the "Resource Owner" that a client program wants access to). 
 
 The token is validated using standard (reserved) JWT claims:
- 
-| `exp` | int [1] | Expiration time must be omitted [3] or be smaller than `time() + leeway` [2].
-| `nbf` | int [1] | "Not before", token validity start time, must be omitted [3] or greater than or equal to `time() - leeway` [2].
-| `iat` | int [1] | The time the token was issued, must be omitted [3] or smaller than configured `minIssueTime + leeway`. Required when `minIssueTime` configured. 
-| `iss` | string | Issuer of the token, must match configured `issuer`. Required when `issuer` configured.
-| `aud` | string | JWT "audience", must be omitted [3] or match configured `audience` if configured. Required when `audience` configured.
-| `prn` | string | JWT "principal". Used as `username` for Symfony Security integration. Always required, without it the "Resource Owner cannot be identified.
-| `jti` | string | JWT "ID". Not used, will be ignored.
-| `typ` | string | Not used, will be ignored.
+
+| Name  | Type | Description |
+|-------|---------|-------|
+| `exp` | int [1] | Expiration time must be omitted [3] or be smaller than `time() + leeway` [2]. |
+| `nbf` | int [1] | "Not before", token validity start time, must be omitted [3] or greater than or equal to `time() - leeway` [2]. |
+| `iat` | int [1] | The time the token was issued, must be omitted [3] or smaller than configured `minIssueTime + leeway`. Required when `minIssueTime` configured.  |
+| `iss` | string | Issuer of the token, must match configured `issuer`. Required when `issuer` configured. |
+| `aud` | string | JWT "audience", must be omitted [3] or match configured `audience` if configured. Required when `audience` configured. |
+| `prn` | string | JWT "principal". Used as `username` for Symfony Security integration. Always required, without it the "Resource Owner cannot be identified. |
+| `jti` | string | JWT "ID". Not used, will be ignored. |
+| `typ` | string | Not used, will be ignored. |
  
  - [1] Unix time
  - [2] The `leeway` allows a difference in seconds between the issuer of the token and the server running your app with SwaggerBundle. Keep at a low number, defaults to 0.
