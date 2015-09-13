@@ -26,7 +26,8 @@ class JwtAuthenticatorTest extends \PHPUnit_Framework_TestCase
      */
     const TEST_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtleU9uZSJ9.eyJwcm4iOiJqb2huIn0.jLAsPUHRZuV7X403lhaHoj6Ld77cxg9Q9Lg3sDa-rTA';
 
-
+    const JKEY_CLASS = 'KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\JwtKey';
+    
     /**
      * @var array
      */
@@ -54,8 +55,8 @@ class JwtAuthenticatorTest extends \PHPUnit_Framework_TestCase
     {
         $authenticator = new JwtAuthenticator(self::$keyConfig);
 
-        $this->assertInstanceOf(JwtKey::class, $authenticator->getKeyById('keyOne'));
-        $this->assertInstanceOf(JwtKey::class, $authenticator->getKeyById('keyTwo'));
+        $this->assertInstanceOf(self::JKEY_CLASS, $authenticator->getKeyById('keyOne'));
+        $this->assertInstanceOf(self::JKEY_CLASS, $authenticator->getKeyById('keyTwo'));
     }
 
     /**
@@ -68,7 +69,7 @@ class JwtAuthenticatorTest extends \PHPUnit_Framework_TestCase
 
         $authenticator = new JwtAuthenticator($config);
 
-        $this->assertInstanceOf(JwtKey::class, $authenticator->getKeyById(null));
+        $this->assertInstanceOf(self::JKEY_CLASS, $authenticator->getKeyById(null));
     }
 
     /**
@@ -79,7 +80,7 @@ class JwtAuthenticatorTest extends \PHPUnit_Framework_TestCase
     {
         $authenticator = new JwtAuthenticator(self::$keyConfig);
 
-        $this->assertInstanceOf(JwtKey::class, $authenticator->getKeyById(null));
+        $this->assertInstanceOf(self::JKEY_CLASS, $authenticator->getKeyById(null));
     }
 
     /**
@@ -90,7 +91,7 @@ class JwtAuthenticatorTest extends \PHPUnit_Framework_TestCase
     {
         $authenticator = new JwtAuthenticator(self::$keyConfig);
 
-        $this->assertInstanceOf(JwtKey::class, $authenticator->getKeyById('blah'));
+        $this->assertInstanceOf(self::JKEY_CLASS, $authenticator->getKeyById('blah'));
     }
 
     /**
