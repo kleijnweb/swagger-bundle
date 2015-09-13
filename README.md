@@ -148,15 +148,14 @@ of the content using the resource schema failed, SwaggerBundle will return a `vn
 By default Swagger bundle will only serialize and deserialize arrays. This means your controllers can expect `$request->getContent()`
  to contain an associative array, and are expected to return those as well.
  
-Optionally SwaggerBundle can do object de- serialization. Just add the following  
-
-You'll need to pass the Symfony Components Serializer or JMS\Serializer to the SerializerAdapter, which can be done by configuration:
+Optionally SwaggerBundle can do object de- serialization. You will  need to pass the Symfony Components Serializer, 
+or JMS\Serializer to the SerializerAdapter, which can be done by configuration:
 
 ```yml
 swagger:
     serializer: 
-        type: symfony
-        namespace: My\Bundle\Resource\Namespace
+        type: symfony # Overriding the default: array
+        namespace: My\Bundle\Resource\Namespace # Required fot 'symfony' and 'jms'
 ```
 
 Replace `symfony` with `jms` to use the JMS Serializer. 
