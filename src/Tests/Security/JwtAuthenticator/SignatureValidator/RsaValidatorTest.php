@@ -6,23 +6,23 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator\SignatureValidator;
+namespace KleijnWeb\SwaggerBundle\Tests\Security\Authenticator\JwtAuthenticator\SignatureValidator;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class HmacValidator
+class RsaValidatorTest extends \PHPUnit_Framework_TestCase
 {
-    const SHA256 = 'sha256';
-    const SHA512 = 'sha512';
+    const SHA256 = OPENSSL_ALGO_SHA256;
+    const SHA512 = OPENSSL_ALGO_SHA512;
 
     /**
-     * @var string
+     * @var int
      */
     private $hashAlgorithm;
 
     /**
-     * @param string $hashAlgorithm
+     * @param int $hashAlgorithm
      */
     public function __construct($hashAlgorithm = self::SHA256)
     {
@@ -38,7 +38,13 @@ class HmacValidator
      */
     public function isValid($payload, $secret, $signature)
     {
-        $actual = hash_hmac($this->hashAlgorithm, $payload, $secret);
-        return $signature === $actual;
+        $key = openssl_pkey_get_public($secret);
+        $details = openssl_pkey_get_details($key);
+
+        if (!isset($details['key']) || $details['type'] !== OPENSSL_KEYTYPE_RSA) {
+            throw new \InvalidArgumentException('Not an RSA key');
+        }
+
+        return openssl_verify($payload, $signature, $key, $this->hashAlgorithm) === 1;
     }
 }
