@@ -347,7 +347,54 @@ See `app/console swagger:generate:resources --help` for more details.
 
 ## Functional Testing Your API
 
-TODO
+The easiest way to create functional tests for your API, is by extending `ApiTestCase`. This will provide you with some convenience methods (`get()`, `post()`, `put()`, etc) and 
+will validate responses using SwaggerAssertions to ensure the responses received are compliant with your Swagger spec. Example:
+
+```php
+class PetStoreApiTest extends ApiTestCase
+{
+    /**
+     * Use config_basic.yml
+     *
+     * @var bool
+     */
+    protected $env = 'basic';
+
+    /**
+     * @see https://github.com/kleijnweb/swagger-bundle/issues/16
+     *
+     * @var bool
+     */
+    protected $validateErrorResponse = false;
+
+
+    /**
+     * Init response validation, point to your spec
+     */
+    public static function setUpBeforeClass()
+    {
+        parent::initSchemaManager(__DIR__ . '/path/to/a/spec.yml');
+    }
+
+    /**
+     * @test
+     */
+    public function placingAnOrderWillReturnDataWithOrderIsPlaced()
+    {
+        $content = [
+            'petId'    => 987654321,
+            'quantity' => 10,
+        ];
+
+        $actual = $this->post('/v2/store/order', $content);
+        $this->assertSame('placed', $actual->status);
+        $this->assertSame($content['petId'], $actual->petId);
+        $this->assertSame($content['quantity'], $actual->quantity);
+    }
+}
+```
+ 
+
    
 ## License
 
