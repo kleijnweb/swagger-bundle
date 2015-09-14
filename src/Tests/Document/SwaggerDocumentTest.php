@@ -109,6 +109,21 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function gettingArrayCopyWillLeaveEmptyArraysAsEmptyArrays()
+    {
+        $document = self::getPetStoreDocument();
+        $data = $document->getArrayCopy();
+
+        $emptyParameters = $data['paths']['/store/inventory']['get']['parameters'];
+        $emptyAuthSpec = $data['paths']['/store/inventory']['get']['security'][0]['api_key'];
+
+        $this->assertSame([], $emptyParameters);
+        $this->assertSame([], $emptyAuthSpec);
+    }
+
+    /**
+     * @test
+     */
     public function canWriteModifiedYamlToFileSystem()
     {
         $originalHash = md5_file('src/Tests/Functional/PetStore/app/petstore.yml');
@@ -125,6 +140,27 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
         $newHash = md5_file($modifiedPath);
 
         $this->assertNotSame($originalHash, $newHash);
+    }
+
+    /**
+     * @test
+     */
+    public function canModifiedYamlWrittenToFileSystemHandlesEmptyArraysCorrectly()
+    {
+        vfsStreamWrapper::register();
+        vfsStreamWrapper::setRoot(
+            new vfsStreamDirectory('canModifiedYamlWrittenToFileSystemHandlesEmptyArraysCorrectly')
+        );
+
+        $modifiedPath = vfsStream::url('canModifiedYamlWrittenToFileSystemHandlesEmptyArraysCorrectly/modified.yml');
+
+        $document = self::getPetStoreDocument();
+        $definition = $document->getDefinition();
+        $definition->version = '0.0.2';
+        $document->write($modifiedPath);
+
+        $content = file_get_contents($modifiedPath);
+        $this->assertNotRegExp('/\: \{  \}/', $content);
     }
 
     /**

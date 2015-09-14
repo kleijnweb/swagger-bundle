@@ -111,13 +111,24 @@ class SwaggerDocument
     }
 
     /**
+     * @return array
+     */
+    public function getArrayCopy()
+    {
+        return $this->definition->getArrayCopy();
+    }
+
+    /**
      * @param null $targetPath
      *
      * @return void
      */
     public function write($targetPath = null)
     {
-        file_put_contents($targetPath ?: $this->pathFileName, Yaml::dump($this->definition->getArrayCopy(), 10, 2));
+        $data = $this->getArrayCopy();
+        $yaml = Yaml::dump($data, 10, 2);
+        $yaml = str_replace(': {  }', ': []', $yaml);
+        file_put_contents($targetPath ?: $this->pathFileName, $yaml);
     }
 
     /**
