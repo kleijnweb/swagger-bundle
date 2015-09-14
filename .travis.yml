@@ -6,7 +6,7 @@ before_install:
     - composer self-update
 
 install:
-    - composer install $COMPOSER_FLAGS --dev --prefer-source
+    - composer update $COMPOSER_FLAGS --dev --prefer-source
 
 matrix:
     include:
