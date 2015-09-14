@@ -6,6 +6,8 @@ Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig (e
 
 *SwaggerBundle only supports json in- and ouput, and only YAML Swagger defintions.*
 
+Go to the [release page](https://github.com/kleijnweb/swagger-bundle/releases) for details on releases and GPG verification of tags.
+
 # This Bundle..
 
 ## Will:
