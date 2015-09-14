@@ -169,12 +169,24 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
     public function canResolveResourceSchemaReferences()
     {
         $document = self::getPetStoreDocument();
-        $document->resolveReferences();
         $schemas = $document->getResourceSchemas();
         $propertySchema = $schemas['Pet']['properties']['category'];
         $this->assertArrayNotHasKey('$ref', $propertySchema);
         $this->assertArrayHasKey('id', $propertySchema);
         $this->assertSame('object', $propertySchema['type']);
+    }
+
+    /**
+     * @test
+     */
+    public function canResolveParameterSchemaReferences()
+    {
+        $document = new SwaggerDocument('src/Tests/Functional/PetStore/app/instagram.yml');
+        $pathDefinitions = $document->getPathDefinitions();
+        $argumentPseudoSchema = $pathDefinitions['/users/{user-id}']['parameters'][0];
+        $this->assertArrayNotHasKey('$ref', $argumentPseudoSchema);
+        $this->assertArrayHasKey('in', $argumentPseudoSchema);
+        $this->assertSame('user-id', $argumentPseudoSchema['name']);
     }
 
     /**

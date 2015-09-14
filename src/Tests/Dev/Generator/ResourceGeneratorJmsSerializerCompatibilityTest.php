@@ -22,7 +22,6 @@ class ResourceGeneratorJmsSerializerCompatibilityTest extends \PHPUnit_Framework
     {
         $bundle = new PetStoreBundle();
         $document = SwaggerDocumentTest::getPetStoreDocument();
-        $document->resolveReferences();
         $generator = new ResourceGenerator();
         $generator->setSkeletonDirs('src/Dev/Resources/skeleton');
         $generator->generate($bundle, $document, 'Model\Jms');

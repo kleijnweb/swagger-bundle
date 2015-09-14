@@ -74,7 +74,6 @@ class GenerateResourceClassesCommand extends ContainerAwareCommand
         $kernel = $this->getContainer()->get('kernel');
         $bundle = $kernel->getBundle($input->getArgument('bundle'));
         $document = $this->documentRepository->get($input->getArgument('file'));
-        $document->resolveReferences();
         $this->generator->setSkeletonDirs(__DIR__ . '/../Resources/skeleton');
         $this->generator->generate($bundle, $document, $input->getOption('namespace'));
     }

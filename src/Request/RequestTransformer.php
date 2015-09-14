@@ -50,21 +50,7 @@ class RequestTransformer
         // This modifies the Request object (and adds the content to the 'attributes' ParameterBag
         $this->coerceRequestParameters($request, $operationDefinition, $content);
 
-        // This retrieves the modified parameters
-        $parameters = $this->assembleParameterData($request, $operationDefinition);
-
-        // Validate the parameters using a schema created from the operation definition
-        $validator = new Validator();
-        $schema = $this->assembleRequestSchema($operationDefinition);
-        $validator->check($parameters, $schema);
-
-        if (!$validator->isValid()) {
-            // TODO Better utilize $validator->getErrors() so we can assemble a more helpful vnd.error response
-            throw new InvalidParametersException(
-                "Parameters incompatible with operation schema: " . implode(', ', $validator->getErrors()[0]),
-                400
-            );
-        }
+        $this->validateRequest($request, $operationDefinition);
 
         // Needed to be able to set the decoded body
         $request->initialize(
@@ -161,13 +147,43 @@ class RequestTransformer
     }
 
     /**
+     * TODO Move to new RequestValidator
+     *
+     * @param Request $request
+     * @param array   $operationDefinition
+     *
+     * @throws InvalidParametersException
+     * @throws UnsupportedException
+     */
+    private function validateRequest(Request $request, array $operationDefinition)
+    {
+        // This retrieves the modified parameters
+        $parameters = $this->assembleParameterDataForValidation($request, $operationDefinition);
+
+        // Validate the parameters using a schema created from the operation definition
+        $validator = new Validator();
+        $schema = $this->assembleRequestSchema($operationDefinition);
+        $validator->check($parameters, $schema);
+
+        if (!$validator->isValid()) {
+            // TODO Better utilize $validator->getErrors() so we can assemble a more helpful vnd.error response
+            throw new InvalidParametersException(
+                "Parameters incompatible with operation schema: " . implode(', ', $validator->getErrors()[0]),
+                400
+            );
+        }
+    }
+
+    /**
+     * TODO Move to new RequestValidator
+     *
      * @param Request $request
      * @param array   $operationDefinition
      *
      * @return \stdClass
      * @throws UnsupportedException
      */
-    public function assembleParameterData(Request $request, array $operationDefinition)
+    private function assembleParameterDataForValidation(Request $request, array $operationDefinition)
     {
         if (!isset($operationDefinition['parameters'])) {
             return new \stdClass;
@@ -195,6 +211,7 @@ class RequestTransformer
             $parameters[$paramName] = $request->$paramBagName->get($paramName);
         }
 
-        return (object)$parameters;
+        // TODO Hack, probably not the best performing of solutions
+        return (object)json_decode(json_encode($parameters));
     }
 }

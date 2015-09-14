@@ -37,29 +37,12 @@ class SwaggerDocument
                 "Document file '$pathFileName' does not exist'"
             );
         }
-        $this->pathFileName = $pathFileName;
-        $this->definition = new \ArrayObject(
-            Yaml::parse(file_get_contents($pathFileName)),
-            \ArrayObject::ARRAY_AS_PROPS | \ArrayObject::STD_PROP_LIST
-        );
-    }
 
-    /**
-     * Resolve all references
-     *
-     * @return void
-     */
-    public function resolveReferences()
-    {
-        $retriever = new UriRetriever();
-        $retriever->setUriRetriever(new YamlCapableUriRetriever);
-        $resolver = new RefResolver($retriever);
-        foreach ($this->definition->definitions as &$schema) {
-            // TODO Solve this mess
-            $schema = json_decode(json_encode($schema));
-            $resolver->resolve($schema, 'file://' . realpath($this->pathFileName));
-            $schema = json_decode(json_encode($schema), true);
-        }
+        $data = Yaml::parse(file_get_contents($pathFileName));
+        $data = self::resolveSelfReferences($data, $data);
+
+        $this->pathFileName = $pathFileName;
+        $this->definition = new \ArrayObject($data, \ArrayObject::ARRAY_AS_PROPS | \ArrayObject::STD_PROP_LIST);
     }
 
     /**
@@ -126,6 +109,7 @@ class SwaggerDocument
     public function write($targetPath = null)
     {
         $data = $this->getArrayCopy();
+        $data = self::unresolveSelfReferences($data, $data);
         $yaml = Yaml::dump($data, 10, 2);
         $yaml = str_replace(': {  }', ': []', $yaml);
         file_put_contents($targetPath ?: $this->pathFileName, $yaml);
@@ -136,5 +120,71 @@ class SwaggerDocument
      */
     private function __clone()
     {
+    }
+
+    /**
+     * @param array $segments
+     * @param array $context
+     *
+     * @return mixed
+     */
+    private static function lookupUsingSegments(array $segments, array $context)
+    {
+        $segment = array_shift($segments);
+        if (isset($context[$segment])) {
+            if (!count($segments)) {
+                return $context[$segment];
+            }
+
+            return self::lookupUsingSegments($segments, $context[$segment]);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param array $doc
+     * @param array $data
+     *
+     * @return array
+     */
+    private function resolveSelfReferences(array $doc, array &$data)
+    {
+        foreach ($data as $key => &$value) {
+            if (is_array($value)) {
+                $value = self::resolveSelfReferences($doc, $value);
+            }
+            if ($key === '$ref' && '#' === $value[0]) {
+                $data = self::lookupUsingSegments(
+                    explode('/', trim(substr($value, 1), '/')),
+                    $doc
+                );
+                $data['id'] = $value;
+                // Use something a little less generic for more reliable qnd restoring of original
+                $data['x-swagger-id'] = $value;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param array $doc
+     * @param array $data
+     *
+     * @return array
+     */
+    private function unresolveSelfReferences(array $doc, array &$data)
+    {
+        foreach ($data as $key => &$value) {
+            if (is_array($value)) {
+                $value = self::unresolveSelfReferences($doc, $value);
+            }
+            if ($key === 'x-swagger-id') {
+                $data = ['$ref' => $value];
+            }
+        }
+
+        return $data;
     }
 }

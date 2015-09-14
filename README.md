@@ -144,12 +144,12 @@ __NOTE__: SwaggerBundle currently does not support `multi` for `collectionFormat
  
 ### Content Validation
 
-If the content cannot be deserialized using the format specified by the request's Content-Type header, or if validation
+If the content cannot be decoded using the format specified by the request's Content-Type header, or if validation
 of the content using the resource schema failed, SwaggerBundle will return a `vnd.error` response with a 400 status code.
 
 ### Object (De-) Serialization
 
-By default Swagger bundle will only serialize and deserialize arrays. This means your controllers can expect `$request->getContent()`
+By default Swagger bundle will simply encode and decode arrays. This means your controllers can expect `$request->getContent()`
  to contain an associative array, and are expected to return those as well.
  
 Optionally SwaggerBundle can do object de- serialization. You will  need to pass the Symfony Components Serializer, 
@@ -158,7 +158,7 @@ or JMS\Serializer to the SerializerAdapter, which can be done by configuration:
 ```yml
 swagger:
     serializer: 
-        type: symfony # Overriding the default: array
+        type: symfony
         namespace: My\Bundle\Resource\Namespace # Required for 'symfony' and 'jms' serializers
 ```
 

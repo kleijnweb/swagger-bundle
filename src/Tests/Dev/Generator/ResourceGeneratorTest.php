@@ -24,7 +24,6 @@ class ResourceGeneratorTest extends \PHPUnit_Framework_TestCase
     {
         $bundle = new PetStoreBundle();
         $document = SwaggerDocumentTest::getPetStoreDocument();
-        $document->resolveReferences();
         $generator = new ResourceGenerator();
         $generator->setSkeletonDirs('src/Dev/Resources/skeleton');
         $generator->generate($bundle, $document, 'Foo\Bar');
