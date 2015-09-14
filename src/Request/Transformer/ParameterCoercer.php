@@ -29,6 +29,34 @@ class ParameterCoercer
     public static function coerceParameter(array $paramDefinition, $value)
     {
         switch ($paramDefinition['type']) {
+            case 'string':
+                if (!isset($paramDefinition['format'])) {
+                    return $value;
+                }
+                switch ($paramDefinition['format']) {
+                    case 'date':
+                        $value = \DateTime::createFromFormat('Y-m-d\TH:i:s\Z', "{$value}T00:00:00Z");
+                        if ($value === false) {
+                            throw new MalformedContentException(
+                                "Unable to decode param {$paramDefinition['name']}",
+                                400
+                            );
+                        }
+
+                        return $value;
+                    case 'date-time':
+                        $value = \DateTime::createFromFormat(\DateTime::W3C, $value);
+                        if ($value === false) {
+                            throw new MalformedContentException(
+                                "Unable to decode param {$paramDefinition['name']}",
+                                400
+                            );
+                        }
+
+                        return $value;
+                    default:
+                        return $value;
+                }
             case 'boolean':
                 switch ($value) {
                     case 'TRUE':
@@ -83,20 +111,6 @@ class ParameterCoercer
                 }
 
                 return null;
-            case 'date':
-                $value = \DateTime::createFromFormat('Y-m-d\TH:i:s\Z', "{$value}T00:00:00Z");
-                if ($value === false) {
-                    throw new MalformedContentException("Unable to decode param {$paramDefinition['name']}", 400);
-                }
-
-                return $value;
-            case 'date-time':
-                $value = \DateTime::createFromFormat(\DateTime::W3C, $value);
-                if ($value === false) {
-                    throw new MalformedContentException("Unable to decode param {$paramDefinition['name']}", 400);
-                }
-
-                return $value;
             default:
                 return $value;
         }

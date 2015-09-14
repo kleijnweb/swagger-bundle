@@ -22,13 +22,16 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
      * @param string $type
      * @param mixed  $value
      * @param mixed  $expected
-     * @param string $collectionFormat
+     * @param string $format
      */
-    public function willInterpretPrimitivesAsExpected($type, $value, $expected, $collectionFormat = 'csv')
+    public function willInterpretPrimitivesAsExpected($type, $value, $expected, $format = null)
     {
         $spec = ['type' => $type, 'name' => $value];
         if ($type === 'array') {
-            $spec['collectionFormat'] = $collectionFormat;
+            $spec['collectionFormat'] = $format;
+        }
+        if ($type === 'string') {
+            $spec['format'] = $format;
         }
 
         $actual = ParameterCoercer::coerceParameter($spec, $value);
@@ -37,7 +40,7 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider failingPrimitiveConversionProvider
+     * @dataProvider malformedPrimitiveConversionProvider
      * @test
      *
      * @expectedException \KleijnWeb\SwaggerBundle\Exception\MalformedContentException
@@ -48,6 +51,20 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
     public function willFailToInterpretPrimitivesAsExpected($type, $value)
     {
         ParameterCoercer::coerceParameter(['type' => $type, 'name' => $value], $value);
+    }
+
+    /**
+     * @dataProvider malformedDateTimeConversionProvider
+     * @test
+     *
+     * @expectedException \KleijnWeb\SwaggerBundle\Exception\MalformedContentException
+     *
+     * @param string $format
+     * @param mixed  $value
+     */
+    public function willFailToInterpretDateTimeAsExpected($format, $value)
+    {
+        ParameterCoercer::coerceParameter(['type' => 'string', 'format' => $format, 'name' => $value], $value);
     }
 
     /**
@@ -91,8 +108,8 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
             ['string', '1.5', '1.5'],
             ['string', '€', '€'],
             ['null', '', null],
-            ['date', $midnight->format('Y-m-d'), $midnight],
-            ['date-time', $now->format(\DateTime::W3C), $now],
+            ['string', $midnight->format('Y-m-d'), $midnight, 'date'],
+            ['string', $now->format(\DateTime::W3C), $now, 'date-time'],
             ['array', [1, 2, 3, 4], [1, 2, 3, 4]],
             ['array', 'a', ['a']],
             ['array', 'a,b,c', ['a', 'b', 'c']],
@@ -112,7 +129,7 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
     /**
      * @return array
      */
-    public static function failingPrimitiveConversionProvider()
+    public static function malformedPrimitiveConversionProvider()
     {
         return [
             ['boolean', 'a'],
@@ -126,6 +143,17 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
             ['number', 'FALSE'],
             ['null', '0'],
             ['null', 'FALSE']
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function malformedDateTimeConversionProvider()
+    {
+        return [
+            ['date', '01-01-1970'],
+            ['date-time', '1970-01-01TH:i:s'], # Missing timezone
         ];
     }
 
