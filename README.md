@@ -6,7 +6,7 @@ Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig (e
 
 *SwaggerBundle only supports json in- and ouput, and only YAML Swagger defintions.*
 
-Go to the [release page](https://github.com/kleijnweb/swagger-bundle/releases) for details on releases and GPG verification of tags.
+Go to the [release page](https://github.com/kleijnweb/swagger-bundle/releases) to find details about the latest release.
 
 # This Bundle..
 
@@ -50,7 +50,9 @@ Pretty much. ;)
 
 ## Install And Configure
 
-Install using composer (`composer require kleijnweb/swagger-bundle`). Add Swagger-based routing to your app, for example:
+Install using composer (`composer require kleijnweb/swagger-bundle`). You want to check out the [release page](https://github.com/kleijnweb/swagger-bundle/releases) to ensure you are getting what you want and optionally verify your download.
+
+Add Swagger-based routing to your app, for example:
  
 ```yml
 test:
