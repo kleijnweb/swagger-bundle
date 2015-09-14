@@ -10,6 +10,7 @@ namespace KleijnWeb\SwaggerBundle\Tests\Request;
 
 use KleijnWeb\SwaggerBundle\Request\RequestTransformer;
 use KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder;
+use KleijnWeb\SwaggerBundle\Request\Transformer\ParameterCoercer;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -113,6 +114,8 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
 
         $transformer = new RequestTransformer($this->contentDecoderMock);
         $content = '[]';
+
+        // TODO: This will break: content (body) vs query
         $request = new Request([], [], [], [], [], [], $content);
 
         $operationDefinition = [
@@ -128,6 +131,40 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
         $transformer->coerceRequest($request, $operationDefinition);
 
         $this->assertSame([], $request->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function willConstructDate()
+    {
+        $this->contentDecoderMock = $this
+            ->getMockBuilder('KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $transformer = new RequestTransformer($this->contentDecoderMock);
+        $request = new Request(['foo' => "2015-01-01"], [], [], [], [], []);
+
+        $operationDefinition = [
+            'parameters' => [
+                [
+                    'name' => 'foo',
+                    'in'   => 'query',
+                    'type' => 'string',
+                    'format' => 'date'
+                ]
+            ]
+        ];
+
+        $transformer->coerceRequest($request, $operationDefinition);
+
+        $expected = ParameterCoercer::coerceParameter($operationDefinition['parameters'][0], "2015-01-01");
+
+        // Sanity check
+        $this->assertInstanceOf('DateTime', $expected);
+
+        $this->assertEquals($expected, $request->get('foo'));
     }
 
     /**

@@ -16,6 +16,7 @@ use JsonSchema\Validator;
 use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
 use KleijnWeb\SwaggerBundle\Exception\UnsupportedContentTypeException;
+use Symfony\Component\Serializer\Encoder\JsonDecode;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -45,12 +46,20 @@ class RequestTransformer
      */
     public function coerceRequest(Request $request, array $operationDefinition)
     {
+        // TODO HACK for https://github.com/kleijnweb/swagger-bundle/issues/24
+        $originalContent = $request->getContent();
+        $stdClassContent = null;
+        if ($originalContent) {
+            $decoder = new JsonDecode(false);
+            $stdClassContent = (object)$decoder->decode($originalContent, 'json');
+        }
+
         $content = $this->contentDecoder->decodeContent($request, $operationDefinition);
 
         // This modifies the Request object (and adds the content to the 'attributes' ParameterBag
         $this->coerceRequestParameters($request, $operationDefinition, $content);
 
-        $this->validateRequest($request, $operationDefinition);
+        $this->validateRequest($request, $operationDefinition, $stdClassContent);
 
         // Needed to be able to set the decoded body
         $request->initialize(
@@ -149,16 +158,17 @@ class RequestTransformer
     /**
      * TODO Move to new RequestValidator
      *
-     * @param Request $request
-     * @param array   $operationDefinition
+     * @param Request   $request
+     * @param array     $operationDefinition
+     * @param \stdClass $content
      *
      * @throws InvalidParametersException
      * @throws UnsupportedException
      */
-    private function validateRequest(Request $request, array $operationDefinition)
+    private function validateRequest(Request $request, array $operationDefinition, \stdClass $content = null)
     {
         // This retrieves the modified parameters
-        $parameters = $this->assembleParameterDataForValidation($request, $operationDefinition);
+        $parameters = $this->assembleParameterDataForValidation($request, $operationDefinition, $content);
 
         // Validate the parameters using a schema created from the operation definition
         $validator = new Validator();
@@ -177,14 +187,18 @@ class RequestTransformer
     /**
      * TODO Move to new RequestValidator
      *
-     * @param Request $request
-     * @param array   $operationDefinition
+     * @param Request   $request
+     * @param array     $operationDefinition
+     * @param \stdClass $content
      *
      * @return \stdClass
      * @throws UnsupportedException
      */
-    private function assembleParameterDataForValidation(Request $request, array $operationDefinition)
-    {
+    private function assembleParameterDataForValidation(
+        Request $request,
+        array $operationDefinition,
+        \stdClass $content = null
+    ) {
         if (!isset($operationDefinition['parameters'])) {
             return new \stdClass;
         }
@@ -208,7 +222,21 @@ class RequestTransformer
             if (!$request->$paramBagName->has($paramName)) {
                 continue;
             }
+            if ($paramDefinition['in'] === 'body' && $content) {
+                $parameters[$paramName] = $content;
+                continue;
+            }
             $parameters[$paramName] = $request->$paramBagName->get($paramName);
+
+            // TODO HACK related to https://github.com/kleijnweb/swagger-bundle/issues/24
+            if (isset($paramDefinition['format'])) {
+                if ($paramDefinition['format'] === 'date') {
+                    $parameters[$paramName] = $parameters[$paramName]->format('Y-m-d');
+                }
+                if ($paramDefinition['format'] === 'date-time') {
+                    $parameters[$paramName] = $parameters[$paramName]->format(\DateTime::W3C);
+                }
+            }
         }
 
         // TODO Hack, probably not the best performing of solutions
