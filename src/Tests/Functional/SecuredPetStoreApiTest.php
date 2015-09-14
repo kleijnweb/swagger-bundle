@@ -64,12 +64,12 @@ class SecuredPetStoreApiTest extends ApiTestCase
             'HTTP_AUTHORIZATION' => 'Bearer ' . self::KEY_ONE_TOKEN
         ];
 
-        $params = [
+        $content = [
             'name'      => 'Joe',
             'photoUrls' => ['foobar']
         ];
 
-        $responseData = $this->post('/v2/pet', $params);
+        $responseData = $this->post('/v2/pet', $content);
 
         $this->assertSame('Joe', $responseData->name);
         $this->assertSame('available', $responseData->status);
@@ -97,12 +97,12 @@ class SecuredPetStoreApiTest extends ApiTestCase
             'HTTP_AUTHORIZATION' => 'Bearer ' . self::KEY_TWO_TOKEN
         ];
 
-        $params = [
+        $content = [
             'name'      => 'Joe',
             'photoUrls' => ['foobar']
         ];
 
-        $responseData = $this->post('/v2/pet', $params);
+        $responseData = $this->post('/v2/pet', $content);
 
         $this->assertSame('Joe', $responseData->name);
         $this->assertSame('available', $responseData->status);

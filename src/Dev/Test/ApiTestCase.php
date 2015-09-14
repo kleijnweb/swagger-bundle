@@ -77,12 +77,16 @@ abstract class ApiTestCase extends WebTestCase
         self::$document = new SwaggerDocument($swaggerPath);
     }
 
+    /**
+     * Create a client, booting the kernel using SYMFONY_ENV = $this->env
+     */
     protected function setUp()
     {
         $this->client = static::createClient(['environment' => $this->env]);
 
         parent::setUp();
     }
+
 
     /**
      * @param string $path
@@ -93,12 +97,32 @@ abstract class ApiTestCase extends WebTestCase
      */
     protected function get($path, array $params = [])
     {
-        $method = 'GET';
-        $request = new ApiRequest($this->assembleUri($path, $params), $method);
-        $request->setServer($this->defaultServerVars);
-        $this->client->requestFromRequest($request);
+        return $this->sendRequest($path, 'GET', $params);
+    }
 
-        return $this->getJsonForLastRequest($path, $method);
+    /**
+     * @param string $path
+     * @param array  $params
+     *
+     * @return object
+     * @throws ApiResponseErrorException
+     */
+    protected function delete($path, array $params = [])
+    {
+        return $this->sendRequest($path, 'DELETE', $params);
+    }
+
+    /**
+     * @param string $path
+     * @param array  $content
+     * @param array  $params
+     *
+     * @return object
+     * @throws ApiResponseErrorException
+     */
+    protected function patch($path, array $content, array $params = [])
+    {
+        return $this->sendRequest($path, 'PATCH', $params, $content);
     }
 
     /**
@@ -111,14 +135,43 @@ abstract class ApiTestCase extends WebTestCase
      */
     protected function post($path, array $content, array $params = [])
     {
-        $method = 'POST';
+        return $this->sendRequest($path, 'POST', $params, $content);
+    }
+
+    /**
+     * @param string $path
+     * @param array  $content
+     * @param array  $params
+     *
+     * @return object
+     * @throws ApiResponseErrorException
+     */
+    protected function put($path, array $content, array $params = [])
+    {
+        return $this->sendRequest($path, 'PUT', $params, $content);
+    }
+
+    /**
+     * @param string     $path
+     * @param array      $method
+     * @param array      $params
+     * @param array|null $content
+     *
+     * @return object
+     * @throws ApiResponseErrorException
+     */
+    protected function sendRequest($path, $method, array $params = [], array $content = null)
+    {
         $request = new ApiRequest($this->assembleUri($path, $params), $method);
         $request->setServer(array_merge($this->defaultServerVars, ['CONTENT_TYPE' => 'application/json']));
-        $request->setContent(json_encode($content));
+        if ($content !== null) {
+            $request->setContent(json_encode($content));
+        }
         $this->client->requestFromRequest($request);
 
         return $this->getJsonForLastRequest($path, $method);
     }
+
 
     /**
      * @param string $path

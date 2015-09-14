@@ -50,12 +50,12 @@ class BasicPetStoreApiTest extends ApiTestCase
      */
     public function canAddPet()
     {
-        $params = [
+        $content = [
             'name' => 'Joe',
             'photoUrls' => ['foobar']
         ];
 
-        $responseData = $this->post('/v2/pet', $params);
+        $responseData = $this->post('/v2/pet', $content);
 
         $this->assertSame('Joe', $responseData->name);
         $this->assertSame('available', $responseData->status);

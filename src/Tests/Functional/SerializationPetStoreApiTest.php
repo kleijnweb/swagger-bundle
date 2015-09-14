@@ -47,15 +47,15 @@ class SerializationPetStoreApiTest extends ApiTestCase
      */
     public function canPlaceOrder()
     {
-        $params = [
+        $content = [
             'petId'    => 987654321,
             'quantity' => 10,
         ];
 
-        $actual = $this->post('/v2/store/order', $params);
+        $actual = $this->post('/v2/store/order', $content);
         $this->assertSame('placed', $actual->status);
-        $this->assertSame($params['petId'], $actual->petId);
-        $this->assertSame($params['quantity'], $actual->quantity);
+        $this->assertSame($content['petId'], $actual->petId);
+        $this->assertSame($content['quantity'], $actual->quantity);
         $this->assertInternalType('integer', $actual->id);
     }
 }
