@@ -24,6 +24,7 @@ class BasicPetStoreApiTest extends ApiTestCase
 
     /**
      * TODO Temporary workaround
+     * @see https://github.com/kleijnweb/swagger-bundle/issues/16
      *
      * @var bool
      */

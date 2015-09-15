@@ -115,7 +115,10 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
         $transformer = new RequestTransformer($this->contentDecoderMock);
         $content = '[]';
 
-        // TODO: This will break: content (body) vs query
+        /**
+         * TODO: This should break: content (body) vs query
+         * @see https://github.com/kleijnweb/swagger-bundle/issues/28
+         */
         $request = new Request([], [], [], [], [], [], $content);
 
         $operationDefinition = [

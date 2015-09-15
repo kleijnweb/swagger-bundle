@@ -46,7 +46,10 @@ class RequestTransformer
      */
     public function coerceRequest(Request $request, array $operationDefinition)
     {
-        // TODO HACK for https://github.com/kleijnweb/swagger-bundle/issues/24
+        /**
+         * TODO Hack
+         * @see https://github.com/kleijnweb/swagger-bundle/issues/24
+         */
         $originalContent = $request->getContent();
         $stdClassContent = null;
         if ($originalContent) {
@@ -102,7 +105,10 @@ class RequestTransformer
             $schema['properties']{$paramDefinition['name']} = $propertySchema;
         }
 
-        // TODO Hack, probably not the best performing of solutions
+        /**
+         * TODO Hack, probably not the best performing of solutions
+         * @see https://github.com/kleijnweb/swagger-bundle/issues/29
+         */
         return json_decode(json_encode($schema));
     }
 
@@ -228,7 +234,10 @@ class RequestTransformer
             }
             $parameters[$paramName] = $request->$paramBagName->get($paramName);
 
-            // TODO HACK related to https://github.com/kleijnweb/swagger-bundle/issues/24
+            /**
+             * TODO Hack for date- datetime validation after already coerced into objects
+             * @see https://github.com/kleijnweb/swagger-bundle/issues/24
+             */
             if (isset($paramDefinition['format'])) {
                 if ($paramDefinition['format'] === 'date') {
                     $parameters[$paramName] = $parameters[$paramName]->format('Y-m-d');
@@ -239,7 +248,10 @@ class RequestTransformer
             }
         }
 
-        // TODO Hack, probably not the best performing of solutions
+        /**
+         * TODO Hack, probably not the best performing of solutions
+         * @see https://github.com/kleijnweb/swagger-bundle/issues/29
+         */
         return (object)json_decode(json_encode($parameters));
     }
 }
