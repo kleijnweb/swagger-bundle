@@ -37,7 +37,7 @@ services:
         arguments: [@swagger.request.transformer.content_decoder]
 
     swagger.request.transformer.content_decoder:
-        class: KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder
+        class: KleijnWeb\SwaggerBundle\Request\ContentDecoder
         arguments: [@swagger.serializer, @swagger.serializer.type_resolver]
 
     kernel.listener.swagger.view:
