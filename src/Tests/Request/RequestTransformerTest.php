@@ -9,8 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Request;
 
 use KleijnWeb\SwaggerBundle\Request\RequestTransformer;
-use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
-use KleijnWeb\SwaggerBundle\Request\Transformer\ParameterCoercer;
+use KleijnWeb\SwaggerBundle\Request\ParameterCoercer;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -21,41 +20,7 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function willDecodeContent()
-    {
-        $this->contentDecoderMock = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Request\ContentDecoder')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->contentDecoderMock
-            ->expects($this->any())
-            ->method('decodeContent')
-            ->willReturnCallback(function (Request $request) {
-                $data = json_decode($request->getContent());
-                if (is_null($data)) {
-                    throw new \Exception("Failed to json_decode '{$request->getContent()}'");
-                }
-
-                return $data;
-            });
-
-        $transformer = new RequestTransformer($this->contentDecoderMock);
-        $content = '[]';
-        $request = new Request([], [], [], [], [], [], $content);
-
-        $operationDefinition = [
-            'parameters' => []
-        ];
-
-        $transformer->coerceRequest($request, $operationDefinition);
-
-        $this->assertSame([], $request->getContent());
-    }
-
-    /**
-     * @test
-     */
-    public function willAddContentAsAttribute()
+    public function willAddDecodedContentAsAttribute()
     {
         $this->contentDecoderMock = $this
             ->getMockBuilder('KleijnWeb\SwaggerBundle\Request\ContentDecoder')
@@ -81,7 +46,7 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
             'parameters' => [
                 [
                     'name' => 'myContent',
-                    'in' => 'body'
+                    'in'   => 'body'
                 ]
             ]
         ];
@@ -104,28 +69,18 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('decodeContent')
             ->willReturnCallback(function (Request $request) {
-                $data = json_decode($request->getContent());
-                if (is_null($data)) {
-                    throw new \Exception("failed to json_decode '$string'");
-                }
-
-                return $data;
+                return json_decode($request->getContent());
             });
 
         $transformer = new RequestTransformer($this->contentDecoderMock);
-        $content = '[]';
 
-        /**
-         * TODO: This should break: content (body) vs query
-         * @see https://github.com/kleijnweb/swagger-bundle/issues/28
-         */
-        $request = new Request([], [], [], [], [], [], $content);
+        $request = new Request();
 
         $operationDefinition = [
             'parameters' => [
                 [
                     'name' => 'foo',
-                    'in'   => 'query',
+                    'in'   => 'body',
                     'type' => 'integer'
                 ]
             ]
@@ -133,7 +88,7 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
 
         $transformer->coerceRequest($request, $operationDefinition);
 
-        $this->assertSame([], $request->getContent());
+        $this->assertFalse($request->attributes->has('foo'));
     }
 
     /**
@@ -152,9 +107,9 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
         $operationDefinition = [
             'parameters' => [
                 [
-                    'name' => 'foo',
-                    'in'   => 'query',
-                    'type' => 'string',
+                    'name'   => 'foo',
+                    'in'     => 'query',
+                    'type'   => 'string',
                     'format' => 'date'
                 ]
             ]
@@ -167,7 +122,7 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
         // Sanity check
         $this->assertInstanceOf('DateTime', $expected);
 
-        $this->assertEquals($expected, $request->get('foo'));
+        $this->assertEquals($expected, $request->attributes->get('foo'));
     }
 
     /**
@@ -184,9 +139,43 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('decodeContent')
             ->willReturnCallback(function (Request $request) {
+                return json_decode($request->getContent());
+            });
+
+        $transformer = new RequestTransformer($this->contentDecoderMock);
+        $request = new Request();
+
+        $operationDefinition = [
+            'parameters' => [
+                [
+                    'name'     => 'foo',
+                    'required' => true,
+                    'in'       => 'query',
+                    'type'     => 'int'
+                ]
+            ]
+        ];
+
+        $transformer->coerceRequest($request, $operationDefinition);
+    }
+
+    /**
+     * @test
+     * @expectedException \KleijnWeb\SwaggerBundle\Exception\InvalidParametersException
+     */
+    public function cannotOmitBodyWhenExplicitlyMarkedAsRequired()
+    {
+        $this->contentDecoderMock = $this
+            ->getMockBuilder('KleijnWeb\SwaggerBundle\Request\ContentDecoder')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->contentDecoderMock
+            ->expects($this->any())
+            ->method('decodeContent')
+            ->willReturnCallback(function (Request $request) {
                 $data = json_decode($request->getContent());
                 if (is_null($data)) {
-                    throw new \Exception("failed to json_decode '$string'");
+                    throw new \Exception("Failed to json_decode '{$request->getContent()}'");
                 }
 
                 return $data;
@@ -201,14 +190,12 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
                 [
                     'name'     => 'foo',
                     'required' => true,
-                    'in'       => 'query',
-                    'type'     => 'integer'
+                    'in'       => 'body',
+                    'type'     => 'array'
                 ]
             ]
         ];
 
         $transformer->coerceRequest($request, $operationDefinition);
-
-        $this->assertSame([], $request->getContent());
     }
 }

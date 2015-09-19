@@ -59,19 +59,8 @@ class RequestTransformer
         $content = $this->contentDecoder->decodeContent($request, $operationDefinition);
 
         // This modifies the Request object (and adds the content to the 'attributes' ParameterBag
-        $this->coercer->coerceRequestParameters($request, $operationDefinition, $content);
+        $this->coercer->coerceRequest($request, $operationDefinition, $content);
 
         $this->validator->validateRequest($request, $operationDefinition, $stdClassContent);
-
-        // Needed to be able to set the decoded body
-        $request->initialize(
-            $request->query->all(),
-            $request->request->all(),
-            $request->attributes->all(),
-            $request->cookies->all(),
-            $request->files->all(),
-            $request->server->all(),
-            $content
-        );
     }
 }

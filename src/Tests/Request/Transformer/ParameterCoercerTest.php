@@ -8,7 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Request\Transformer;
 
-use KleijnWeb\SwaggerBundle\Request\Transformer\ParameterCoercer;
+use KleijnWeb\SwaggerBundle\Request\ParameterCoercer;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>

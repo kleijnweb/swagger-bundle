@@ -9,7 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\Request;
 
 use KleijnWeb\SwaggerBundle\Exception\UnsupportedException;
-use KleijnWeb\SwaggerBundle\Request\Transformer\ParameterCoercer;
+use KleijnWeb\SwaggerBundle\Request\ParameterCoercer;
 use Symfony\Component\HttpFoundation\Request;
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
 
@@ -26,7 +26,7 @@ class RequestCoercer
      * @throws MalformedContentException
      * @throws UnsupportedException
      */
-    public function coerceRequestParameters(Request $request, array $operationDefinition, $content = null)
+    public function coerceRequest(Request $request, array $operationDefinition, $content = null)
     {
         if (!isset($operationDefinition['parameters'])) {
             return;
@@ -40,7 +40,10 @@ class RequestCoercer
             $paramName = $paramDefinition['name'];
 
             if ($paramDefinition['in'] === 'body') {
-                $bodyParameterName = $paramName;
+                if ($content !== null) {
+                    $request->attributes->set($paramName, $content);
+                }
+
                 continue;
             }
 
@@ -53,17 +56,13 @@ class RequestCoercer
             if (!$request->$paramBagName->has($paramName)) {
                 continue;
             }
-            $request->$paramBagName->set(
+            $request->attributes->set(
                 $paramName,
                 ParameterCoercer::coerceParameter(
                     $paramDefinition,
                     $request->$paramBagName->get($paramName)
                 )
             );
-        }
-
-        if (isset($bodyParameterName)) {
-            $request->attributes->set($bodyParameterName, $content);
         }
     }
 }

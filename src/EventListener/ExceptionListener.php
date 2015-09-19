@@ -10,7 +10,6 @@ namespace KleijnWeb\SwaggerBundle\EventListener;
 
 use KleijnWeb\SwaggerBundle\Response\VndErrorResponse;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

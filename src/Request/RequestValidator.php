@@ -114,15 +114,14 @@ class RequestValidator
                     "Unsupported parameter 'in' value in definition '{$paramDefinition['in']}'"
                 );
             }
-            $paramBagName = $paramBagMapping[$paramDefinition['in']];
-            if (!$request->$paramBagName->has($paramName)) {
+            if (!$request->attributes->has($paramName)) {
                 continue;
             }
             if ($paramDefinition['in'] === 'body' && $content) {
                 $parameters[$paramName] = $content;
                 continue;
             }
-            $parameters[$paramName] = $request->$paramBagName->get($paramName);
+            $parameters[$paramName] = $request->attributes->get($paramName);
 
             /**
              * TODO Hack for date- datetime validation after already coerced into objects
@@ -142,7 +141,6 @@ class RequestValidator
          * TODO Hack, probably not the best performing of solutions
          * @see https://github.com/kleijnweb/swagger-bundle/issues/29
          */
-
         return (object)json_decode(json_encode($parameters));
     }
 }
