@@ -91,7 +91,6 @@ class RequestValidator
          * TODO Hack, probably not the best performing of solutions
          * @see https://github.com/kleijnweb/swagger-bundle/issues/29
          */
-
         return json_decode(json_encode($schema));
     }
 
@@ -142,15 +141,16 @@ class RequestValidator
             $parameters[$paramName] = $request->attributes->get($paramName);
 
             /**
-             * TODO Hack for date- datetime validation after already coerced into objects
-             * @see https://github.com/kleijnweb/swagger-bundle/issues/24
+             * If value already coerced into \DateTime object, use any non-empty value for validation
              */
-            if (isset($paramDefinition['format'])) {
-                if ($paramDefinition['format'] === 'date') {
-                    $parameters[$paramName] = $parameters[$paramName]->format('Y-m-d');
-                }
-                if ($paramDefinition['format'] === 'date-time') {
-                    $parameters[$paramName] = $parameters[$paramName]->format(\DateTime::W3C);
+            if ($parameters[$paramName] instanceof \DateTime) {
+                if (isset($paramDefinition['format'])) {
+                    if ($paramDefinition['format'] === 'date') {
+                        $parameters[$paramName] = '1970-01-01';
+                    }
+                    if ($paramDefinition['format'] === 'date-time') {
+                        $parameters[$paramName] = '1970-01-01T00:00:00Z';
+                    }
                 }
             }
         }
@@ -159,7 +159,6 @@ class RequestValidator
          * TODO Hack, probably not the best performing of solutions
          * @see https://github.com/kleijnweb/swagger-bundle/issues/29
          */
-
         return (object)json_decode(json_encode($parameters));
     }
 }
