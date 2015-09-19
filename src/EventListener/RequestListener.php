@@ -25,16 +25,16 @@ class RequestListener
     /**
      * @var RequestProcessor
      */
-    private $transformer;
+    private $processor;
 
     /**
      * @param DocumentRepository $schemaRepository
-     * @param RequestProcessor $transformer
+     * @param RequestProcessor $processor
      */
-    public function __construct(DocumentRepository $schemaRepository, RequestProcessor $transformer)
+    public function __construct(DocumentRepository $schemaRepository, RequestProcessor $processor)
     {
         $this->schemaRepository = $schemaRepository;
-        $this->transformer = $transformer;
+        $this->processor = $processor;
     }
 
     /**
@@ -54,7 +54,7 @@ class RequestListener
                 $request->getMethod()
             );
 
-        $this->transformer->process(
+        $this->processor->process(
             $request,
             $operationDefinition
         );

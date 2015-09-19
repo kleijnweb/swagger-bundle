@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Tests\Request\Transformer;
+namespace KleijnWeb\SwaggerBundle\Tests\Request\ContentDecoder;
 
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
@@ -39,7 +39,7 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
         $this->serializer = new SerializerAdapter(JmsSerializerFactory::factory());
         $this->contentDecoder = new ContentDecoder(
             $this->serializer,
-            new SerializationTypeResolver('KleijnWeb\SwaggerBundle\Tests\Request\Transformer')
+            new SerializationTypeResolver('KleijnWeb\SwaggerBundle\Tests\Request\ContentDecoder')
         );
     }
 
@@ -69,7 +69,7 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
 
         $actual = $this->contentDecoder->decodeContent($request, $operationDefinition);
 
-        $className = 'KleijnWeb\SwaggerBundle\Tests\Request\Transformer\JmsAnnotatedResourceStub';
+        $className = 'KleijnWeb\SwaggerBundle\Tests\Request\ContentDecoder\JmsAnnotatedResourceStub';
         $expected = (new $className)->setFoo('bar');
 
         $this->assertEquals($expected, $actual);

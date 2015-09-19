@@ -6,7 +6,8 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Tests\Request\Transformer;
+namespace KleijnWeb\SwaggerBundle\Tests\Request\ContentDecoder;
+
 use JMS\Serializer\Annotation\Type;
 
 /**

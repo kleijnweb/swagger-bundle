@@ -12,7 +12,7 @@ use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\Response\ResponseFactory;
 use KleijnWeb\SwaggerBundle\Serializer\JmsSerializerFactory;
 use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
-use KleijnWeb\SwaggerBundle\Tests\Request\Transformer\JmsAnnotatedResourceStub;
+use KleijnWeb\SwaggerBundle\Tests\Request\ContentDecoder\JmsAnnotatedResourceStub;
 use Symfony\Component\HttpFoundation\Request;
 
 /**

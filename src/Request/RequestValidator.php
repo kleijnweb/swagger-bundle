@@ -21,14 +21,26 @@ class RequestValidator
     /**
      * @var array
      */
-    private $operationDefinition;
+    private $operationDefinition = [];
 
     /**
      * @param array $operationDefinition
      */
-    public function __construct(array $operationDefinition)
+    public function __construct($operationDefinition = [])
     {
         $this->operationDefinition = $operationDefinition;
+    }
+
+    /**
+     * @param array $operationDefinition
+     *
+     * @return $this
+     */
+    public function setOperationDefinition($operationDefinition)
+    {
+        $this->operationDefinition = $operationDefinition;
+
+        return $this;
     }
 
     /**
@@ -39,13 +51,12 @@ class RequestValidator
      */
     public function validateRequest(Request $request)
     {
-        // This retrieves the modified parameters
-        $parameters = $this->assembleParameterDataForValidation($request);
-
-        // Validate the parameters using a schema created from the operation definition
         $validator = new Validator();
-        $schema = $this->assembleRequestSchema();
-        $validator->check($parameters, $schema);
+
+        $validator->check(
+            $this->assembleParameterDataForValidation($request),
+            $this->assembleRequestSchema()
+        );
 
         if (!$validator->isValid()) {
             /**
@@ -68,12 +79,10 @@ class RequestValidator
         if (!isset($this->operationDefinition['parameters'])) {
             return new \stdClass;
         }
-
-        $schema = [
-            'type'       => 'object',
-            'properties' => [],
-            'required'   => []
-        ];
+        $schema = new \stdClass;
+        $schema->type = 'object';
+        $schema->required = [];
+        $schema->properties = new \stdClass;
 
         foreach ($this->operationDefinition['parameters'] as $paramDefinition) {
             $propertySchema = isset($paramDefinition['schema'])
@@ -81,17 +90,13 @@ class RequestValidator
                 : $paramDefinition;
 
             if (isset($paramDefinition['required']) && $paramDefinition['required']) {
-                $schema['required'][] = $paramDefinition['name'];
+                $schema->required[] = $paramDefinition['name'];
             }
 
-            $schema['properties']{$paramDefinition['name']} = $propertySchema;
+            $schema->properties->{$paramDefinition['name']} = $this->arrayToObject($propertySchema);
         }
 
-        /**
-         * TODO Hack, probably not the best performing of solutions
-         * @see https://github.com/kleijnweb/swagger-bundle/issues/29
-         */
-        return json_decode(json_encode($schema));
+        return $schema;
     }
 
     /**
@@ -115,7 +120,7 @@ class RequestValidator
             $content = (object)json_decode($request->getContent());
         }
 
-        $parameters = [];
+        $parameters = new \stdClass;
 
         $paramBagMapping = [
             'query'  => 'query',
@@ -135,30 +140,43 @@ class RequestValidator
                 continue;
             }
             if ($paramDefinition['in'] === 'body' && $content !== null) {
-                $parameters[$paramName] = $content;
+                $parameters->$paramName = $content;
                 continue;
             }
-            $parameters[$paramName] = $request->attributes->get($paramName);
+            $parameters->$paramName = $request->attributes->get($paramName);
 
             /**
              * If value already coerced into \DateTime object, use any non-empty value for validation
              */
-            if ($parameters[$paramName] instanceof \DateTime) {
+            if ($parameters->$paramName instanceof \DateTime) {
                 if (isset($paramDefinition['format'])) {
                     if ($paramDefinition['format'] === 'date') {
-                        $parameters[$paramName] = '1970-01-01';
+                        $parameters->$paramName = '1970-01-01';
                     }
                     if ($paramDefinition['format'] === 'date-time') {
-                        $parameters[$paramName] = '1970-01-01T00:00:00Z';
+                        $parameters->$paramName = '1970-01-01T00:00:00Z';
                     }
                 }
             }
         }
 
-        /**
-         * TODO Hack, probably not the best performing of solutions
-         * @see https://github.com/kleijnweb/swagger-bundle/issues/29
-         */
-        return (object)json_decode(json_encode($parameters));
+        return $parameters;
+    }
+
+    /**
+     * @see https://github.com/kleijnweb/swagger-bundle/issues/29
+     *
+     * @param array $data
+     *
+     * @return object
+     */
+    private static function arrayToObject(array $data)
+    {
+        $object = new \stdClass;
+        foreach ($data as $key => $value) {
+            $object->$key = is_array($value) ? self::arrayToObject($value) : $value;
+        }
+
+        return $object;
     }
 }

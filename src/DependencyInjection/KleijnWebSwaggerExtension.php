@@ -46,7 +46,7 @@ class KleijnWebSwaggerExtension extends Extension
         $container->setAlias('swagger.serializer.target', 'swagger.serializer.' . $serializerType);
 
         if ($serializerType !== 'array') {
-            $resolverDefinition = $container->getDefinition('swagger.request.transformer.content_decoder');
+            $resolverDefinition = $container->getDefinition('swagger.request.processor.content_decoder');
             $resolverDefinition->addArgument(new Reference('swagger.serializer.type_resolver'));
         }
     }

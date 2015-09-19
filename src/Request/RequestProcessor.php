@@ -19,17 +19,23 @@ use KleijnWeb\SwaggerBundle\Exception\UnsupportedContentTypeException;
 class RequestProcessor
 {
     /**
-     * @var ContentDecoder
+     * @var RequestValidator
      */
-    private $contentDecoder;
+    private $validator;
 
     /**
-     * @param ContentDecoder $contentDecoder
+     * @var RequestCoercer
      */
-    public function __construct(ContentDecoder $contentDecoder)
+    private $coercer;
+
+    /**
+     * @param RequestValidator $validator
+     * @param RequestCoercer   $coercer
+     */
+    public function __construct(RequestValidator $validator, RequestCoercer $coercer)
     {
-        $this->contentDecoder = $contentDecoder;
-        $this->coercer = new RequestCoercer($contentDecoder);
+        $this->validator = $validator;
+        $this->coercer = $coercer;
     }
 
     /**
@@ -43,7 +49,7 @@ class RequestProcessor
     public function process(Request $request, array $operationDefinition)
     {
         $this->coercer->coerceRequest($request, $operationDefinition);
-        $validator = new RequestValidator($operationDefinition);
-        $validator->validateRequest($request);
+        $this->validator->setOperationDefinition($operationDefinition);
+        $this->validator->validateRequest($request);
     }
 }

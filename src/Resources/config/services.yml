@@ -32,11 +32,18 @@ services:
         class: KleijnWeb\SwaggerBundle\Response\ResponseFactory
         arguments: [@swagger.document.repository, @swagger.serializer]
 
-    swagger.request.transformer:
+    swagger.request.processor:
         class: KleijnWeb\SwaggerBundle\Request\RequestProcessor
-        arguments: [@swagger.request.transformer.content_decoder]
+        arguments: [@swagger.request.processor.validator, @swagger.request.processor.coercer]
 
-    swagger.request.transformer.content_decoder:
+    swagger.request.processor.validator:
+        class: KleijnWeb\SwaggerBundle\Request\RequestValidator
+
+    swagger.request.processor.coercer:
+        class: KleijnWeb\SwaggerBundle\Request\RequestCoercer
+        arguments: [@swagger.request.processor.content_decoder]
+
+    swagger.request.processor.content_decoder:
         class: KleijnWeb\SwaggerBundle\Request\ContentDecoder
         arguments: [@swagger.serializer, @swagger.serializer.type_resolver]
 
@@ -54,6 +61,6 @@ services:
 
     kernel.listener.swagger.request:
         class: KleijnWeb\SwaggerBundle\EventListener\RequestListener
-        arguments: [@swagger.document.repository, @swagger.request.transformer]
+        arguments: [@swagger.document.repository, @swagger.request.processor]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
