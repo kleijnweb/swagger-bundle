@@ -12,6 +12,7 @@ use KleijnWeb\SwaggerBundle\Exception\UnsupportedException;
 use Symfony\Component\HttpFoundation\Request;
 use JsonSchema\Validator;
 use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
+use Symfony\Component\Serializer\Encoder\JsonDecode;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -19,17 +20,16 @@ use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
 class RequestValidator
 {
     /**
-     * @param Request   $request
-     * @param array     $operationDefinition
-     * @param \stdClass $content
+     * @param Request $request
+     * @param array   $operationDefinition
      *
      * @throws InvalidParametersException
      * @throws UnsupportedException
      */
-    public function validateRequest(Request $request, array $operationDefinition, \stdClass $content = null)
+    public function validateRequest(Request $request, array $operationDefinition)
     {
         // This retrieves the modified parameters
-        $parameters = $this->assembleParameterDataForValidation($request, $operationDefinition, $content);
+        $parameters = $this->assembleParameterDataForValidation($request, $operationDefinition);
 
         // Validate the parameters using a schema created from the operation definition
         $validator = new Validator();
@@ -37,9 +37,13 @@ class RequestValidator
         $validator->check($parameters, $schema);
 
         if (!$validator->isValid()) {
-            // TODO Better utilize $validator->getErrors() so we can assemble a more helpful vnd.error response
+            /**
+             * TODO Better utilize $validator->getErrors() so we can assemble a more helpful vnd.error response
+             * @see https://github.com/kleijnweb/swagger-bundle/issues/27
+             */
             throw new InvalidParametersException(
-                "Parameters incompatible with operation schema: " . implode(', ', $validator->getErrors()[0]),
+                "Parameters incompatible with operation schema: "
+                . implode(', ', $validator->getErrors()[0]),
                 400
             );
         }
@@ -83,21 +87,28 @@ class RequestValidator
     }
 
     /**
-     * @param Request   $request
-     * @param array     $operationDefinition
-     * @param \stdClass $content
+     * @param Request $request
+     * @param array   $operationDefinition
      *
      * @return \stdClass
      * @throws UnsupportedException
      */
-    private function assembleParameterDataForValidation(
-        Request $request,
-        array $operationDefinition,
-        \stdClass $content = null
-    ) {
+    private function assembleParameterDataForValidation(Request $request, array $operationDefinition)
+    {
         if (!isset($operationDefinition['parameters'])) {
             return new \stdClass;
         }
+
+        /**
+         * TODO Hack
+         * @see https://github.com/kleijnweb/swagger-bundle/issues/24
+         */
+        $content = null;
+        if ($request->getContent()) {
+            $decoder = new JsonDecode(false);
+            $content = (object)$decoder->decode($request->getContent(), 'json');
+        }
+
         $parameters = [];
 
         $paramBagMapping = [
@@ -141,6 +152,7 @@ class RequestValidator
          * TODO Hack, probably not the best performing of solutions
          * @see https://github.com/kleijnweb/swagger-bundle/issues/29
          */
+
         return (object)json_decode(json_encode($parameters));
     }
 }

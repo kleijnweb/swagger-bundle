@@ -10,6 +10,8 @@ namespace KleijnWeb\SwaggerBundle\Request;
 
 use KleijnWeb\SwaggerBundle\Exception\UnsupportedException;
 use KleijnWeb\SwaggerBundle\Request\ParameterCoercer;
+use KleijnWeb\SwaggerBundle\Serializer\ArraySerializer;
+use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
 use Symfony\Component\HttpFoundation\Request;
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
 
@@ -19,15 +21,33 @@ use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
 class RequestCoercer
 {
     /**
+     * @var ContentDecoder
+     */
+    private $contentDecoder;
+
+    /**
+     * @param ContentDecoder $contentDecoder
+     */
+    public function __construct($contentDecoder = null)
+    {
+        $this->contentDecoder = $contentDecoder ?: new ContentDecoder(
+            new SerializerAdapter(
+                new ArraySerializer()
+            )
+        );
+    }
+
+    /**
      * @param Request $request
      * @param array   $operationDefinition
-     * @param mixed   $content
      *
      * @throws MalformedContentException
      * @throws UnsupportedException
      */
-    public function coerceRequest(Request $request, array $operationDefinition, $content = null)
+    public function coerceRequest(Request $request, array $operationDefinition)
     {
+        $content = $this->contentDecoder->decodeContent($request, $operationDefinition);
+
         if (!isset($operationDefinition['parameters'])) {
             return;
         }

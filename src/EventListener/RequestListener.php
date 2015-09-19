@@ -9,7 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\EventListener;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
-use KleijnWeb\SwaggerBundle\Request\RequestTransformer;
+use KleijnWeb\SwaggerBundle\Request\RequestProcessor;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 /**
@@ -23,15 +23,15 @@ class RequestListener
     private $schemaRepository;
 
     /**
-     * @var RequestTransformer
+     * @var RequestProcessor
      */
     private $transformer;
 
     /**
      * @param DocumentRepository $schemaRepository
-     * @param RequestTransformer $transformer
+     * @param RequestProcessor $transformer
      */
-    public function __construct(DocumentRepository $schemaRepository, RequestTransformer $transformer)
+    public function __construct(DocumentRepository $schemaRepository, RequestProcessor $transformer)
     {
         $this->schemaRepository = $schemaRepository;
         $this->transformer = $transformer;

@@ -8,7 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Request;
 
-use KleijnWeb\SwaggerBundle\Request\RequestTransformer;
+use KleijnWeb\SwaggerBundle\Request\RequestProcessor;
 use KleijnWeb\SwaggerBundle\Request\ParameterCoercer;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -38,7 +38,7 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
                 return $data;
             });
 
-        $transformer = new RequestTransformer($this->contentDecoderMock);
+        $transformer = new RequestProcessor($this->contentDecoderMock);
         $content = '[1,2,3,4]';
         $request = new Request([], [], [], [], [], [], $content);
 
@@ -72,7 +72,7 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
                 return json_decode($request->getContent());
             });
 
-        $transformer = new RequestTransformer($this->contentDecoderMock);
+        $transformer = new RequestProcessor($this->contentDecoderMock);
 
         $request = new Request();
 
@@ -101,7 +101,7 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $transformer = new RequestTransformer($this->contentDecoderMock);
+        $transformer = new RequestProcessor($this->contentDecoderMock);
         $request = new Request(['foo' => "2015-01-01"], [], [], [], [], []);
 
         $operationDefinition = [
@@ -142,7 +142,7 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
                 return json_decode($request->getContent());
             });
 
-        $transformer = new RequestTransformer($this->contentDecoderMock);
+        $transformer = new RequestProcessor($this->contentDecoderMock);
         $request = new Request();
 
         $operationDefinition = [
@@ -181,7 +181,7 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
                 return $data;
             });
 
-        $transformer = new RequestTransformer($this->contentDecoderMock);
+        $transformer = new RequestProcessor($this->contentDecoderMock);
         $content = '[]';
         $request = new Request([], [], [], [], [], [], $content);
 

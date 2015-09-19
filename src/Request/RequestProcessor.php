@@ -8,17 +8,15 @@
 
 namespace KleijnWeb\SwaggerBundle\Request;
 
-use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
 use Symfony\Component\HttpFoundation\Request;
 use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
 use KleijnWeb\SwaggerBundle\Exception\UnsupportedContentTypeException;
-use Symfony\Component\Serializer\Encoder\JsonDecode;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class RequestTransformer
+class RequestProcessor
 {
     /**
      * @var ContentDecoder
@@ -32,7 +30,7 @@ class RequestTransformer
     {
         $this->contentDecoder = $contentDecoder;
         $this->validator = new RequestValidator();
-        $this->coercer = new RequestCoercer();
+        $this->coercer = new RequestCoercer($contentDecoder);
     }
 
     /**
@@ -45,22 +43,7 @@ class RequestTransformer
      */
     public function coerceRequest(Request $request, array $operationDefinition)
     {
-        /**
-         * TODO Hack
-         * @see https://github.com/kleijnweb/swagger-bundle/issues/24
-         */
-        $originalContent = $request->getContent();
-        $stdClassContent = null;
-        if ($originalContent) {
-            $decoder = new JsonDecode(false);
-            $stdClassContent = (object)$decoder->decode($originalContent, 'json');
-        }
-
-        $content = $this->contentDecoder->decodeContent($request, $operationDefinition);
-
-        // This modifies the Request object (and adds the content to the 'attributes' ParameterBag
-        $this->coercer->coerceRequest($request, $operationDefinition, $content);
-
-        $this->validator->validateRequest($request, $operationDefinition, $stdClassContent);
+        $this->coercer->coerceRequest($request, $operationDefinition);
+        $this->validator->validateRequest($request, $operationDefinition);
     }
 }

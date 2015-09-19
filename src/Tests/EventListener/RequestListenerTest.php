@@ -10,7 +10,7 @@ namespace KleijnWeb\SwaggerBundle\Tests\Dev\EventListener;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\EventListener\RequestListener;
-use KleijnWeb\SwaggerBundle\Request\RequestTransformer;
+use KleijnWeb\SwaggerBundle\Request\RequestProcessor;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
@@ -74,7 +74,7 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         $this->transformerMock = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Request\RequestTransformer')
+            ->getMockBuilder('KleijnWeb\SwaggerBundle\Request\RequestProcessor')
             ->disableOriginalConstructor()
             ->getMock();
 

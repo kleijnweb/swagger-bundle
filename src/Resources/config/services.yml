@@ -33,7 +33,7 @@ services:
         arguments: [@swagger.document.repository, @swagger.serializer]
 
     swagger.request.transformer:
-        class: KleijnWeb\SwaggerBundle\Request\RequestTransformer
+        class: KleijnWeb\SwaggerBundle\Request\RequestProcessor
         arguments: [@swagger.request.transformer.content_decoder]
 
     swagger.request.transformer.content_decoder:
