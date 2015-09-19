@@ -8,17 +8,16 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Functional;
 
-use JMS\Serializer\Serializer;
 use KleijnWeb\SwaggerBundle\Dev\Test\ApiTestCase;
-use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
-use KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver;
-use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class SerializationPetStoreApiTest extends ApiTestCase
+class SerializationPetStoreApiTest extends WebTestCase
 {
+    use ApiTestCase;
+
     /**
      * Use config_jms.yml
      *
@@ -39,7 +38,7 @@ class SerializationPetStoreApiTest extends ApiTestCase
      */
     public static function setUpBeforeClass()
     {
-        parent::initSchemaManager(__DIR__ . '/PetStore/app/petstore.yml');
+        static::initSchemaManager(__DIR__ . '/PetStore/app/petstore.yml');
     }
 
     /**

@@ -9,12 +9,15 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Functional;
 
 use KleijnWeb\SwaggerBundle\Dev\Test\ApiTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class BasicPetStoreApiTest extends ApiTestCase
+class BasicPetStoreApiTest extends WebTestCase
 {
+    use ApiTestCase;
+
     /**
      * Use config_basic.yml
      *
@@ -33,7 +36,7 @@ class BasicPetStoreApiTest extends ApiTestCase
 
     public static function setUpBeforeClass()
     {
-        parent::initSchemaManager(__DIR__ . '/PetStore/app/petstore.yml');
+        static::initSchemaManager(__DIR__ . '/PetStore/app/petstore.yml');
     }
 
     /**

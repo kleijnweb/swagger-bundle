@@ -14,20 +14,14 @@ use KleijnWeb\SwaggerBundle\Document\SwaggerDocument;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use org\bovigo\vfs\vfsStreamWrapper;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Yaml\Yaml;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-abstract class ApiTestCase extends WebTestCase
+trait ApiTestCase
 {
     use AssertsTrait;
-
-    /**
-     * @var string
-     */
-    protected $env = 'test';
 
     /**
      * @var SchemaManager
@@ -43,16 +37,6 @@ abstract class ApiTestCase extends WebTestCase
      * @var ApiTestClient
      */
     protected $client;
-
-    /**
-     * @var array
-     */
-    protected $defaultServerVars = [];
-
-    /**
-     * @var bool
-     */
-    protected $validateErrorResponse = true;
 
     /**
      * PHPUnit cannot add this to code coverage
@@ -82,7 +66,7 @@ abstract class ApiTestCase extends WebTestCase
      */
     protected function setUp()
     {
-        $this->client = static::createClient(['environment' => $this->env]);
+        $this->client = static::createClient(['environment' => $this->env ?: 'test']);
 
         parent::setUp();
     }
@@ -163,7 +147,8 @@ abstract class ApiTestCase extends WebTestCase
     protected function sendRequest($path, $method, array $params = [], array $content = null)
     {
         $request = new ApiRequest($this->assembleUri($path, $params), $method);
-        $request->setServer(array_merge($this->defaultServerVars, ['CONTENT_TYPE' => 'application/json']));
+        $defaults = isset($this->defaultServerVars) ? $this->defaultServerVars : [];
+        $request->setServer(array_merge($defaults ?: [], ['CONTENT_TYPE' => 'application/json']));
         if ($content !== null) {
             $request->setContent(json_encode($content));
         }
@@ -211,7 +196,7 @@ abstract class ApiTestCase extends WebTestCase
         $json = json_decode($responseContent);
 
         if ($response->getStatusCode() !== 200) {
-            if ($this->validateErrorResponse) {
+            if (!isset($this->validateErrorResponse) || !$this->validateErrorResponse) {
                 $this->assertResponseBodyMatch(
                     $json,
                     self::$schemaManager,
