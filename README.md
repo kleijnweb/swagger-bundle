@@ -84,7 +84,7 @@ Any of these will work (assuming the `in: body` parameter is named `body` in you
 public function placeOrder(Request $request)
 {
     /** @var array $order */
-    $order = $request->getContent();
+    $order = $request->attributes->get('body');
 
    //...
 }
@@ -102,6 +102,9 @@ public function placeOrder(array $body)
     //...
 }
 ```
+
+__NOTE:__ SwaggerBundle applies some type conversion to input and adds the converted types to the Request `attributes`. 
+Using `Request::get()` will give precedence to parameters in `query`. These values will be 'raw', using `attributes` is preferred.
 
 Your controllers do not need to implement any interfaces or extend any classes. A controller might look like this (using object deserialization, see section below):
 
@@ -183,22 +186,22 @@ parameters:
       $ref: '#/definitions/Pet'
 ```
 
-Similar to arrays, you may use the reference the parameter in your controller signature, or use `$request->getContent()`:
+Similar to arrays, you may use the reference the parameter in your controller signature, or use `attributes`:
 
-```php
-public function placeOrder(Request $request)
-{
-    /** @var Order $order */
-    $order = $request->getContent();
-
-   //...
-}
-```
 
 ```php
 public function placeOrder(Order $body)
 {
     //...
+}
+```
+```php
+public function placeOrder(Request $request)
+{
+    /** @var Order $order */
+    $order = $request->attributes->get('body');
+
+   //...
 }
 ```
   
@@ -351,12 +354,14 @@ See `app/console swagger:generate:resources --help` for more details.
 
 ## Functional Testing Your API
 
-The easiest way to create functional tests for your API, is by extending `ApiTestCase`. This will provide you with some convenience methods (`get()`, `post()`, `put()`, etc) and 
+The easiest way to create functional tests for your API, is by using mixin `ApiTestCase`. This will provide you with some convenience methods (`get()`, `post()`, `put()`, etc) and 
 will validate responses using SwaggerAssertions to ensure the responses received are compliant with your Swagger spec. Example:
 
 ```php
-class PetStoreApiTest extends ApiTestCase
+class PetStoreApiTest extends WebTestCase
 {
+    use ApiTestCase;
+    
     /**
      * Use config_basic.yml
      *
@@ -371,13 +376,12 @@ class PetStoreApiTest extends ApiTestCase
      */
     protected $validateErrorResponse = false;
 
-
     /**
      * Init response validation, point to your spec
      */
     public static function setUpBeforeClass()
     {
-        parent::initSchemaManager(__DIR__ . '/path/to/a/spec.yml');
+        static::initSchemaManager(__DIR__ . '/path/to/a/spec.yml');
     }
 
     /**
