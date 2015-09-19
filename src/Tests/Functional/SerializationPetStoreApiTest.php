@@ -10,7 +10,7 @@ namespace KleijnWeb\SwaggerBundle\Tests\Functional;
 
 use JMS\Serializer\Serializer;
 use KleijnWeb\SwaggerBundle\Dev\Test\ApiTestCase;
-use KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder;
+use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
 use KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver;
 use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
 

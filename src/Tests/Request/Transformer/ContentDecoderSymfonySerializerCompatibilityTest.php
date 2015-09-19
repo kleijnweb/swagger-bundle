@@ -8,7 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Request\Transformer;
 
-use KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder;
+use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
 use KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver;
 use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
 use KleijnWeb\SwaggerBundle\Serializer\SymfonySerializerFactory;

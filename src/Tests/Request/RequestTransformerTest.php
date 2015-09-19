@@ -9,7 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Request;
 
 use KleijnWeb\SwaggerBundle\Request\RequestTransformer;
-use KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder;
+use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
 use KleijnWeb\SwaggerBundle\Request\Transformer\ParameterCoercer;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -24,7 +24,7 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
     public function willDecodeContent()
     {
         $this->contentDecoderMock = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder')
+            ->getMockBuilder('KleijnWeb\SwaggerBundle\Request\ContentDecoder')
             ->disableOriginalConstructor()
             ->getMock();
         $this->contentDecoderMock
@@ -58,7 +58,7 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
     public function willAddContentAsAttribute()
     {
         $this->contentDecoderMock = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder')
+            ->getMockBuilder('KleijnWeb\SwaggerBundle\Request\ContentDecoder')
             ->disableOriginalConstructor()
             ->getMock();
         $this->contentDecoderMock
@@ -97,7 +97,7 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
     public function canOmitParameterWhenNotExplicitlyMarkedAsRequired()
     {
         $this->contentDecoderMock = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder')
+            ->getMockBuilder('KleijnWeb\SwaggerBundle\Request\ContentDecoder')
             ->disableOriginalConstructor()
             ->getMock();
         $this->contentDecoderMock
@@ -142,7 +142,7 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
     public function willConstructDate()
     {
         $this->contentDecoderMock = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder')
+            ->getMockBuilder('KleijnWeb\SwaggerBundle\Request\ContentDecoder')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -177,7 +177,7 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
     public function cannotOmitParameterWhenExplicitlyMarkedAsRequired()
     {
         $this->contentDecoderMock = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Request\Transformer\ContentDecoder')
+            ->getMockBuilder('KleijnWeb\SwaggerBundle\Request\ContentDecoder')
             ->disableOriginalConstructor()
             ->getMock();
         $this->contentDecoderMock
