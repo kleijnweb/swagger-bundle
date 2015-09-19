@@ -51,7 +51,7 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $transformer->coerceRequest($request, $operationDefinition);
+        $transformer->process($request, $operationDefinition);
 
         $this->assertSame([1, 2, 3, 4], $request->attributes->get('myContent'));
     }
@@ -86,7 +86,7 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $transformer->coerceRequest($request, $operationDefinition);
+        $transformer->process($request, $operationDefinition);
 
         $this->assertFalse($request->attributes->has('foo'));
     }
@@ -115,7 +115,7 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $transformer->coerceRequest($request, $operationDefinition);
+        $transformer->process($request, $operationDefinition);
 
         $expected = ParameterCoercer::coerceParameter($operationDefinition['parameters'][0], "2015-01-01");
 
@@ -156,7 +156,7 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $transformer->coerceRequest($request, $operationDefinition);
+        $transformer->process($request, $operationDefinition);
     }
 
     /**
@@ -196,6 +196,6 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $transformer->coerceRequest($request, $operationDefinition);
+        $transformer->process($request, $operationDefinition);
     }
 }

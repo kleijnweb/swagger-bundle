@@ -54,7 +54,7 @@ class RequestListener
                 $request->getMethod()
             );
 
-        $this->transformer->coerceRequest(
+        $this->transformer->process(
             $request,
             $operationDefinition
         );

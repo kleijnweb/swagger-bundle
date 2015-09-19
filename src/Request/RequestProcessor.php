@@ -29,7 +29,6 @@ class RequestProcessor
     public function __construct(ContentDecoder $contentDecoder)
     {
         $this->contentDecoder = $contentDecoder;
-        $this->validator = new RequestValidator();
         $this->coercer = new RequestCoercer($contentDecoder);
     }
 
@@ -41,9 +40,10 @@ class RequestProcessor
      * @throws MalformedContentException
      * @throws UnsupportedContentTypeException
      */
-    public function coerceRequest(Request $request, array $operationDefinition)
+    public function process(Request $request, array $operationDefinition)
     {
         $this->coercer->coerceRequest($request, $operationDefinition);
-        $this->validator->validateRequest($request, $operationDefinition);
+        $validator = new RequestValidator($operationDefinition);
+        $validator->validateRequest($request);
     }
 }

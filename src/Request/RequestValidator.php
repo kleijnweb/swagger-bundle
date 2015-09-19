@@ -12,7 +12,6 @@ use KleijnWeb\SwaggerBundle\Exception\UnsupportedException;
 use Symfony\Component\HttpFoundation\Request;
 use JsonSchema\Validator;
 use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
-use Symfony\Component\Serializer\Encoder\JsonDecode;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -20,20 +19,32 @@ use Symfony\Component\Serializer\Encoder\JsonDecode;
 class RequestValidator
 {
     /**
+     * @var array
+     */
+    private $operationDefinition;
+
+    /**
+     * @param array $operationDefinition
+     */
+    public function __construct(array $operationDefinition)
+    {
+        $this->operationDefinition = $operationDefinition;
+    }
+
+    /**
      * @param Request $request
-     * @param array   $operationDefinition
      *
      * @throws InvalidParametersException
      * @throws UnsupportedException
      */
-    public function validateRequest(Request $request, array $operationDefinition)
+    public function validateRequest(Request $request)
     {
         // This retrieves the modified parameters
-        $parameters = $this->assembleParameterDataForValidation($request, $operationDefinition);
+        $parameters = $this->assembleParameterDataForValidation($request);
 
         // Validate the parameters using a schema created from the operation definition
         $validator = new Validator();
-        $schema = $this->assembleRequestSchema($operationDefinition);
+        $schema = $this->assembleRequestSchema();
         $validator->check($parameters, $schema);
 
         if (!$validator->isValid()) {
@@ -50,13 +61,11 @@ class RequestValidator
     }
 
     /**
-     * @param array $operationDefinition
-     *
      * @return object
      */
-    private function assembleRequestSchema(array $operationDefinition)
+    private function assembleRequestSchema()
     {
-        if (!isset($operationDefinition['parameters'])) {
+        if (!isset($this->operationDefinition['parameters'])) {
             return new \stdClass;
         }
 
@@ -66,7 +75,7 @@ class RequestValidator
             'required'   => []
         ];
 
-        foreach ($operationDefinition['parameters'] as $paramDefinition) {
+        foreach ($this->operationDefinition['parameters'] as $paramDefinition) {
             $propertySchema = isset($paramDefinition['schema'])
                 ? $paramDefinition['schema']
                 : $paramDefinition;
@@ -88,14 +97,13 @@ class RequestValidator
 
     /**
      * @param Request $request
-     * @param array   $operationDefinition
      *
      * @return \stdClass
      * @throws UnsupportedException
      */
-    private function assembleParameterDataForValidation(Request $request, array $operationDefinition)
+    private function assembleParameterDataForValidation(Request $request)
     {
-        if (!isset($operationDefinition['parameters'])) {
+        if (!isset($this->operationDefinition['parameters'])) {
             return new \stdClass;
         }
 
@@ -105,8 +113,7 @@ class RequestValidator
          */
         $content = null;
         if ($request->getContent()) {
-            $decoder = new JsonDecode(false);
-            $content = (object)$decoder->decode($request->getContent(), 'json');
+            $content = (object)json_decode($request->getContent());
         }
 
         $parameters = [];
@@ -117,7 +124,7 @@ class RequestValidator
             'body'   => 'attributes',
             'header' => 'headers'
         ];
-        foreach ($operationDefinition['parameters'] as $paramDefinition) {
+        foreach ($this->operationDefinition['parameters'] as $paramDefinition) {
             $paramName = $paramDefinition['name'];
 
             if (!isset($paramBagMapping[$paramDefinition['in']])) {
@@ -128,7 +135,7 @@ class RequestValidator
             if (!$request->attributes->has($paramName)) {
                 continue;
             }
-            if ($paramDefinition['in'] === 'body' && $content) {
+            if ($paramDefinition['in'] === 'body' && $content !== null) {
                 $parameters[$paramName] = $content;
                 continue;
             }

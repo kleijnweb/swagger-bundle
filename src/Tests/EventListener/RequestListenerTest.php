@@ -109,7 +109,7 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
 
         $this->transformerMock
             ->expects($this->once())
-            ->method('coerceRequest')
+            ->method('process')
             ->with($this->request);
 
         $this->listener->onKernelRequest($this->eventMock);
@@ -131,7 +131,7 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
 
         $this->transformerMock
             ->expects($this->never())
-            ->method('coerceRequest');
+            ->method('process');
 
         $this->listener->onKernelRequest($this->eventMock);
     }
