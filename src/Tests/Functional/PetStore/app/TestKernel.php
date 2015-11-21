@@ -18,10 +18,6 @@ class TestKernel extends Kernel
             new KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\PetStoreBundle()
         ];
 
-        if (0 === strpos($this->getEnvironment(), 'secured')) {
-            $bundles[] = new Symfony\Bundle\SecurityBundle\SecurityBundle();
-        }
-
         return $bundles;
     }
 

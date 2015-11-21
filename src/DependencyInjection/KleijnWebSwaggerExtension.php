@@ -34,11 +34,6 @@ class KleijnWebSwaggerExtension extends Extension
             $loader->load('services_dev.yml');
         }
 
-        if ($config['auth']) {
-            $container->setParameter('swagger.auth.keys', $config['auth']['keys']);
-            $loader->load('services_auth.yml');
-        }
-
         $container->setParameter('swagger.document.base_path', $config['document']['base_path']);
         $container->setParameter('swagger.serializer.namespace', $config['serializer']['namespace']);
 

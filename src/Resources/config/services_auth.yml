@@ -1,5 +1,0 @@
-services:
-  swagger.auth.authenticator.jwt:
-      class:  KleijnWeb\SwaggerBundle\Security\Authenticator\JwtAuthenticator
-      arguments: [%swagger.auth.keys%]
-      public: false
