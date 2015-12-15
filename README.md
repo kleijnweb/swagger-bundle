@@ -4,7 +4,7 @@ Invert your workflow (contract first) using Swagger specs and set up a Symfony R
 
 Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig (except for dev purposes).
 
-*SwaggerBundle only supports json in- and ouput, and only YAML Swagger defintions.*
+*SwaggerBundle only supports json in- and output, and only YAML Swagger defintions.*
 
 Go to the [release page](https://github.com/kleijnweb/swagger-bundle/releases) to find details about the latest release.
 
