@@ -1,13 +1,13 @@
 services:
     swagger.route_loader:
         class: KleijnWeb\SwaggerBundle\Routing\SwaggerRouteLoader
-        arguments: [@swagger.document.repository]
+        arguments: ['@swagger.document.repository']
         tags:
             - { name: routing.loader }
 
     swagger.serializer:
         class: KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter
-        arguments: [@swagger.serializer.target]
+        arguments: ['@swagger.serializer.target']
 
     swagger.serializer.array:
         class: KleijnWeb\SwaggerBundle\Serializer\ArraySerializer
@@ -30,37 +30,37 @@ services:
 
     swagger.response.factory:
         class: KleijnWeb\SwaggerBundle\Response\ResponseFactory
-        arguments: [@swagger.document.repository, @swagger.serializer]
+        arguments: ['@swagger.document.repository', '@swagger.serializer']
 
     swagger.request.processor:
         class: KleijnWeb\SwaggerBundle\Request\RequestProcessor
-        arguments: [@swagger.request.processor.validator, @swagger.request.processor.coercer]
+        arguments: ['@swagger.request.processor.validator', '@swagger.request.processor.coercer']
 
     swagger.request.processor.validator:
         class: KleijnWeb\SwaggerBundle\Request\RequestValidator
 
     swagger.request.processor.coercer:
         class: KleijnWeb\SwaggerBundle\Request\RequestCoercer
-        arguments: [@swagger.request.processor.content_decoder]
+        arguments: ['@swagger.request.processor.content_decoder']
 
     swagger.request.processor.content_decoder:
         class: KleijnWeb\SwaggerBundle\Request\ContentDecoder
-        arguments: [@swagger.serializer, @swagger.serializer.type_resolver]
+        arguments: ['@swagger.serializer', '@swagger.serializer.type_resolver']
 
     kernel.listener.swagger.view:
         class: KleijnWeb\SwaggerBundle\EventListener\ViewListener
-        arguments: [@swagger.response.factory]
+        arguments: ['@swagger.response.factory']
         tags:
             - { name: kernel.event_listener, event: kernel.view, method: onKernelView }
 
     kernel.listener.swagger.exception:
         class: KleijnWeb\SwaggerBundle\EventListener\ExceptionListener
-        arguments: [@logger]
+        arguments: ['@logger']
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
 
     kernel.listener.swagger.request:
         class: KleijnWeb\SwaggerBundle\EventListener\RequestListener
-        arguments: [@swagger.document.repository, @swagger.request.processor]
+        arguments: ['@swagger.document.repository', '@swagger.request.processor']
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }

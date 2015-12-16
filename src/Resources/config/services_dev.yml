@@ -7,6 +7,6 @@ services:
 
     swagger.dev.command.amend_swagger:
         class: KleijnWeb\SwaggerBundle\Dev\Command\AmendSwaggerDocumentCommand
-        arguments: [@swagger.document.repository, @swagger.dev.fixer.swagger_bundle_response]
+        arguments: ['@swagger.document.repository', '@swagger.dev.fixer.swagger_bundle_response']
         tags:
             -  { name: console.command }
