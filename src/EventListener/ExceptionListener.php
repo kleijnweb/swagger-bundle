@@ -65,8 +65,6 @@ class ExceptionListener
             return;
         }
 
-        new VndErrorResponse("Authentication Failure", Response::HTTP_UNAUTHORIZED);
-
         $code = $exception->getCode();
 
         if (strlen($code) !== 3) {
