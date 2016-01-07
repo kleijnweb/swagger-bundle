@@ -14,6 +14,8 @@ use KleijnWeb\SwaggerBundle\Document\SwaggerDocument;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use org\bovigo\vfs\vfsStreamWrapper;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -178,7 +180,7 @@ trait ApiTestCase
      * @param string $fullPath
      * @param string $method
      *
-     * @return object
+     * @return object|null
      * @throws ApiResponseErrorException
      */
     private function getJsonForLastRequest($fullPath, $method)
@@ -186,46 +188,43 @@ trait ApiTestCase
         $method = strtolower($method);
         $response = $this->client->getResponse();
         $responseContent = $response->getContent();
-
-        if ($response->getStatusCode() === 204 && !$responseContent) {
-            // TODO Validate this
-            return null;
-        }
-
-        $json = json_decode($responseContent);
+        $data = json_decode($responseContent);
+        $this->assertSame(JSON_ERROR_NONE, json_last_error(), "Not valid JSON: $responseContent");
 
         if (substr($response->getStatusCode(), 0, 1) != '2') {
             if (!isset($this->validateErrorResponse) || $this->validateErrorResponse) {
-                $this->assertResponseBodyMatch(
-                    $json,
-                    self::$schemaManager,
-                    $fullPath,
-                    $method,
-                    $response->getStatusCode()
-                );
+                $this->validateResponse($response->getStatusCode(), $response, $method, $fullPath, $data);
             }
-            throw new ApiResponseErrorException($json, $response->getStatusCode());
+            // This throws an exception so that tests can catch it when it is expected
+            throw new ApiResponseErrorException($data, $response->getStatusCode());
         }
 
+        $this->validateResponse($response->getStatusCode(), $response, $method, $fullPath, $data);
+
+        return $data;
+    }
+
+    /**
+     * @param          $code
+     * @param Response $response
+     * @param string   $method
+     * @param string   $fullPath
+     * @param mixed    $data
+     */
+    private function validateResponse($code, $response, $method, $fullPath, $data)
+    {
         $request = $this->client->getRequest();
-
-        if (self::$schemaManager->hasPath(['paths', $request->get('_swagger_path'), $method, 'responses', '200'])) {
-            $this->assertNotNull($json, "Not valid JSON: $responseContent");
-            $headers = [];
-
-            foreach ($response->headers->all() as $key => $values) {
-                $headers[str_replace(' ', '-', ucwords(str_replace('-', ' ', $key)))] = $values[0];
-            }
-            $this->assertResponseHeadersMatch($headers, self::$schemaManager, $fullPath, $method, 200);
-            $this->assertResponseBodyMatch($json, self::$schemaManager, $fullPath, $method, 200);
-
-            return $json;
+        if (!self::$schemaManager->hasPath(['paths', $request->get('_swagger_path'), $method, 'responses', $code])) {
+            throw new \UnexpectedValueException(
+                "There is no $code response definition for {$request->get('_swagger_path')}:$method. "
+            );
         }
+        $headers = [];
 
-        // If there is no response definition, the API should return 204 No Content.
-        // With the current spec the behavior is undefined, this must be fixed.
-        throw new \UnexpectedValueException(
-            "There is no 200 response definition for {$request->get('_swagger_path')}:$method. For empty responses, use 204."
-        );
+        foreach ($response->headers->all() as $key => $values) {
+            $headers[str_replace(' ', '-', ucwords(str_replace('-', ' ', $key)))] = $values[0];
+        }
+        $this->assertResponseHeadersMatch($headers, self::$schemaManager, $fullPath, $method, $code);
+        $this->assertResponseBodyMatch($data, self::$schemaManager, $fullPath, $method, $code);
     }
 }
