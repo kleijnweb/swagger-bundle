@@ -10,6 +10,7 @@ paths:
           type: object
       responses:
         '200':
+          description: "The created resource"
           schema:
             type: object
 
@@ -25,6 +26,7 @@ paths:
           required: true
       responses:
         '200':
+          description: "The modified resource"
           schema:
             type: object
     delete:
@@ -35,9 +37,9 @@ paths:
           type: integer
       responses:
         '204':
+          description: "Empty response"
           schema:
-            type: object
-
+            type: null
     get:
       parameters:
         - in: path
@@ -46,5 +48,6 @@ paths:
           type: integer
       responses:
         '200':
+          description: "The requested resource"
           schema:
             type: object

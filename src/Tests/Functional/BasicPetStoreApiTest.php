@@ -25,15 +25,6 @@ class BasicPetStoreApiTest extends WebTestCase
      */
     protected $env = 'basic';
 
-    /**
-     * TODO Temporary workaround
-     * @see https://github.com/kleijnweb/swagger-bundle/issues/16
-     *
-     * @var bool
-     */
-    protected $validateErrorResponse = false;
-
-
     public static function setUpBeforeClass()
     {
         static::initSchemaManager(__DIR__ . '/PetStore/app/swagger/petstore.yml');

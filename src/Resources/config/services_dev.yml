@@ -1,12 +1,18 @@
 services:
-    swagger.dev.fixer.resource_definitions:
-        class: KleijnWeb\SwaggerBundle\Dev\DocumentFixer\Fixers\ResourceDefinitionFixer
+  swagger.dev.resource_generator:
+    class: KleijnWeb\SwaggerBundle\Dev\Generator\ResourceGenerator
 
-    swagger.dev.fixer.swagger_bundle_response:
-        class: KleijnWeb\SwaggerBundle\Dev\DocumentFixer\Fixers\SwaggerBundleResponseFixer
+  swagger.dev.document_fixer.swagger_bundle_response:
+    class: KleijnWeb\SwaggerBundle\Dev\DocumentFixer\Fixers\SwaggerBundleResponseFixer
 
-    swagger.dev.command.amend_swagger:
-        class: KleijnWeb\SwaggerBundle\Dev\Command\AmendSwaggerDocumentCommand
-        arguments: ['@swagger.document.repository', '@swagger.dev.fixer.swagger_bundle_response']
-        tags:
-            -  { name: console.command }
+  swagger.dev.command.amend_swagger:
+    class: KleijnWeb\SwaggerBundle\Dev\Command\AmendSwaggerDocumentCommand
+    arguments: ['@swagger.document.repository', '@swagger.dev.document_fixer.swagger_bundle_response']
+    tags:
+        -  { name: console.command }
+
+  swagger.dev.command.generate_resources:
+    class: KleijnWeb\SwaggerBundle\Dev\Command\GenerateResourceClassesCommand
+    arguments: ['@swagger.document.repository', '@swagger.dev.resource_generator']
+    tags:
+        -  { name: console.command }

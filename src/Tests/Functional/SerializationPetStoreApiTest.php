@@ -26,14 +26,6 @@ class SerializationPetStoreApiTest extends WebTestCase
     protected $env = 'jms';
 
     /**
-     * TODO Temporary workaround
-     * @see https://github.com/kleijnweb/swagger-bundle/issues/16
-     *
-     * @var bool
-     */
-    protected $validateErrorResponse = false;
-
-    /**
      * Initialize SwaggerAssertions Schema Manager
      */
     public static function setUpBeforeClass()
