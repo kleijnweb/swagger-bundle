@@ -37,4 +37,18 @@ class PetController
 
         return $body;
     }
+
+    /**
+     * @param int $petId
+     *
+     * @return array
+     */
+    public function getPetById($petId)
+    {
+        return [
+            'id' => $petId,
+            'name' => 'Chuckie',
+            'photoUrls' => []
+        ];
+    }
 }

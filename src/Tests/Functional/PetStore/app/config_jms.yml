@@ -4,7 +4,7 @@ imports:
 swagger:
     dev: true
     document:
-        base_path: ''
+        base_path: 'src/Tests/Functional/PetStore/app'
     serializer:
         type: jms
         namespace: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Model\Resources

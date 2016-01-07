@@ -38,7 +38,7 @@ class SerializationPetStoreApiTest extends WebTestCase
      */
     public static function setUpBeforeClass()
     {
-        static::initSchemaManager(__DIR__ . '/PetStore/app/petstore.yml');
+        static::initSchemaManager(__DIR__ . '/PetStore/app/swagger/petstore.yml');
     }
 
     /**

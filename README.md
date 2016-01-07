@@ -203,6 +203,7 @@ public function placeOrder(Request $request)
    //...
 }
 ```
+When a controller action returns `NULL`, SwaggerBundle will return an empty `204` reponse with Content-Type `text/plain`.
   
 #### Using Annotations
 

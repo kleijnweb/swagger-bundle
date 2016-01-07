@@ -29,7 +29,7 @@ class RequestListener
 
     /**
      * @param DocumentRepository $schemaRepository
-     * @param RequestProcessor $processor
+     * @param RequestProcessor   $processor
      */
     public function __construct(DocumentRepository $schemaRepository, RequestProcessor $processor)
     {
@@ -46,11 +46,17 @@ class RequestListener
             return;
         }
         $request = $event->getRequest();
+        if (!$request->get('_definition')) {
+            return;
+        }
+        if (!$request->get('_swagger_path')) {
+            throw new \LogicException("Request does not contain reference to Swagger path");
+        }
         $swaggerDocument = $this->schemaRepository->get($request->get('_definition'));
 
         $operationDefinition = $swaggerDocument
             ->getOperationDefinition(
-                $request->getPathInfo(),
+                $request->get('_swagger_path'),
                 $request->getMethod()
             );
 

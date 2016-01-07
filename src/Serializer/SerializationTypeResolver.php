@@ -31,7 +31,7 @@ class SerializationTypeResolver
     {
         if (isset($definitionFragment['parameters'])) {
             foreach ($definitionFragment['parameters'] as $parameterDefinition) {
-                if ($parameterDefinition['in'] == 'body') {
+                if ($parameterDefinition['in'] == 'body' && isset($parameterDefinition['schema'])) {
                     return $this->resolveUsingSchema($parameterDefinition['schema']);
                 }
             }
@@ -55,7 +55,11 @@ class SerializationTypeResolver
      */
     public function resolveUsingSchema(array $schema)
     {
-        $reference = isset($schema['$ref']) ? $schema['$ref'] : $schema['id'];
+        $reference = isset($schema['$ref']) ? $schema['$ref'] : (isset($schema['id']) ? $schema['id'] : null);
+
+        if (!$reference) {
+            return null;
+        }
 
         return $this->qualify(substr($reference, strrpos($reference, '/') + 1));
     }

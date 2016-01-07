@@ -2,12 +2,12 @@ parameters:
   test.client.class: KleijnWeb\SwaggerBundle\Dev\Test\ApiTestClient
 
 swagger:
-    dev: true
-    document:
-        base_path: ''
-    serializer:
-        type: array
-        namespace: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Model\Resources
+  dev: true
+  document:
+      base_path: 'src/Tests/Functional/PetStore/app'
+  serializer:
+      type: array
+      namespace: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Model\Resources
 
 services:
   swagger.controller.pet:
@@ -16,18 +16,21 @@ services:
   swagger.controller.store:
     class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller\StoreController
 
+  swagger.controller.entity:
+    class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller\EntityController
+
 framework:
-    test: true
-    secret:  test
-    router:
-        resource: "%kernel.root_dir%/routing.yml"
-        strict_requirements: ~
-    fragments:       ~
-    http_method_override: true
-    session:
-        storage_id: session.storage.filesystem
-    profiler:
-        collect: false
+  test: true
+  secret:  test
+  router:
+      resource: "%kernel.root_dir%/routing.yml"
+      strict_requirements: ~
+  fragments:       ~
+  http_method_override: true
+  session:
+      storage_id: session.storage.filesystem
+  profiler:
+      collect: false
 
 monolog:
     handlers:

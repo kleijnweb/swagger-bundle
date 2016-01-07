@@ -55,7 +55,7 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
      */
     public function getOperationDefinition()
     {
-        $actual = self::getPetStoreDocument()->getOperationDefinition('/v2/store/inventory', 'get');
+        $actual = self::getPetStoreDocument()->getOperationDefinition('/store/inventory', 'get');
         $this->assertInternalType('array', $actual);
 
         // Check a few keys
@@ -69,7 +69,7 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
      */
     public function getOperationDefinitionHttpMethodIsCaseInsensitive()
     {
-        self::getPetStoreDocument()->getOperationDefinition('/v2/store/inventory', 'GET');
+        self::getPetStoreDocument()->getOperationDefinition('/store/inventory', 'GET');
     }
 
 
@@ -79,7 +79,7 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
      */
     public function getOperationDefinitionWillFailOnUnknownHttpMethod()
     {
-        self::getPetStoreDocument()->getOperationDefinition('/v2/store/inventory', 'post');
+        self::getPetStoreDocument()->getOperationDefinition('/store/inventory', 'post');
     }
 
     /**
@@ -96,12 +96,12 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
      */
     public function canWriteValidYamlToFileSystem()
     {
-        $originalHash = md5_file('src/Tests/Functional/PetStore/app/petstore.yml');
+        $originalHash = md5_file('src/Tests/Functional/PetStore/app/swagger/petstore.yml');
 
         $document = self::getPetStoreDocument();
         $document->write();
 
-        $newHash = md5_file('src/Tests/Functional/PetStore/app/petstore.yml');
+        $newHash = md5_file('src/Tests/Functional/PetStore/app/swagger/petstore.yml');
 
         $this->assertSame($originalHash, $newHash);
     }
@@ -126,7 +126,7 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
      */
     public function canWriteModifiedYamlToFileSystem()
     {
-        $originalHash = md5_file('src/Tests/Functional/PetStore/app/petstore.yml');
+        $originalHash = md5_file('src/Tests/Functional/PetStore/app/swagger/petstore.yml');
         vfsStreamWrapper::register();
         vfsStreamWrapper::setRoot(new vfsStreamDirectory('canWriteModifiedYamlToFileSystem'));
 
@@ -181,7 +181,7 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
      */
     public function canResolveParameterSchemaReferences()
     {
-        $document = new SwaggerDocument('src/Tests/Functional/PetStore/app/instagram.yml');
+        $document = new SwaggerDocument('src/Tests/Functional/PetStore/app/swagger/instagram.yml');
         $pathDefinitions = $document->getPathDefinitions();
         $argumentPseudoSchema = $pathDefinitions['/users/{user-id}']['parameters'][0];
         $this->assertArrayNotHasKey('$ref', $argumentPseudoSchema);
@@ -194,6 +194,6 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
      */
     public static function getPetStoreDocument()
     {
-        return new SwaggerDocument('src/Tests/Functional/PetStore/app/petstore.yml');
+        return new SwaggerDocument('src/Tests/Functional/PetStore/app/swagger/petstore.yml');
     }
 }

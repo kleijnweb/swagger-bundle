@@ -21,7 +21,7 @@ class YamlCapableUriRetrieverTest extends \PHPUnit_Framework_TestCase
     public function canRetrieveYamlFileAsJsonString()
     {
         $retriever = new YamlCapableUriRetriever();
-        $result = $retriever->retrieve('file://' . realpath('src/Tests/Functional/PetStore/app/petstore.yml'));
+        $result = $retriever->retrieve('file://' . realpath('src/Tests/Functional/PetStore/app/swagger/petstore.yml'));
         $this->assertInternalType('string', $result);
         $array = json_decode($result, true);
         $this->assertNotNull($array);

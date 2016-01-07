@@ -70,6 +70,14 @@ class SwaggerDocument
     }
 
     /**
+     * @return string
+     */
+    public function getBasePath()
+    {
+        return $this->definition->basePath;
+    }
+
+    /**
      * @param string $path
      * @param string $method
      *
@@ -77,10 +85,6 @@ class SwaggerDocument
      */
     public function getOperationDefinition($path, $method)
     {
-        if (isset($this->definition->basePath)) {
-            $path = substr($path, strlen($this->definition->basePath));
-        }
-
         $paths = $this->getPathDefinitions();
         if (!isset($paths[$path])) {
             throw new \InvalidArgumentException("Path '$path' not in Swagger document");

@@ -66,7 +66,7 @@ trait ApiTestCase
      */
     protected function setUp()
     {
-        $this->client = static::createClient(['environment' => $this->env ?: 'test']);
+        $this->client = static::createClient(['environment' => $this->env ?: 'test', 'debug' => true]);
 
         parent::setUp();
     }
@@ -188,15 +188,14 @@ trait ApiTestCase
         $responseContent = $response->getContent();
 
         if ($response->getStatusCode() === 204 && !$responseContent) {
+            // TODO Validate this
             return null;
         }
 
-        $basePath = isset(self::$document->getDefinition()->basePath) ? self::$document->getDefinition()->basePath : '';
-        $relativePath = !$basePath ? $fullPath : substr($fullPath, strlen($basePath));
         $json = json_decode($responseContent);
 
-        if ($response->getStatusCode() !== 200) {
-            if (!isset($this->validateErrorResponse) || !$this->validateErrorResponse) {
+        if (substr($response->getStatusCode(), 0, 1) != '2') {
+            if (!isset($this->validateErrorResponse) || $this->validateErrorResponse) {
                 $this->assertResponseBodyMatch(
                     $json,
                     self::$schemaManager,
@@ -208,7 +207,9 @@ trait ApiTestCase
             throw new ApiResponseErrorException($json, $response->getStatusCode());
         }
 
-        if (self::$schemaManager->hasPath(['paths', $relativePath, $method, 'responses', '200'])) {
+        $request = $this->client->getRequest();
+
+        if (self::$schemaManager->hasPath(['paths', $request->get('_swagger_path'), $method, 'responses', '200'])) {
             $this->assertNotNull($json, "Not valid JSON: $responseContent");
             $headers = [];
 
@@ -224,7 +225,7 @@ trait ApiTestCase
         // If there is no response definition, the API should return 204 No Content.
         // With the current spec the behavior is undefined, this must be fixed.
         throw new \UnexpectedValueException(
-            "There is no 200 response definition for $relativePath:$method. For empty responses, use 204."
+            "There is no 200 response definition for {$request->get('_swagger_path')}:$method. For empty responses, use 204."
         );
     }
 }

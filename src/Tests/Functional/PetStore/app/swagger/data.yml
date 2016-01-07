@@ -1,0 +1,50 @@
+swagger: '2.0'
+basePath: /data/v1
+paths:
+  '/entity/{type}':
+    post:
+      parameters:
+        - in: body
+          name: data
+          required: true
+          type: object
+      responses:
+        '200':
+          schema:
+            type: object
+
+  '/entity/{type}/{id}':
+    put:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+        - in: body
+          name: data
+          required: true
+      responses:
+        '200':
+          schema:
+            type: object
+    delete:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        '204':
+          schema:
+            type: object
+
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        '200':
+          schema:
+            type: object

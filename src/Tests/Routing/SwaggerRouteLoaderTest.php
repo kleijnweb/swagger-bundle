@@ -173,14 +173,16 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function routeCollectionWillContainPatchFromSwaggerDoc()
+    public function routeCollectionWillContainPathFromSwaggerDoc()
     {
         $pathDefinitions = [
-            '/a'     => ['get' => []],
-            '/a/b'   => ['get' => []],
-            '/a/b/c' => ['get' => []],
-            '/d/f/g' => ['get' => []],
-            '/z'     => ['get' => []],
+            '/a'                => ['get' => []],
+            '/a/b'              => ['get' => []],
+            '/a/b/c'            => ['get' => []],
+            '/d/f/g'            => ['get' => []],
+            '/1/2/3'            => ['get' => []],
+            '/foo/{bar}/{blah}' => ['get' => []],
+            '/z'                => ['get' => []],
         ];
 
         $this->documentMock
@@ -190,14 +192,12 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
 
-        foreach (array_keys($pathDefinitions) as $path) {
-            /** @var Route $route */
-            foreach ($routes as $route) {
-                if ($route->getPath() === $path) {
-                    break 2;
-                }
-            }
-            $this->fail("No route for path '$path'");
-        }
+        $definitionPaths = array_keys($pathDefinitions);
+        sort($definitionPaths);
+        $routePaths = array_map(function ($route) {
+            return $route->getPath();
+        }, $routes->getIterator()->getArrayCopy());
+        sort($routePaths);
+        $this->assertSame($definitionPaths, $routePaths);
     }
 }

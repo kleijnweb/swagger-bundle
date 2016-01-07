@@ -10,7 +10,6 @@ namespace KleijnWeb\SwaggerBundle\Response;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -49,8 +48,13 @@ class ResponseFactory
      */
     public function createResponse(Request $request, $data)
     {
+        $headers = ['Content-Type' => 'application/json'];
+
+        if ($data === null) {
+            return new Response($data, 204, $headers);
+        }
         $data = $this->serializer->serialize($data, 'json');
 
-        return new Response($data, 200, ['Content-Type' => 'application/json']);
+        return new Response($data, 200, $headers);
     }
 }

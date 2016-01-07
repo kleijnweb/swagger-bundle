@@ -36,7 +36,7 @@ class BasicPetStoreApiTest extends WebTestCase
 
     public static function setUpBeforeClass()
     {
-        static::initSchemaManager(__DIR__ . '/PetStore/app/petstore.yml');
+        static::initSchemaManager(__DIR__ . '/PetStore/app/swagger/petstore.yml');
     }
 
     /**
@@ -63,5 +63,17 @@ class BasicPetStoreApiTest extends WebTestCase
 
         $this->assertSame('Joe', $responseData->name);
         $this->assertSame('available', $responseData->status);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetPetById()
+    {
+        $id = rand();
+
+        $responseData = $this->get('/v2/pet/' . $id);
+
+        $this->assertSame($id, $responseData->id);
     }
 }

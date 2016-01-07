@@ -8,11 +8,8 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Dev\EventListener;
 
-use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\EventListener\RequestListener;
-use KleijnWeb\SwaggerBundle\Request\RequestProcessor;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -20,6 +17,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 class RequestListenerTest extends \PHPUnit_Framework_TestCase
 {
     const DOCUMENT_PATH = '/what/a/crock';
+    const SWAGGER_PATH = '/a/b/{hello}';
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -56,7 +54,11 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->request = new Request([], [], ['_definition' => self::DOCUMENT_PATH]);
+        $this->request = new Request(
+            [],
+            [],
+            ['_definition' => self::DOCUMENT_PATH, '_swagger_path' => self::SWAGGER_PATH]
+        );
 
         $this->documentMock = $this
             ->getMockBuilder('KleijnWeb\SwaggerBundle\Document\SwaggerDocument')
@@ -132,6 +134,86 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
         $this->transformerMock
             ->expects($this->never())
             ->method('process');
+
+        $this->listener->onKernelRequest($this->eventMock);
+    }
+
+    /**
+     * @test
+     */
+    public function willIgnoreRequestWithoutDefinition()
+    {
+        $wrongRequest = new Request();
+
+        $this->eventMock
+            ->expects($this->once())
+            ->method('isMasterRequest')
+            ->willReturn(true);
+
+        $this->eventMock
+            ->expects($this->once())
+            ->method('getRequest')
+            ->willReturn($wrongRequest);
+
+        $this->listener->onKernelRequest($this->eventMock);
+    }
+
+    /**
+     * @test
+     * @expectedException \LogicException
+     */
+    public function willFailOnRequestWithDefinitionButWithoutSwaggerPath()
+    {
+        $wrongRequest = new Request(
+            [],
+            [],
+            ['_definition' => self::DOCUMENT_PATH]
+        );
+
+        $this->eventMock
+            ->expects($this->once())
+            ->method('isMasterRequest')
+            ->willReturn(true);
+
+        $this->eventMock
+            ->expects($this->once())
+            ->method('getRequest')
+            ->willReturn($wrongRequest);
+
+        $this->listener->onKernelRequest($this->eventMock);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetOperationDefinitionUsingSwaggerPath()
+    {
+        $this->eventMock
+            ->expects($this->once())
+            ->method('isMasterRequest')
+            ->willReturn(true);
+
+        $this->documentMock
+            ->expects($this->once())
+            ->method('getOperationDefinition')
+            ->with(self::SWAGGER_PATH)
+            ->willReturn([]);
+
+        $this->repositoryMock
+            ->expects($this->once())
+            ->method('get')
+            ->with(self::DOCUMENT_PATH)
+            ->willReturn($this->documentMock);
+
+        $this->eventMock
+            ->expects($this->once())
+            ->method('getRequest')
+            ->willReturn($this->request);
+
+        $this->transformerMock
+            ->expects($this->once())
+            ->method('process')
+            ->with($this->request);
 
         $this->listener->onKernelRequest($this->eventMock);
     }

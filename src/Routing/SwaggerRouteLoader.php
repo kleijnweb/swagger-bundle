@@ -64,8 +64,9 @@ class SwaggerRouteLoader extends Loader
             foreach ($methods as $methodName => $operationSpec) {
                 $operationName = isset($operationSpec['operationId']) ? $operationSpec['operationId'] : $methodName;
                 $defaults = [
-                    '_controller' => "swagger.controller.$resourceName:$operationName",
-                    '_definition' => $resource
+                    '_controller'   => "swagger.controller.$resourceName:$operationName",
+                    '_definition'   => $resource,
+                    '_swagger_path' => $path
                 ];
                 $requirements = [];
                 $route = new Route($path, $defaults, $requirements);

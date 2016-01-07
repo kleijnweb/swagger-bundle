@@ -48,7 +48,7 @@ class GenerateResourceClassesCommandTest extends KernelTestCase
      */
     public function canExecute()
     {
-        $petStoreDocumentPath = __DIR__ . '/../../Functional/PetStore/app/petstore.yml';
+        $petStoreDocumentPath = __DIR__ . '/../../Functional/PetStore/app/swagger/petstore.yml';
         vfsStreamWrapper::register();
         vfsStreamWrapper::setRoot(new vfsStreamDirectory('willAddResponsesToDocument'));
 
