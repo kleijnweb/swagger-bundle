@@ -189,7 +189,16 @@ trait ApiTestCase
         $response = $this->client->getResponse();
         $responseContent = $response->getContent();
         $data = json_decode($responseContent);
-        $this->assertSame(JSON_ERROR_NONE, json_last_error(), "Not valid JSON: $responseContent");
+
+        if ($response->getStatusCode() !== 204) {
+            $this->assertSame(
+                JSON_ERROR_NONE,
+                json_last_error(),
+                "Not valid JSON: "
+                . json_last_error_msg()
+                . "(" . var_export($responseContent, true) . ")"
+            );
+        }
 
         if (substr($response->getStatusCode(), 0, 1) != '2') {
             if (!isset($this->validateErrorResponse) || $this->validateErrorResponse) {

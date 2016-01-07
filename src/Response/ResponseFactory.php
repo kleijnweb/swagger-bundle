@@ -51,7 +51,7 @@ class ResponseFactory
         $headers = ['Content-Type' => 'application/json'];
 
         if ($data === null) {
-            return new Response('null', 204, $headers);
+            return new Response('', 204, $headers);
         }
         $data = $this->serializer->serialize($data, 'json');
 
