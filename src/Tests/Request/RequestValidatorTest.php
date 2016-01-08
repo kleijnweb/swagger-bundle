@@ -24,9 +24,11 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
         $operationDefinition = [
             'parameters' => [
                 [
-                    'name' => 'foo',
-                    'in'   => 'body',
-                    'type' => 'integer'
+                    'name'   => 'foo',
+                    'in'     => 'body',
+                    'schema' => [
+                        'type' => 'integer'
+                    ]
                 ]
             ]
         ];

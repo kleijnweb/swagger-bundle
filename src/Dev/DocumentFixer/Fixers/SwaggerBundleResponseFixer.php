@@ -54,14 +54,14 @@ class SwaggerBundleResponseFixer extends Fixer
             foreach ($operations as &$operation) {
                 if (!isset($operation['responses']['500'])) {
                     $operation['responses']['500'] = [
-                        'headers' => ['Content-Type' => 'application/vnd.error+json'],
-                        '$ref'    => '#/responses/ServerError'
+                        'description' => 'Generic server error',
+                        'schema'      => ['$ref' => '#/responses/ServerError']
                     ];
                 }
                 if (!isset($operation['responses']['400'])) {
                     $operation['responses']['400'] = [
-                        'headers' => ['Content-Type' => 'application/vnd.error+json'],
-                        '$ref'    => '#/responses/InputError'
+                        'description' => 'Client input error',
+                        'schema'      => ['$ref' => '#/responses/InputError']
                     ];
                 }
             }

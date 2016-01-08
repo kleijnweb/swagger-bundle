@@ -63,7 +63,7 @@ class SwaggerBundleResponseFixerTest extends \PHPUnit_Framework_TestCase
         $operationDefinition = $document->getOperationDefinition('/', 'get');
         $responses = $operationDefinition['responses'];
         $this->assertArrayHasKey('500', $responses);
-        $this->assertSame($responses['500']['$ref'], '#/responses/ServerError');
+        $this->assertSame($responses['500']['schema']['$ref'], '#/responses/ServerError');
     }
 
     /**
@@ -96,25 +96,6 @@ class SwaggerBundleResponseFixerTest extends \PHPUnit_Framework_TestCase
         $operationDefinition = $document->getOperationDefinition('/', 'get');
         $responses = $operationDefinition['responses'];
         $this->assertArrayHasKey('400', $responses);
-        $this->assertSame($responses['400']['$ref'], '#/responses/InputError');
-    }
-
-    /**
-     * @test
-     */
-    public function willAddVndErrorHeaderToOperationResponses()
-    {
-        $fixer = new SwaggerBundleResponseFixer();
-        $document = new SwaggerDocument(__DIR__ . '/assets/minimal.yml');
-        $fixer->fix($document);
-
-        $operationDefinition = $document->getOperationDefinition('/', 'get');
-        $responses = $operationDefinition['responses'];
-        $this->assertArrayHasKey('headers', $responses['500']);
-        $this->assertArrayHasKey('headers', $responses['400']);
-        $this->assertArrayHasKey('Content-Type', $responses['500']['headers']);
-        $this->assertArrayHasKey('Content-Type', $responses['400']['headers']);
-        $this->assertSame('application/vnd.error+json', $responses['500']['headers']['Content-Type']);
-        $this->assertSame('application/vnd.error+json', $responses['400']['headers']['Content-Type']);
+        $this->assertSame($responses['400']['schema']['$ref'], '#/responses/InputError');
     }
 }

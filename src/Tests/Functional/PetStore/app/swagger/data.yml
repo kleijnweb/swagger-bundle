@@ -7,7 +7,8 @@ paths:
         - in: body
           name: data
           required: true
-          type: object
+          schema:
+            type: object
       responses:
         '200':
           description: "The created resource"
@@ -24,6 +25,8 @@ paths:
         - in: body
           name: data
           required: true
+          schema:
+            type: object
       responses:
         '200':
           description: "The modified resource"

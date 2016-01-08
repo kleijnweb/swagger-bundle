@@ -85,13 +85,15 @@ class RequestValidator
         $schema->properties = new \stdClass;
 
         foreach ($this->operationDefinition['parameters'] as $paramDefinition) {
-            $propertySchema = isset($paramDefinition['schema'])
-                ? $paramDefinition['schema']
-                : $paramDefinition;
-
             if (isset($paramDefinition['required']) && $paramDefinition['required']) {
                 $schema->required[] = $paramDefinition['name'];
             }
+
+            if ($paramDefinition['in'] === 'body') {
+                $schema->properties->{$paramDefinition['name']} = $this->arrayToObject($paramDefinition['schema']);
+                continue;
+            }
+            $propertySchema = ['type' => $paramDefinition['type']];
 
             $schema->properties->{$paramDefinition['name']} = $this->arrayToObject($propertySchema);
         }
@@ -117,7 +119,9 @@ class RequestValidator
          */
         $content = null;
         if ($request->getContent()) {
-            $content = (object)json_decode($request->getContent());
+            $content = json_decode($request->getContent());
+            //TODO UT this
+            $content = (is_array($content) && isset($content[0])) ? $content : (object)$content;
         }
 
         $parameters = new \stdClass;
