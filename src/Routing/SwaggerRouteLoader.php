@@ -62,9 +62,19 @@ class SwaggerRouteLoader extends Loader
                 ? substr($relativePath, 0, strpos($relativePath, '/'))
                 : $relativePath;
             foreach ($methods as $methodName => $operationSpec) {
-                $operationName = isset($operationSpec['operationId']) ? $operationSpec['operationId'] : $methodName;
+                $operationName = $methodName;
+                $controllerKey = "swagger.controller.$resourceName:$operationName";
+                if (isset($operationSpec['operationId'])) {
+                    $operationName = $operationSpec['operationId'];
+                    if (false !== strpos($operationSpec['operationId'], ':')) {
+                        $controllerKey = $operationSpec['operationId'];
+                    } else {
+                        $controllerKey = "swagger.controller.$resourceName:$operationName";
+                    }
+                }
+
                 $defaults = [
-                    '_controller'   => "swagger.controller.$resourceName:$operationName",
+                    '_controller'   => $controllerKey,
                     '_definition'   => $resource,
                     '_swagger_path' => $path
                 ];

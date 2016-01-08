@@ -60,7 +60,6 @@ trait ApiTestCase
         );
 
         if (!$validator->isValid()) {
-            var_dump( $validator->getErrors());
             throw new \InvalidArgumentException(
                 "Swagger '$swaggerPath' not valid"
             );

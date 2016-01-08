@@ -152,6 +152,33 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function canUseDiKeyAsOperationId()
+    {
+        $expected = 'my.controller.key:methodName';
+        $pathDefinitions = [
+            '/a' => [
+                'get'  => [],
+                'post' => [
+                    'operationId' => $expected
+                ]
+            ],
+            '/b' => ['get' => []],
+        ];
+
+        $this->documentMock
+            ->expects($this->any())
+            ->method('getPathDefinitions')
+            ->willReturn($pathDefinitions);
+
+        $routes = $this->loader->load(self::DOCUMENT_PATH);
+        $actual = $routes->get('swagger.a.my.controller.key:methodName')->getDefault('_controller');
+        $this->assertSame($expected, $actual);
+        var_dump($actual);
+    }
+
+    /**
+     * @test
+     */
     public function routeCollectionWillIncludeSeparateRoutesForSubPathMethodCombinations()
     {
         $pathDefinitions = [

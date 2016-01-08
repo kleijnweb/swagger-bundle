@@ -74,9 +74,10 @@ swagger:
 When a call is made that is satisfiable by SwaggerBundle, it uses Symfony Dependency Injection service keys to find the
 delegation target of the request. It will assume the first segment in the Swagger paths is a resource name,
 and looks for a service with the key `swagger.controller.%resource_name%`. The class method to be called by defaults corresponds
-to the HTTP method name, but may be overridden by including `operationId` in your spec. Controller methods that expect content can either
- get the content from the `Request` object, or add a parameter named identical to the parameter with `in: body` set.
- 
+to the HTTP method name, but may be overridden by including `operationId` in your spec. You can also completely override this default by 
+including an operationId referencing a DI key (using double colon notation, eg "my.controller.key:methodName"). 
+
+Controller methods that expect content can either get the content from the `Request` object, or add a parameter named identical to the parameter with `in: body` set.
 Any of these will work (assuming the `in: body` parameter is named `body` in your spec):
 
 ```php
@@ -306,6 +307,7 @@ class PetStoreApiTest extends WebTestCase
 }
 ```
  
+When using ApiTestCase, initSchemaManager() will also validate your Swagger spec against the official schema to ensure it is valid. 
 
    
 ## License
