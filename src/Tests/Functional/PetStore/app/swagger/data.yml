@@ -1,4 +1,7 @@
 swagger: '2.0'
+info:
+  description: 'Data api'
+  version: 1.0.0
 basePath: /data/v1
 paths:
   '/entity/{type}':

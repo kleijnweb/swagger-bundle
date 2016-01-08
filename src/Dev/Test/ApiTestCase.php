@@ -10,6 +10,7 @@ namespace KleijnWeb\SwaggerBundle\Dev\Test;
 
 use FR3D\SwaggerAssertions\PhpUnit\AssertsTrait;
 use FR3D\SwaggerAssertions\SchemaManager;
+use JsonSchema\Validator;
 use KleijnWeb\SwaggerBundle\Document\SwaggerDocument;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
@@ -47,10 +48,24 @@ trait ApiTestCase
      *
      * @param $swaggerPath
      *
+     * @throws \InvalidArgumentException
      * @throws \org\bovigo\vfs\vfsStreamException
      */
     public static function initSchemaManager($swaggerPath)
     {
+        $validator = new Validator();
+        $validator->check(
+            json_decode(json_encode(Yaml::parse(file_get_contents($swaggerPath)))),
+            json_decode(file_get_contents(__DIR__ . '/../../../assets/swagger-schema.json'))
+        );
+
+        if (!$validator->isValid()) {
+            var_dump( $validator->getErrors());
+            throw new \InvalidArgumentException(
+                "Swagger '$swaggerPath' not valid"
+            );
+        }
+
         vfsStreamWrapper::register();
         vfsStreamWrapper::setRoot(new vfsStreamDirectory('root'));
 
