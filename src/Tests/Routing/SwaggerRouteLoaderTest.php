@@ -249,4 +249,112 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
         sort($routePaths);
         $this->assertSame($definitionPaths, $routePaths);
     }
+
+    /**
+     * @test
+     */
+    public function willAddRequirementsForIntegerPathParams()
+    {
+        $pathDefinitions = [
+            '/a' => [
+                'get' => [
+                    'parameters' => [
+                        ['name' => 'foo', 'in' => 'path', 'type' => 'integer']
+                    ]
+                ]
+            ],
+        ];
+
+        $this->documentMock
+            ->expects($this->once())
+            ->method('getPathDefinitions')
+            ->willReturn($pathDefinitions);
+
+        $this->documentMock
+            ->expects($this->once())
+            ->method('getOperationDefinition')
+            ->with('/a', 'get')
+            ->willReturn($pathDefinitions['/a']['get']);
+
+        $routes = $this->loader->load(self::DOCUMENT_PATH);
+        $actual = $routes->get('swagger.path.a.get');
+        $this->assertNotNull($actual);
+        $requirements = $actual->getRequirements();
+        $this->assertNotNull($requirements);
+
+        $this->assertSame($requirements['foo'], '\d+');
+    }
+
+    /**
+     * @test
+     */
+    public function willAddRequirementsForStringPatternParams()
+    {
+        $expected = '\d{2}hello';
+        $pathDefinitions = [
+            '/a' => [
+                'get' => [
+                    'parameters' => [
+                        ['name' => 'aString', 'in' => 'path', 'type' => 'string', 'pattern' => $expected]
+                    ]
+                ]
+            ],
+        ];
+
+        $this->documentMock
+            ->expects($this->once())
+            ->method('getPathDefinitions')
+            ->willReturn($pathDefinitions);
+
+        $this->documentMock
+            ->expects($this->once())
+            ->method('getOperationDefinition')
+            ->with('/a', 'get')
+            ->willReturn($pathDefinitions['/a']['get']);
+
+        $routes = $this->loader->load(self::DOCUMENT_PATH);
+        $actual = $routes->get('swagger.path.a.get');
+        $this->assertNotNull($actual);
+        $requirements = $actual->getRequirements();
+        $this->assertNotNull($requirements);
+
+        $this->assertSame($expected, $requirements['aString']);
+    }
+
+    /**
+     * @test
+     */
+    public function willAddRequirementsForStringEnumParams()
+    {
+        $enum = ['a', 'b', 'c'];
+        $expected = '(a|b|c)';
+        $pathDefinitions = [
+            '/a' => [
+                'get' => [
+                    'parameters' => [
+                        ['name' => 'aString', 'in' => 'path', 'type' => 'string', 'enum' => $enum]
+                    ]
+                ]
+            ],
+        ];
+
+        $this->documentMock
+            ->expects($this->once())
+            ->method('getPathDefinitions')
+            ->willReturn($pathDefinitions);
+
+        $this->documentMock
+            ->expects($this->once())
+            ->method('getOperationDefinition')
+            ->with('/a', 'get')
+            ->willReturn($pathDefinitions['/a']['get']);
+
+        $routes = $this->loader->load(self::DOCUMENT_PATH);
+        $actual = $routes->get('swagger.path.a.get');
+        $this->assertNotNull($actual);
+        $requirements = $actual->getRequirements();
+        $this->assertNotNull($requirements);
+
+        $this->assertSame($expected, $requirements['aString']);
+    }
 }

@@ -78,7 +78,37 @@ class SwaggerRouteLoader extends Loader
                     '_definition'   => $resource,
                     '_swagger_path' => $path
                 ];
+
+
                 $requirements = [];
+                $operationDefinition = $document->getOperationDefinition($path, $methodName);
+                
+                if (isset($operationDefinition['parameters'])) {
+                    foreach ($operationDefinition['parameters'] as $paramDefinition) {
+                        if ($paramDefinition['in'] === 'path' && isset($paramDefinition['type'])) {
+                            switch ($paramDefinition['type']) {
+                                case 'integer':
+                                    $requirements[$paramDefinition['name']] = '\d+';
+                                    break;
+                                case 'string':
+                                    if (isset($paramDefinition['pattern'])) {
+                                        $requirements[$paramDefinition['name']] = $paramDefinition['pattern'];
+                                        break;
+                                    }
+                                    if (isset($paramDefinition['enum'])) {
+                                        $requirements[$paramDefinition['name']] = '(' .
+                                            implode('|', $paramDefinition['enum'])
+                                            . ')';
+                                        break;
+                                    }
+                                    break;
+                                default:
+                                    //NOOP
+                            }
+                        }
+                    }
+                }
+
                 $route = new Route($path, $defaults, $requirements);
                 $route->setMethods($methodName);
                 $fileName = pathinfo($resource, PATHINFO_FILENAME);
