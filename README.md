@@ -129,6 +129,12 @@ It would make more sense to name the parameter `order` instead of `body`, but th
 
 Other parameters can be added to the signature as well, this is standard Symfony behaviour.
 
+## Route Matching
+
+To view the routes added by SwaggerBundle, you can use Symfony's `debug:router`. Route keys include the Swagger spec base filename to prevent collisions. For path parameters,
+SwaggerBundle adds additional requirements to the routes. This way `/foo/{bar}` and `/foo/bar` wont conflict when `bar` is defined to be an integer. This also supports Swaggers `pattern`
+and `enum` when dealing with string path parameters.
+
 ## Exception Handling
 
 Any exceptions are caught, logged by the `@logger` service, and result in `application/vnd.error+json`. Routing failure results in a 404 response without `logref`.
