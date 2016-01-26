@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Route;
  */
 class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
 {
-    const DOCUMENT_PATH = '/what/a/crock';
+    const DOCUMENT_PATH = '/totally/non-existent/path';
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -77,6 +77,27 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
 
         $this->loader->load(self::DOCUMENT_PATH);
         $this->loader->load(self::DOCUMENT_PATH . '2');
+    }
+
+    /**
+     * @test
+     */
+    public function loadingMultipleDocumentWillPreventRouteKeyCollisions()
+    {
+        $pathDefinitions = [
+            '/a'     => ['get' => []],
+            '/a/b'   => ['get' => [], 'post' => []],
+            '/a/b/c' => ['put' => []],
+        ];
+
+        $this->documentMock
+            ->expects($this->exactly(2))
+            ->method('getPathDefinitions')
+            ->willReturn($pathDefinitions);
+
+        $routes1 = $this->loader->load(self::DOCUMENT_PATH);
+        $routes2 = $this->loader->load(self::DOCUMENT_PATH . '2');
+        $this->assertSame(count($routes1), count(array_diff_key($routes1->all(), $routes2->all())));
     }
 
     /**
@@ -171,9 +192,10 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
             ->willReturn($pathDefinitions);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
-        $actual = $routes->get('swagger.a.my.controller.key:methodName')->getDefault('_controller');
-        $this->assertSame($expected, $actual);
-        var_dump($actual);
+
+        $actual = $routes->get('swagger.path.a.my.controller.key:methodName');
+        $this->assertNotNull($actual);
+        $this->assertSame($expected, $actual->getDefault('_controller'));
     }
 
     /**

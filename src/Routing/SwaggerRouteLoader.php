@@ -81,7 +81,8 @@ class SwaggerRouteLoader extends Loader
                 $requirements = [];
                 $route = new Route($path, $defaults, $requirements);
                 $route->setMethods($methodName);
-                $routeName = "swagger.{$this->createRouteIdFromPath($path)}.$operationName";
+                $fileName = pathinfo($resource, PATHINFO_FILENAME);
+                $routeName = "swagger.{$fileName}.{$this->createRouteIdFromPath($path)}.$operationName";
                 $routes->add($routeName, $route);
             }
         }
@@ -111,6 +112,6 @@ class SwaggerRouteLoader extends Loader
      */
     private function createRouteIdFromPath($path)
     {
-        return strtolower(trim(preg_replace('/\W+/', '-', $path), '-'));
+        return strtolower(trim(preg_replace('/\W+/', '.', $path), '.'));
     }
 }
