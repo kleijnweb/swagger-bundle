@@ -10,6 +10,8 @@ Go to the [release page](https://github.com/kleijnweb/swagger-bundle/releases) t
 
 __This bundle is currently actively maintained.__
 
+For a pretty complete example, see [swagger-bundle-example](https://github.com/kleijnweb/swagger-bundle-example).
+
 # This Bundle..
 
 ## Will:
