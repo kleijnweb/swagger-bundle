@@ -1,14 +1,9 @@
 language: php
 sudo: false
-before_script:
-  - mkdir -p build/logs
-script: phpunit --coverage-clover build/logs/clover.xml
 before_install:
   - composer self-update
 install:
   - composer update $COMPOSER_FLAGS --dev
-after_script:
-  - vendor/bin/test-reporter
 matrix:
   include:
     - php: 5.4
@@ -16,5 +11,10 @@ matrix:
     - php: 5.4
     - php: 5.5
     - php: 5.6
+      script: phpunit --coverage-clover build/logs/clover.xml
+      before_script:
+        - mkdir -p build/logs
+      after_script:
+        - vendor/bin/test-reporter
     - php: 7.0
   fast_finish: true
