@@ -1,6 +1,7 @@
 language: php
 sudo: false
 before_install:
+  - if [[ "$TRAVIS_PHP_VERSION" != "5.6" ]]; then phpenv config-rm xdebug.ini; fi
   - composer self-update
 install:
   - composer update $COMPOSER_FLAGS
