@@ -72,7 +72,7 @@ class ExceptionListener
         } else {
             switch (substr($code, 0, 1)) {
                 case '4':
-                    $message = 'Input Error';
+                    $message = $exception->getMessage();                    
                     $this->logger->notice("Input error [logref $logRef]: " . $exception->__toString());
                     break;
                 case '5':
