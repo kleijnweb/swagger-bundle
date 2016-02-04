@@ -1,4 +1,8 @@
-# KleijnWeb\SwaggerBundle [![Build Status](https://travis-ci.org/kleijnweb/swagger-bundle.svg?branch=master)](https://travis-ci.org/kleijnweb/swagger-bundle)
+# KleijnWeb\SwaggerBundle 
+[![Build Status](https://travis-ci.org/kleijnweb/swagger-bundle.svg?branch=master)](https://travis-ci.org/kleijnweb/swagger-bundle)
+[![Code Climate](https://codeclimate.com/github/kleijnweb/swagger-bundle/badges/gpa.svg)](https://codeclimate.com/github/kleijnweb/swagger-bundle)
+[![Test Coverage](https://codeclimate.com/github/kleijnweb/swagger-bundle/badges/coverage.svg)](https://codeclimate.com/github/kleijnweb/swagger-bundle/coverage)
+[![Issue Count](https://codeclimate.com/github/kleijnweb/swagger-bundle/badges/issue_count.svg)](https://codeclimate.com/github/kleijnweb/swagger-bundle)
 
 Invert your workflow (contract first) using Swagger specs and set up a Symfony REST app with minimal config.
 

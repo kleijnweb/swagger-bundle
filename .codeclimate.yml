@@ -1,0 +1,9 @@
+engines:
+  duplication:
+    enabled: true
+ratings:
+  paths:
+    - "**.php"
+exclude_paths:
+  - src/Tests/**
+  - vendor/**

@@ -51,8 +51,8 @@
     "twig/twig": "^1.21",
     "jms/serializer": "1.0",
     "phpoption/phpoption": ">=1.1.0",
-    "fr3d/swagger-assertions": "^0.2.0"
-
+    "fr3d/swagger-assertions": "^0.2.0",
+    "codeclimate/php-test-reporter": "dev-master"
   },
   "config": {
     "bin-dir": "bin"
