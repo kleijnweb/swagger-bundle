@@ -3,7 +3,7 @@ sudo: false
 before_install:
   - composer self-update
 install:
-  - composer update $COMPOSER_FLAGS --dev
+  - composer update $COMPOSER_FLAGS
 matrix:
   include:
     - php: 5.4
