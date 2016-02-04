@@ -320,10 +320,9 @@ class PetStoreApiTest extends WebTestCase
     }
 }
 ```
- 
+
 When using ApiTestCase, initSchemaManager() will also validate your Swagger spec against the official schema to ensure it is valid. 
 
-   
 ## License
 
 KleijnWeb\SwaggerBundle is made available under the terms of the [LGPL, version 3.0](https://spdx.org/licenses/LGPL-3.0.html#licenseText).
