@@ -12,6 +12,10 @@ Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig (e
 
 Go to the [release page](https://github.com/kleijnweb/swagger-bundle/releases) to find details about the latest release.
 
+__This bundle is currently actively maintained.__
+
+For a pretty complete example, see [swagger-bundle-example](https://github.com/kleijnweb/swagger-bundle-example).
+
 # This Bundle..
 
 ## Will:
