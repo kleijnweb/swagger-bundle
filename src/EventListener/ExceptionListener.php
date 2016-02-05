@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\EventListener;
 
+use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
 use KleijnWeb\SwaggerBundle\Response\VndErrorResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
