@@ -30,10 +30,6 @@ class KleijnWebSwaggerExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
 
-        if ($config['dev']) {
-            $loader->load('services_dev.yml');
-        }
-
         $container->setParameter('swagger.document.base_path', $config['document']['base_path']);
         $container->setParameter('swagger.serializer.namespace', $config['serializer']['namespace']);
 
