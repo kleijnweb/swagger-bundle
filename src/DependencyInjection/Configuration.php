@@ -26,10 +26,6 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('dev')
-                    ->defaultFalse()
-                ->end()
-
                 ->arrayNode('serializer')
                     ->addDefaultsIfNotSet()
                     ->children()
@@ -45,6 +41,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('document')
                     ->addDefaultsIfNotSet()
                     ->children()
+                        ->scalarNode('cache')->isRequired()->defaultFalse()->end()
                         ->scalarNode('base_path')->defaultValue('')->end()
                     ->end()
                 ->end()

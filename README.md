@@ -24,7 +24,7 @@ For a pretty complete example, see [swagger-bundle-example](https://github.com/k
  * Validate content and parameters based on your Swagger documents(s).
  * Configure routing based on your Swagger documents(s). 
  * Encode response data as JSON.
- * Resolve JSON-Schema `$ref`s in your Swagger documents(s) to allow reusable partial specs.
+ * Resolve JSON Pointers anywhere in your Swagger documents and partials.
  
 ## Can:
 
@@ -60,16 +60,16 @@ Add Swagger-based routing to your app, for example:
  
 ```yml
 test:
-    resource: "config/yourapp.yml"
-    type: swagger
+  resource: "config/yourapp.yml"
+  type: swagger
 ```
 
 The path here is relative to the `swagger.document.base_path` configuration option. The above example would require something like this in your config:
 
 ```yml
 swagger:
-    document: 
-        base_path: "%kernel.root_dir%"
+  document: 
+    base_path: "%kernel.root_dir%"
 ```
 
 # Functional Details / Features
@@ -133,6 +133,16 @@ class StoreController
 It would make more sense to name the parameter `order` instead of `body`, but this is how it is in the pet store example provided by Swagger.
 
 Other parameters can be added to the signature as well, this is standard Symfony behaviour.
+
+## Caching
+
+Parsing YAML and resolving JSON Pointers can be slow, especially with larger specs with external references. SwaggerBundle can use a Doctrine cache to mitigate this. Use a DI key to reference the service you want to use:
+
+```yml
+swagger:
+  document: 
+    cache: "some.doctrine.cache.service"
+```
 
 ## Route Matching
 

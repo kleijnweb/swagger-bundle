@@ -40,6 +40,11 @@ class KleijnWebSwaggerExtension extends Extension
             $resolverDefinition = $container->getDefinition('swagger.request.processor.content_decoder');
             $resolverDefinition->addArgument(new Reference('swagger.serializer.type_resolver'));
         }
+
+        if (isset($config['document']['cache'])) {
+            $resolverDefinition = $container->getDefinition('swagger.document.repository');
+            $resolverDefinition->addArgument(new Reference($config['document']['cache']));
+        }
     }
 
     /**

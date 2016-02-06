@@ -16,13 +16,22 @@ use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 class DocumentRepositoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * @var DocumentRepository
+     */
+    private $repository;
+
+    protected function setUp()
+    {
+        $this->repository = new DocumentRepository();
+    }
+
+    /**
      * @test
      * @expectedException \InvalidArgumentException
      */
     public function willFailWhenKeyIsEmpty()
     {
-        $repository = new DocumentRepository();
-        $repository->get('');
+        $this->repository->get('');
     }
 
     /**
@@ -31,8 +40,7 @@ class DocumentRepositoryTest extends \PHPUnit_Framework_TestCase
      */
     public function willFailWhenPathDoesNotExist()
     {
-        $repository = new DocumentRepository();
-        $repository->get('/this/is/total/bogus');
+        $this->repository->get('/this/is/total/bogus');
     }
 
     /**
@@ -40,8 +48,7 @@ class DocumentRepositoryTest extends \PHPUnit_Framework_TestCase
      */
     public function gettingDocumentThatDoestExistWillConstructIt()
     {
-        $repository = new DocumentRepository();
-        $document = $repository->get('src/Tests/Functional/PetStore/app/swagger/petstore.yml');
+        $document = $this->repository->get('src/Tests/Functional/PetStore/app/swagger/petstore.yml');
         $this->assertInstanceOf('KleijnWeb\SwaggerBundle\Document\SwaggerDocument', $document);
     }
 
@@ -50,8 +57,21 @@ class DocumentRepositoryTest extends \PHPUnit_Framework_TestCase
      */
     public function definitionIsObject()
     {
-        $repository = new DocumentRepository();
-        $document = $repository->get('src/Tests/Functional/PetStore/app/swagger/petstore.yml');
+        $document = $this->repository->get('src/Tests/Functional/PetStore/app/swagger/petstore.yml');
+        $this->assertInternalType('object', $document->getDefinition());
+    }
+
+    /**
+     * @test
+     */
+    public function willCache()
+    {
+        $path = 'src/Tests/Functional/PetStore/app/swagger/petstore.yml';
+        $cache = $this->getMockBuilder('Doctrine\Common\Cache\ArrayCache')->disableOriginalConstructor()->getMock();
+        $repository = new DocumentRepository(null, $cache);
+        $cache->expects($this->exactly(1))->method('fetch')->with($path);
+        $cache->expects($this->exactly(1))->method('save')->with($path, $this->isType('object'));
+        $document = $repository->get($path);
         $this->assertInternalType('object', $document->getDefinition());
     }
 
@@ -60,8 +80,8 @@ class DocumentRepositoryTest extends \PHPUnit_Framework_TestCase
      */
     public function canUsePathPrefix()
     {
-        $repository = new DocumentRepository('src/Tests/Functional/PetStore');
-        $document = $repository->get('app/swagger/petstore.yml');
+        $this->repository = new DocumentRepository('src/Tests/Functional/PetStore');
+        $document = $this->repository->get('app/swagger/petstore.yml');
         $this->assertInstanceOf('KleijnWeb\SwaggerBundle\Document\SwaggerDocument', $document);
     }
 }
