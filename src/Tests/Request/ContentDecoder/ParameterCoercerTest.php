@@ -34,7 +34,7 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
             $spec['format'] = $format;
         }
 
-        $actual = ParameterCoercer::coerceParameter($spec, $value);
+        $actual = ParameterCoercer::coerceParameter((object)$spec, $value);
 
         $this->assertEquals($expected, $actual);
     }
@@ -50,7 +50,7 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
      */
     public function willFailToInterpretPrimitivesAsExpected($type, $value)
     {
-        ParameterCoercer::coerceParameter(['type' => $type, 'name' => $value], $value);
+        ParameterCoercer::coerceParameter((object)['type' => $type, 'name' => $value], $value);
     }
 
     /**
@@ -64,7 +64,7 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
      */
     public function willFailToInterpretDateTimeAsExpected($format, $value)
     {
-        ParameterCoercer::coerceParameter(['type' => 'string', 'format' => $format, 'name' => $value], $value);
+        ParameterCoercer::coerceParameter((object)['type' => 'string', 'format' => $format, 'name' => $value], $value);
     }
 
     /**
@@ -79,7 +79,7 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
     public function willThrowUnsupportedExceptionInPredefinedCases($spec, $value)
     {
         $spec = array_merge(['type' => 'string', 'name' => $value], $spec);
-        ParameterCoercer::coerceParameter($spec, $value);
+        ParameterCoercer::coerceParameter((object)$spec, $value);
     }
 
     /**

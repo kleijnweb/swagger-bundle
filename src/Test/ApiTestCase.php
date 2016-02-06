@@ -11,6 +11,7 @@ namespace KleijnWeb\SwaggerBundle\Test;
 use FR3D\SwaggerAssertions\PhpUnit\AssertsTrait;
 use FR3D\SwaggerAssertions\SchemaManager;
 use JsonSchema\Validator;
+use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\Document\SwaggerDocument;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
@@ -74,7 +75,8 @@ trait ApiTestCase
         );
 
         self::$schemaManager = new SchemaManager(vfsStream::url('root') . '/swagger.json');
-        self::$document = new SwaggerDocument($swaggerPath);
+        $repository = new DocumentRepository(dirname($swaggerPath));
+        self::$document = $repository->get(basename($swaggerPath));
     }
 
     /**

@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Tests\Dev\Document;
+namespace KleijnWeb\SwaggerBundle\Tests\Document;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 
@@ -27,12 +27,32 @@ class DocumentRepositoryTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException \KleijnWeb\SwaggerBundle\Document\Exception\ResourceNotReadableException
+     */
+    public function willFailWhenPathDoesNotExist()
+    {
+        $repository = new DocumentRepository();
+        $repository->get('/this/is/total/bogus');
+    }
+
+    /**
+     * @test
      */
     public function gettingDocumentThatDoestExistWillConstructIt()
     {
         $repository = new DocumentRepository();
         $document = $repository->get('src/Tests/Functional/PetStore/app/swagger/petstore.yml');
         $this->assertInstanceOf('KleijnWeb\SwaggerBundle\Document\SwaggerDocument', $document);
+    }
+
+    /**
+     * @test
+     */
+    public function definitionIsObject()
+    {
+        $repository = new DocumentRepository();
+        $document = $repository->get('src/Tests/Functional/PetStore/app/swagger/petstore.yml');
+        $this->assertInternalType('object', $document->getDefinition());
     }
 
     /**

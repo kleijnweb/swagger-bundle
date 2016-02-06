@@ -25,23 +25,23 @@ class RequestCoercer
     /**
      * @param ContentDecoder $contentDecoder
      */
-    public function __construct($contentDecoder)
+    public function __construct(ContentDecoder $contentDecoder)
     {
         $this->contentDecoder = $contentDecoder;
     }
 
     /**
      * @param Request $request
-     * @param array   $operationDefinition
+     * @param object   $operationDefinition
      *
      * @throws MalformedContentException
      * @throws UnsupportedException
      */
-    public function coerceRequest(Request $request, array $operationDefinition)
+    public function coerceRequest(Request $request, $operationDefinition)
     {
         $content = $this->contentDecoder->decodeContent($request, $operationDefinition);
 
-        if (!isset($operationDefinition['parameters'])) {
+        if (!isset($operationDefinition->parameters)) {
             return;
         }
         $paramBagMapping = [
@@ -49,10 +49,10 @@ class RequestCoercer
             'path'   => 'attributes',
             'header' => 'headers'
         ];
-        foreach ($operationDefinition['parameters'] as $paramDefinition) {
-            $paramName = $paramDefinition['name'];
+        foreach ($operationDefinition->parameters as $paramDefinition) {
+            $paramName = $paramDefinition->name;
 
-            if ($paramDefinition['in'] === 'body') {
+            if ($paramDefinition->in === 'body') {
                 if ($content !== null) {
                     $request->attributes->set($paramName, $content);
                 }
@@ -60,12 +60,12 @@ class RequestCoercer
                 continue;
             }
 
-            if (!isset($paramBagMapping[$paramDefinition['in']])) {
+            if (!isset($paramBagMapping[$paramDefinition->in])) {
                 throw new UnsupportedException(
-                    "Unsupported parameter 'in' value in definition '{$paramDefinition['in']}'"
+                    "Unsupported parameter 'in' value in definition '{$paramDefinition->in}'"
                 );
             }
-            $paramBagName = $paramBagMapping[$paramDefinition['in']];
+            $paramBagName = $paramBagMapping[$paramDefinition->in];
             if (!$request->$paramBagName->has($paramName)) {
                 continue;
             }

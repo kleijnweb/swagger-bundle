@@ -21,10 +21,10 @@ For a pretty complete example, see [swagger-bundle-example](https://github.com/k
 ## Will:
 
  * Coerce parameters to their defined types when possible.
- * Validate content and parameters based on your Swagger spec.
- * Configure routing based on your Swagger spec. 
+ * Validate content and parameters based on your Swagger documents(s).
+ * Configure routing based on your Swagger documents(s). 
  * Encode response data as JSON.
- * Resolve JSON-Schema `$ref`s in your Swagger spec to allow reusable partial specs.
+ * Resolve JSON-Schema `$ref`s in your Swagger documents(s) to allow reusable partial specs.
  
 ## Can:
 
@@ -36,7 +36,7 @@ For a pretty complete example, see [swagger-bundle-example](https://github.com/k
 ## Won't:
 
  * Handle Form posts.
- * Generate your API documentation. Use your Swagger document, plenty of options.
+ * Generate your API documentation. Use your Swagger documents, plenty of options.
  * Mix well with GUI bundles. The bundle is biased towards lightweight API-only apps.
  * Work with JSON Swagger documents.
  * Do content negotiation. May support XML in the future (low priority, see [#1](https://github.com/kleijnweb/swagger-bundle/issues/1)).

@@ -46,9 +46,9 @@ class RequestCoercerTest extends \PHPUnit_Framework_TestCase
         $content = '[1,2,3,4]';
         $request = new Request([], [], [], [], [], [], $content);
 
-        $operationDefinition = [
+        $operationDefinition = (object)[
             'parameters' => [
-                [
+                (object)[
                     'name' => 'myContent',
                     'in'   => 'body'
                 ]
@@ -68,9 +68,9 @@ class RequestCoercerTest extends \PHPUnit_Framework_TestCase
         $coercer = new RequestCoercer($this->contentDecoderMock);
         $request = new Request(['foo' => "2015-01-01"], [], [], [], [], []);
 
-        $operationDefinition = [
+        $operationDefinition = (object)[
             'parameters' => [
-                [
+                (object)[
                     'name'   => 'foo',
                     'in'     => 'query',
                     'type'   => 'string',
@@ -81,7 +81,7 @@ class RequestCoercerTest extends \PHPUnit_Framework_TestCase
 
         $coercer->coerceRequest($request, $operationDefinition);
 
-        $expected = ParameterCoercer::coerceParameter($operationDefinition['parameters'][0], "2015-01-01");
+        $expected = ParameterCoercer::coerceParameter($operationDefinition->parameters[0], "2015-01-01");
 
         // Sanity check
         $this->assertInstanceOf('DateTime', $expected);

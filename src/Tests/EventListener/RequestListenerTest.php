@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Tests\Dev\EventListener;
+namespace KleijnWeb\SwaggerBundle\Tests\EventListener;
 
 use KleijnWeb\SwaggerBundle\EventListener\RequestListener;
 use Symfony\Component\HttpFoundation\Request;

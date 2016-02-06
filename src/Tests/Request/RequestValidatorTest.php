@@ -21,12 +21,12 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function canOmitParameterWhenNotExplicitlyMarkedAsRequired()
     {
-        $operationDefinition = [
+        $operationDefinition = (object)[
             'parameters' => [
-                [
+                (object)[
                     'name'   => 'foo',
                     'in'     => 'body',
-                    'schema' => [
+                    'schema' => (object)[
                         'type' => 'integer'
                     ]
                 ]
@@ -45,9 +45,9 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
     {
         $request = new Request();
 
-        $operationDefinition = [
+        $operationDefinition = (object)[
             'parameters' => [
-                [
+                (object)[
                     'name'     => 'foo',
                     'required' => true,
                     'in'       => 'query',
@@ -67,9 +67,9 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
     {
         $request = new Request();
 
-        $operationDefinition = [
+        $operationDefinition = (object)[
             'parameters' => [
-                [
+                (object)[
                     'name'     => 'foo',
                     'required' => true,
                     'in'       => 'query',

@@ -54,13 +54,13 @@ class ContentDecoder
 
     /**
      * @param Request $request
-     * @param array   $operationDefinition
+     * @param object  $operationDefinition
      *
      * @return mixed|null
      * @throws MalformedContentException
      * @throws UnsupportedContentTypeException
      */
-    public function decodeContent(Request $request, array $operationDefinition)
+    public function decodeContent(Request $request, $operationDefinition)
     {
         if ($content = $request->getContent()) {
             $type = $this->typeResolver ? $this->typeResolver->resolve($operationDefinition) : null;

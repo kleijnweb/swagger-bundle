@@ -55,12 +55,12 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
         $request->headers->set('Content-Type', 'application/json');
 
 
-        $operationDefinition = [
+        $operationDefinition = (object)[
             'parameters' => [
-                [
-                    "in"       => "body",
-                    "name"     => "body",
-                    "schema"   => [
+                (object)[
+                    "in"     => "body",
+                    "name"   => "body",
+                    "schema" => (object)[
                         '$ref' => "#/definitions/JmsAnnotatedResourceStub"
                     ]
                 ]

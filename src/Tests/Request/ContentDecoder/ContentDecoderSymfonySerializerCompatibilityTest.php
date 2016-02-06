@@ -90,12 +90,12 @@ class ContentDecoderSymfonySerializerCompatibilityTest extends \PHPUnit_Framewor
             }
         ");
 
-        $operationDefinition = [
+        $operationDefinition = (object)[
             'parameters' => [
-                [
+                (object)[
                     "in"     => "body",
                     "name"   => "body",
-                    "schema" => [
+                    "schema" => (object)[
                         '$ref' => "#/definitions/$className"
                     ]
                 ]

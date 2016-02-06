@@ -30,9 +30,9 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $operationDefinition = [
+        $operationDefinition = (object)[
             'parameters' => [
-                [
+                (object)[
                     'name' => 'myContent',
                     'in'   => 'body'
                 ]
@@ -89,8 +89,8 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $processor = new RequestProcessor($validatorMock, $coercerMock);
 
         $operationDefinition = [
-            'parameters' => [
-                [
+            'parameters' => (object)[
+                (object) [
                     'name' => 'myContent',
                     'in'   => 'body'
                 ]

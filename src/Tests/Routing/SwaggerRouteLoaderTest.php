@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Tests\Dev\Routing;
+namespace KleijnWeb\SwaggerBundle\Tests\Routing;
 
 use KleijnWeb\SwaggerBundle\Routing\SwaggerRouteLoader;
 use Symfony\Component\Routing\Route;

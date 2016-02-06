@@ -8,8 +8,6 @@
 
 namespace KleijnWeb\SwaggerBundle\Document;
 
-use JsonSchema\RefResolver;
-use JsonSchema\Uri\UriRetriever;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -20,33 +18,25 @@ class SwaggerDocument
     /**
      * @var string
      */
-    private $pathFileName;
+    private $uri;
 
     /**
-     * @var \ArrayObject
+     * @var object
      */
     private $definition;
 
     /**
-     * @param $pathFileName
+     * @param string $pathFileName
+     * @param object $definition
      */
-    public function __construct($pathFileName)
+    public function __construct($pathFileName, $definition)
     {
-        if (!is_file($pathFileName)) {
-            throw new \InvalidArgumentException(
-                "Document file '$pathFileName' does not exist'"
-            );
-        }
-
-        $data = Yaml::parse(file_get_contents($pathFileName));
-        $data = self::resolveSelfReferences($data, $data);
-
-        $this->pathFileName = $pathFileName;
-        $this->definition = new \ArrayObject($data, \ArrayObject::ARRAY_AS_PROPS | \ArrayObject::STD_PROP_LIST);
+        $this->uri = $pathFileName;
+        $this->definition = $definition;
     }
 
     /**
-     * @return array
+     * @return object
      */
     public function getDefinition()
     {
@@ -54,7 +44,7 @@ class SwaggerDocument
     }
 
     /**
-     * @return array
+     * @return object
      */
     public function getPathDefinitions()
     {
@@ -62,7 +52,7 @@ class SwaggerDocument
     }
 
     /**
-     * @return array
+     * @return object
      */
     public function getResourceSchemas()
     {
@@ -81,114 +71,27 @@ class SwaggerDocument
      * @param string $path
      * @param string $method
      *
-     * @return array
+     * @return object
      */
     public function getOperationDefinition($path, $method)
     {
         $paths = $this->getPathDefinitions();
-        if (!isset($paths[$path])) {
+        if (!property_exists($paths, $path)) {
             throw new \InvalidArgumentException("Path '$path' not in Swagger document");
         }
         $method = strtolower($method);
-        if (!isset($paths[$path][$method])) {
+        if (!property_exists($paths->$path, $method)) {
             throw new \InvalidArgumentException("Method '$method' not supported for path '$path'");
         }
 
-        return $paths[$path][$method];
+        return $paths->$path->$method;
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getArrayCopy()
+    public function getUri()
     {
-        return $this->definition->getArrayCopy();
-    }
-
-    /**
-     * @param null $targetPath
-     *
-     * @return void
-     */
-    public function write($targetPath = null)
-    {
-        $data = $this->getArrayCopy();
-        $data = self::unresolveSelfReferences($data, $data);
-        $yaml = Yaml::dump($data, 10, 2);
-        $yaml = str_replace(': {  }', ': []', $yaml);
-        file_put_contents($targetPath ?: $this->pathFileName, $yaml);
-    }
-
-    /**
-     * Cloning will break things
-     */
-    private function __clone()
-    {
-    }
-
-    /**
-     * @param array $segments
-     * @param array $context
-     *
-     * @return mixed
-     */
-    private static function lookupUsingSegments(array $segments, array $context)
-    {
-        $segment = array_shift($segments);
-        if (isset($context[$segment])) {
-            if (!count($segments)) {
-                return $context[$segment];
-            }
-
-            return self::lookupUsingSegments($segments, $context[$segment]);
-        }
-
-        return null;
-    }
-
-    /**
-     * @param array $doc
-     * @param array $data
-     *
-     * @return array
-     */
-    private function resolveSelfReferences(array $doc, array &$data)
-    {
-        foreach ($data as $key => &$value) {
-            if (is_array($value)) {
-                $value = self::resolveSelfReferences($doc, $value);
-            }
-            if ($key === '$ref' && '#' === $value[0]) {
-                $data = self::lookupUsingSegments(
-                    explode('/', trim(substr($value, 1), '/')),
-                    $doc
-                );
-                $data['id'] = $value;
-                // Use something a little less generic for more reliable qnd restoring of original
-                $data['x-swagger-id'] = $value;
-            }
-        }
-
-        return $data;
-    }
-
-    /**
-     * @param array $doc
-     * @param array $data
-     *
-     * @return array
-     */
-    private function unresolveSelfReferences(array $doc, array &$data)
-    {
-        foreach ($data as $key => &$value) {
-            if (is_array($value)) {
-                $value = self::unresolveSelfReferences($doc, $value);
-            }
-            if ($key === 'x-swagger-id') {
-                $data = ['$ref' => $value];
-            }
-        }
-
-        return $data;
+        return $this->uri;
     }
 }
