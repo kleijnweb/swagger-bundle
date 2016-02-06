@@ -10,7 +10,6 @@ namespace KleijnWeb\SwaggerBundle\Document;
 
 use Doctrine\Common\Cache\Cache;
 use KleijnWeb\SwaggerBundle\Document\Exception\ResourceNotReadableException;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -80,8 +79,8 @@ class DocumentRepository
             throw new ResourceNotReadableException("Document '$documentPath' is not readable");
         }
 
-        $content = file_get_contents($documentPath);
-        $resolver = new RefResolver(Yaml::parse($content, true, false, true), $documentPath);
+        $parser = new  YamlParser();
+        $resolver = new RefResolver($parser->parse(file_get_contents($documentPath)), $documentPath);
         $document = new SwaggerDocument($documentPath, $resolver->resolve());
 
         if ($this->cache) {
