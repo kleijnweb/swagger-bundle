@@ -39,9 +39,9 @@ class YamlParser
     public function parse($string)
     {
         // Hashmap support is broken, so disable it and attempt fix afterwards
-        return $this->fixHashMaps(
-            $this->parser->parse($string, true, false, false)
-        );
+        $data = $this->parser->parse($string, true, false, false);
+
+        return $this->fixHashMaps($data);
     }
 
     /**
