@@ -30,16 +30,13 @@ For a pretty complete example, see [swagger-bundle-example](https://github.com/k
  
 ## Can:
 
- * Amend your Swagger spec to include the error responses added by SwaggerBundle.
  * (De-) Serialize objects using either the Symfony Component Serializer or JMS\Serializer
- * Generate DTO-like classes representing resources in your Swagger spec.
 
 ## Won't:
 
  * Handle Form posts.
  * Generate your API documentation. Use your Swagger document, plenty of options.
  * Mix well with GUI bundles. The bundle is biased towards lightweight API-only apps.
- * Update the resource schemas in your Swagger spec when these classes change (not yet, but __soon__, see [#3](https://github.com/kleijnweb/swagger-bundle/issues/3)).
  * Work with JSON Swagger documents (yet, see [#10](https://github.com/kleijnweb/swagger-bundle/issues/10)).
  * Do content negotiation. May support XML in the future (low priority, see [#1](https://github.com/kleijnweb/swagger-bundle/issues/1)).
 
@@ -219,27 +216,6 @@ public function placeOrder(Request $request)
 ```
 When a controller action returns `NULL`, SwaggerBundle will return an empty `204` response.
   
-#### Using Annotations
-
-In order to use annotations, you should make sure you use an autoload bootstrap
- that will initialize doctrine/annotations:
- 
-```php
-use Doctrine\Common\Annotations\AnnotationRegistry;
-use Composer\Autoload\ClassLoader;
-
-/**
- * @var ClassLoader $loader
- */
-$loader = require __DIR__.'/../vendor/autoload.php';
-
-AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
-
-return $loader;
-```
-
-Good chance you are already using a bootstrap file like this, but if the annotations won't load, this is where to look.
-
 ## Authentication
 
 SwaggerBundle 2.0+ does not include authentication functionality. The JWT support from 1.0 was moved into [kleijnweb/jwt-bundle](https://github.com/kleijnweb/jwt-bundle)).
@@ -250,25 +226,6 @@ When using `SecurityDefinition` type `oauth2`, it would be possible to translate
  
 
 # Developing
-
-__NOTE:__ In order to use development tools, the `require-dev` dependencies are needed, as well as setting the `dev` configuration option:
-
-```yml
-swagger:
-    dev: true # Or perhaps "%kernel.debug%"
-```
-
-## Amending Your Swagger Document
- 
-SwaggerBundle adds some standardized behavior, this should be reflected in your Swagger document. Instead of doing this manually, you can use the `swagger:document:amend` command.
-
-## Generating Resource Classes
- 
-SwaggerBundle can generate classes for you based on your Swagger resource definitions. 
-You can use the resulting classes as DTO-like objects for your services, or create Doctrine mapping config for them. Obviously this requires you to enable object serialization.
-The resulting classes will have JMS\Serializer annotations by default, the use of which is optional, remove them if you're using the standard Symfony serializer.
-
-See `app/console swagger:generate:resources --help` for more details.
 
 ## Functional Testing Your API
 
@@ -320,7 +277,11 @@ class PetStoreApiTest extends WebTestCase
 }
 ```
 
-When using ApiTestCase, initSchemaManager() will also validate your Swagger spec against the official schema to ensure it is valid. 
+When using ApiTestCase, initSchemaManager() will also validate your Swagger spec against the official schema to ensure it is valid.
+ 
+# Utilities
+
+See [swagger-bundle-tools](https://github.com/kleijnweb/swagger-bundle-tools))
 
 ## License
 
