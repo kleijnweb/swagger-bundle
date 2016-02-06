@@ -15,12 +15,6 @@
       "KleijnWeb\\SwaggerBundle\\": "src"
     }
   },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/kleijnweb/yaml"
-    }
-  ],
   "require": {
     "php": ">=5.4.0",
     "psr/log": "1.0",
@@ -31,7 +25,7 @@
     "symfony/http-kernel": ">=2.6.0",
     "symfony/filesystem": ">=2.6.0",
     "symfony/routing": ">=2.6.0",
-    "symfony/yaml": "dev-master",
+    "symfony/yaml": ">=2.6.0",
     "symfony/finder": ">=2.6.0",
     "symfony/property-access": ">=2.6.0",
     "doctrine/collections": "^1.3",

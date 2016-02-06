@@ -48,13 +48,41 @@ class ResponseFactory
      */
     public function createResponse(Request $request, $data)
     {
-        $headers = ['Content-Type' => 'application/json'];
-
-        if ($data === null) {
-            return new Response('', 204, $headers);
+        if (!$request->get('_definition')) {
+            throw new \LogicException("Request does not contain reference to definition");
         }
-        $data = $this->serializer->serialize($data, 'json');
+        if (!$request->get('_swagger_path')) {
+            throw new \LogicException("Request does not contain reference to Swagger path");
+        }
 
-        return new Response($data, 200, $headers);
+        if ($data !== null) {
+            $data = $this->serializer->serialize($data, 'json');
+        }
+
+        $swaggerDocument = $this->documentRepository->get($request->get('_definition'));
+
+        $operationDefinition = $swaggerDocument
+            ->getOperationDefinition(
+                $request->get('_swagger_path'),
+                $request->getMethod()
+            );
+
+        $responseCode = 200;
+        $understands204 = false;
+        foreach (array_keys((array)$operationDefinition->responses) as $statusCode) {
+            if ($statusCode == 204) {
+                $understands204 = true;
+            }
+            if (2 == substr($statusCode, 0, 1)) {
+                $responseCode = $statusCode;
+                break;
+            }
+        }
+
+        if ($data === null && $understands204) {
+            $responseCode = 204;
+        }
+
+        return new Response($data, $responseCode, ['Content-Type' => 'application/json']);
     }
 }

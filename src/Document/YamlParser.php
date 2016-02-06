@@ -12,7 +12,7 @@ use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Facade for Symfony\Yaml
+ * Facade/Adapter for Symfony\Yaml
  *
  * @author John Kleijn <john@kleijnweb.nl>
  */
@@ -38,6 +38,36 @@ class YamlParser
      */
     public function parse($string)
     {
-        return $this->parser->parse($string, true, false, true);
+        // Hashmap support is broken, so disable it and attempt fix afterwards
+        return $this->fixHashMaps(
+            $this->parser->parse($string, true, false, false)
+        );
+    }
+
+    /**
+     * @see https://github.com/symfony/symfony/pull/17711
+     *
+     * @param mixed $data
+     *
+     * @return \stdClass
+     */
+    private function fixHashMaps(&$data)
+    {
+        if (is_array($data)) {
+            $shouldBeObject = false;
+            $object = new \stdClass();
+            $index = 0;
+            foreach ($data as $key => &$value) {
+                $object->$key = $this->fixHashMaps($value);
+                if ($index++ !== $key) {
+                    $shouldBeObject = true;
+                }
+            }
+            if ($shouldBeObject) {
+                $data = $object;
+            }
+        }
+
+        return $data;
     }
 }

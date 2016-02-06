@@ -49,6 +49,7 @@ class ResponseFactorySymfonySerializerCompatibilityTest extends \PHPUnit_Framewo
                 if (is_null($data)) {
                     throw new \Exception();
                 }
+
                 return $data;
             });
 
@@ -59,12 +60,12 @@ class ResponseFactorySymfonySerializerCompatibilityTest extends \PHPUnit_Framewo
 
         $serializer = new SerializerAdapter(SymfonySerializerFactory::factory($jsonEncoderMock));
         $factory = new ResponseFactory(new DocumentRepository(), $serializer);
+        $request = new Request();
+        $request->attributes->set('_definition', 'src/Tests/Functional/PetStore/app/swagger/composite.yml');
+        $request->attributes->set('_swagger_path', '/pet/{id}');
+        $response = $factory->createResponse($request, (new $className)->setFoo('bar'));
 
-        $response = $factory->createResponse(new Request(), (new $className)->setFoo('bar'));
-
-        $expected = json_encode(
-            ['foo' => 'bar']
-        );
+        $expected = json_encode(['foo' => 'bar']);
         $this->assertEquals($expected, $response->getContent());
     }
 }

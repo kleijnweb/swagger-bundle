@@ -13,7 +13,13 @@ paths:
           schema:
             type: object
       responses:
+        '302':
+          description: "Found"
+          schema:
+            type: null
         '201':
+          $ref: "#/responses/Created"
+        '200':
           $ref: "#/responses/Created"
         '500':
           $ref: "partials/responses.yml#/ServerError"

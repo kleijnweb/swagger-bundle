@@ -9,61 +9,13 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Document;
 
 use KleijnWeb\SwaggerBundle\Document\RefResolver;
-use Symfony\Component\Yaml\Yaml;
+use KleijnWeb\SwaggerBundle\Document\YamlParser;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
 class RefResolverTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * Check Symfony\Yaml bug
-     *
-     * @see https://github.com/symfony/symfony/issues/17709
-     *
-     * @test
-     */
-    public function canParseNumericMap()
-    {
-        $yaml = <<<YAML
-map:
-  1: one
-  2: two
-YAML;
-        $actual = Yaml::parse($yaml, true, false, true);
-        $this->assertInternalType('object', $actual);
-        $this->assertInternalType('object', $actual->map);
-        $this->assertTrue(property_exists($actual->map, '1'));
-        $this->assertTrue(property_exists($actual->map, '2'));
-        $this->assertSame('one', $actual->map->{'1'});
-        $this->assertSame('two', $actual->map->{'2'});
-    }
-
-    /**
-     * Check Symfony\Yaml bug
-     *
-     * @see https://github.com/symfony/symfony/pull/17711
-     *
-     * @test
-     */
-    public function willParseArrayAsArrayAndObjectAsObject()
-    {
-        $yaml = <<<YAML
-array:
-  - key: one
-  - key: two
-YAML;
-
-        $actual = Yaml::parse($yaml, true, false, true);
-        $this->assertInternalType('object', $actual);
-
-        $this->assertInternalType('array', $actual->array);
-        $this->assertInternalType('object', $actual->array[0]);
-        $this->assertInternalType('object', $actual->array[1]);
-        $this->assertSame('one', $actual->array[0]->key);
-        $this->assertSame('two', $actual->array[1]->key);
-    }
-
     /**
      * @test
      */
@@ -120,7 +72,8 @@ YAML;
     {
         $filePath = "src/Tests/Functional/PetStore/app/swagger/$path";
         $contents = file_get_contents($filePath);
-        $object = Yaml::parse($contents, true, false, true);
+        $parser = new YamlParser();
+        $object = $parser->parse($contents);
         $resolver = new RefResolver($object, $filePath);
 
         return $resolver;
