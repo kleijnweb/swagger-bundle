@@ -6,9 +6,9 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Tests\Dev\Test;
+namespace KleijnWeb\SwaggerBundle\Tests\Test;
 
-use KleijnWeb\SwaggerBundle\Dev\Test\ApiRequest;
+use KleijnWeb\SwaggerBundle\Test\ApiRequest;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
