@@ -4,17 +4,15 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kleijnweb/swagger-bundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/kleijnweb/swagger-bundle/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/kleijnweb/swagger-bundle/v/stable)](https://packagist.org/packages/kleijnweb/swagger-bundle)
 
-__NOTE:__ You are looking at the documentation for the upcoming 3.0 release.
-
 Invert your workflow (contract first) using Swagger specs and set up a Symfony REST app with minimal config.
 
-Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig (except for dev purposes).
+Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig.
 
-*SwaggerBundle only supports json in- and output, and only YAML Swagger defintions.*
-
-Go to the [release page](https://github.com/kleijnweb/swagger-bundle/releases) to find details about the latest release.
-
-__This bundle is currently actively maintained.__
+## Important Notes
+ * You are looking at the documentation for the upcoming 3.0 release.
+ * SwaggerBundle only supports json in- and output, and only YAML Swagger defintions
+ * This bundle is currently actively maintained.
+ * Go to the [release page](https://github.com/kleijnweb/swagger-bundle/releases) to find details about the latest release.
 
 For a pretty complete example, see [swagger-bundle-example](https://github.com/kleijnweb/swagger-bundle-example).
 
@@ -25,22 +23,22 @@ For a pretty complete example, see [swagger-bundle-example](https://github.com/k
  * Coerce parameters to their defined types when possible.
  * Validate content and parameters based on your Swagger spec.
  * Configure routing based on your Swagger spec. 
- * Handle standard status codes such as 500, 400 and 404.
  * Encode response data as JSON.
- * Return `application/vnd.error+json` responses when errors occur.
- * Utilize vnd.error's `logref` to make errors traceable.
  * Resolve JSON-Schema `$ref`s in your Swagger spec to allow reusable partial specs.
  
 ## Can:
 
  * (De-) Serialize objects using either the Symfony Component Serializer or JMS\Serializer
+ * Handle standard status codes such as 500, 400 and 404.
+ * Return `application/vnd.error+json` responses when errors occur.
+ * Utilize vnd.error's `logref` to make errors traceable.
 
 ## Won't:
 
  * Handle Form posts.
  * Generate your API documentation. Use your Swagger document, plenty of options.
  * Mix well with GUI bundles. The bundle is biased towards lightweight API-only apps.
- * Work with JSON Swagger documents (yet, see [#10](https://github.com/kleijnweb/swagger-bundle/issues/10)).
+ * Work with JSON Swagger documents.
  * Do content negotiation. May support XML in the future (low priority, see [#1](https://github.com/kleijnweb/swagger-bundle/issues/1)).
 
 __TIP:__ Want to build an API-only app using this bundle? Try [kleijnweb/symfony-swagger-microservice-edition](https://github.com/kleijnweb/symfony-swagger-microservice-edition).
@@ -219,16 +217,11 @@ public function placeOrder(Request $request)
 ```
 When a controller action returns `NULL`, SwaggerBundle will return an empty `204` response.
   
-## Authentication
-
-SwaggerBundle 2.0+ does not include authentication functionality. The JWT support from 1.0 was moved into [kleijnweb/jwt-bundle](https://github.com/kleijnweb/jwt-bundle)).
-
-When using `SecurityDefinition` type `oauth2`, it would be possible to translate *scopes* to Symfony roles, 
- add them to the user, and automatically configure `access_control`. 
- This is not currently implemented (yet, see [#15](https://github.com/kleijnweb/swagger-bundle/issues/15)).
- 
-
 # Developing
+
+# Utilities
+
+See [swagger-bundle-tools](https://github.com/kleijnweb/swagger-bundle-tools).
 
 ## Functional Testing Your API
 
@@ -282,10 +275,6 @@ class PetStoreApiTest extends WebTestCase
 
 When using ApiTestCase, initSchemaManager() will also validate your Swagger spec against the official schema to ensure it is valid.
  
-# Utilities
-
-See [swagger-bundle-tools](https://github.com/kleijnweb/swagger-bundle-tools)
-
 ## License
 
 KleijnWeb\SwaggerBundle is made available under the terms of the [LGPL, version 3.0](https://spdx.org/licenses/LGPL-3.0.html#licenseText).
