@@ -64,10 +64,10 @@ class SwaggerRouteLoader extends Loader
             foreach ($methods as $methodName => $operationSpec) {
                 $operationName = $methodName;
                 $controllerKey = "swagger.controller.$resourceName:$operationName";
-                if (isset($operationSpec['operationId'])) {
-                    $operationName = $operationSpec['operationId'];
-                    if (false !== strpos($operationSpec['operationId'], ':')) {
-                        $controllerKey = $operationSpec['operationId'];
+                if (isset($operationSpec->operationId)) {
+                    $operationName = $operationSpec->operationId;
+                    if (false !== strpos($operationSpec->operationId, ':')) {
+                        $controllerKey = $operationSpec->operationId;
                     } else {
                         $controllerKey = "swagger.controller.$resourceName:$operationName";
                     }
@@ -83,21 +83,21 @@ class SwaggerRouteLoader extends Loader
                 $requirements = [];
                 $operationDefinition = $document->getOperationDefinition($path, $methodName);
                 
-                if (isset($operationDefinition['parameters'])) {
-                    foreach ($operationDefinition['parameters'] as $paramDefinition) {
-                        if ($paramDefinition['in'] === 'path' && isset($paramDefinition['type'])) {
-                            switch ($paramDefinition['type']) {
+                if (isset($operationDefinition->parameters)) {
+                    foreach ($operationDefinition->parameters as $paramDefinition) {
+                        if ($paramDefinition->in === 'path' && isset($paramDefinition->type)) {
+                            switch ($paramDefinition->type) {
                                 case 'integer':
-                                    $requirements[$paramDefinition['name']] = '\d+';
+                                    $requirements[$paramDefinition->name] = '\d+';
                                     break;
                                 case 'string':
-                                    if (isset($paramDefinition['pattern'])) {
-                                        $requirements[$paramDefinition['name']] = $paramDefinition['pattern'];
+                                    if (isset($paramDefinition->pattern)) {
+                                        $requirements[$paramDefinition->name] = $paramDefinition->pattern;
                                         break;
                                     }
-                                    if (isset($paramDefinition['enum'])) {
-                                        $requirements[$paramDefinition['name']] = '(' .
-                                            implode('|', $paramDefinition['enum'])
+                                    if (isset($paramDefinition->enum)) {
+                                        $requirements[$paramDefinition->name] = '(' .
+                                            implode('|', $paramDefinition->enum)
                                             . ')';
                                         break;
                                     }
