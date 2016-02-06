@@ -4,6 +4,8 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kleijnweb/swagger-bundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/kleijnweb/swagger-bundle/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/kleijnweb/swagger-bundle/v/stable)](https://packagist.org/packages/kleijnweb/swagger-bundle)
 
+__NOTE:__ You are looking at the documentation for the upcoming 3.0 release.
+
 Invert your workflow (contract first) using Swagger specs and set up a Symfony REST app with minimal config.
 
 Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig (except for dev purposes).
@@ -282,7 +284,7 @@ When using ApiTestCase, initSchemaManager() will also validate your Swagger spec
  
 # Utilities
 
-See [swagger-bundle-tools](https://github.com/kleijnweb/swagger-bundle-tools))
+See [swagger-bundle-tools](https://github.com/kleijnweb/swagger-bundle-tools)
 
 ## License
 

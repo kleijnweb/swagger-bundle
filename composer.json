@@ -56,5 +56,10 @@
   },
   "config": {
     "bin-dir": "bin"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "3.0.x-dev"
+    }
   }
 }
