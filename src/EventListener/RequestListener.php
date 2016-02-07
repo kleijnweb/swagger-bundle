@@ -54,15 +54,13 @@ class RequestListener
         }
         $swaggerDocument = $this->documentRepository->get($request->get('_definition'));
 
-        $operationDefinition = $swaggerDocument
-            ->getOperationDefinition(
-                $request->get('_swagger_path'),
-                $request->getMethod()
-            );
-
         $this->processor->process(
             $request,
-            $operationDefinition
+            $swaggerDocument
+                ->getOperationObject(
+                    $request->get('_swagger_path'),
+                    $request->getMethod()
+                )
         );
     }
 }

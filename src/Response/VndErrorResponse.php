@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Response;
 
+use Ramsey\VndError\VndError;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,19 +20,13 @@ class VndErrorResponse extends JsonResponse
     const DEFAULT_STATUS = Response::HTTP_INTERNAL_SERVER_ERROR;
 
     /**
-     * @param string $message
-     * @param int    $status
-     * @param null   $logref
-     * @param array  $headers
+     * @param VndError $vndError
+     * @param int      $status
+     * @param array    $headers
      */
-    public function __construct($message, $status = self::DEFAULT_STATUS, $logref = null, $headers = [])
+    public function __construct(VndError $vndError, $status = self::DEFAULT_STATUS, array $headers = [])
     {
-        $data = ['message' => $message];
-        if (null !== $logref) {
-            $data['logref'] = $logref;
-        }
         $headers = array_merge(['Content-Type' => 'application/vnd.error+json'], $headers);
-        parent::__construct($data, $status, $headers);
-
+        parent::__construct($vndError->asJson(false, false), $status, $headers);
     }
 }

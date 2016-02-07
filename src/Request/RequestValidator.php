@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Request;
 
+use KleijnWeb\SwaggerBundle\Document\OperationObject;
 use KleijnWeb\SwaggerBundle\Exception\UnsupportedException;
 use Symfony\Component\HttpFoundation\Request;
 use JsonSchema\Validator;
@@ -19,26 +20,28 @@ use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
 class RequestValidator
 {
     /**
-     * @var object
+     * @var OperationObject
      */
-    private $operationDefinition = [];
+    private $operationObject;
 
     /**
-     * @param object $operationDefinition
+     * @param OperationObject $operationObject
      */
-    public function __construct($operationDefinition = null)
+    public function __construct(OperationObject $operationObject = null)
     {
-        $this->setOperationDefinition($operationDefinition);
+        if ($operationObject) {
+            $this->setOperationObject($operationObject);
+        }
     }
 
     /**
-     * @param object $operationDefinition
+     * @param OperationObject $operationObject
      *
      * @return $this
      */
-    public function setOperationDefinition($operationDefinition)
+    public function setOperationObject(OperationObject $operationObject)
     {
-        $this->operationDefinition = $operationDefinition;
+        $this->operationObject = $operationObject;
 
         return $this;
     }
@@ -55,49 +58,16 @@ class RequestValidator
 
         $validator->check(
             $this->assembleParameterDataForValidation($request),
-            $this->assembleRequestSchema()
+            $this->operationObject->getRequestSchema()
         );
 
         if (!$validator->isValid()) {
-            /**
-             * TODO Better utilize $validator->getErrors() so we can assemble a more helpful vnd.error response
-             * @see https://github.com/kleijnweb/swagger-bundle/issues/27
-             */
             throw new InvalidParametersException(
                 "Parameters incompatible with operation schema: "
                 . implode(', ', $validator->getErrors()[0]),
-                400
+                $validator->getErrors()
             );
         }
-    }
-
-    /**
-     * @return object
-     */
-    private function assembleRequestSchema()
-    {
-        if (!isset($this->operationDefinition->parameters)) {
-            return new \stdClass;
-        }
-        $schema = new \stdClass;
-        $schema->type = 'object';
-        $schema->required = [];
-        $schema->properties = new \stdClass;
-
-        foreach ($this->operationDefinition->parameters as $paramDefinition) {
-            if (isset($paramDefinition->required) && $paramDefinition->required) {
-                $schema->required[] = $paramDefinition->name;
-            }
-            if ($paramDefinition->in === 'body') {
-                $schema->properties->{$paramDefinition->name} = $paramDefinition->schema;
-                continue;
-            }
-            $propertySchema = (object)['type' => $paramDefinition->type];
-
-            $schema->properties->{$paramDefinition->name} = $propertySchema;
-        }
-
-        return $schema;
     }
 
     /**
@@ -108,7 +78,7 @@ class RequestValidator
      */
     private function assembleParameterDataForValidation(Request $request)
     {
-        if (!isset($this->operationDefinition->parameters)) {
+        if (!isset($this->operationObject->getDefinition()->parameters)) {
             return new \stdClass;
         }
 
@@ -131,7 +101,7 @@ class RequestValidator
             'body'   => 'attributes',
             'header' => 'headers'
         ];
-        foreach ($this->operationDefinition->parameters as $paramDefinition) {
+        foreach ($this->operationObject->getDefinition()->parameters as $paramDefinition) {
             $paramName = $paramDefinition->name;
 
             if (!isset($paramBagMapping[$paramDefinition->in])) {

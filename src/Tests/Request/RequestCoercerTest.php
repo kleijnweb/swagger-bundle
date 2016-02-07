@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Request;
 
+use KleijnWeb\SwaggerBundle\Document\OperationObject;
 use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
 use KleijnWeb\SwaggerBundle\Request\RequestCoercer;
 use KleijnWeb\SwaggerBundle\Request\ParameterCoercer;
@@ -49,13 +50,17 @@ class RequestCoercerTest extends \PHPUnit_Framework_TestCase
         $operationDefinition = (object)[
             'parameters' => [
                 (object)[
-                    'name' => 'myContent',
-                    'in'   => 'body'
+                    'name'   => 'myContent',
+                    'in'     => 'body',
+                    'schema' => (object)[
+                        'type' => 'array'
+                    ]
                 ]
             ]
         ];
 
-        $coercer->coerceRequest($request, $operationDefinition);
+        $operationObject = OperationObject::createFromOperationDefinition((object)$operationDefinition);
+        $coercer->coerceRequest($request, $operationObject);
 
         $this->assertSame([1, 2, 3, 4], $request->attributes->get('myContent'));
     }
@@ -79,7 +84,8 @@ class RequestCoercerTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $coercer->coerceRequest($request, $operationDefinition);
+        $operationObject = OperationObject::createFromOperationDefinition((object)$operationDefinition);
+        $coercer->coerceRequest($request, $operationObject);
 
         $expected = ParameterCoercer::coerceParameter($operationDefinition->parameters[0], "2015-01-01");
 

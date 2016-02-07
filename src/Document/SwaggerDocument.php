@@ -26,6 +26,11 @@ class SwaggerDocument
     private $definition;
 
     /**
+     * @var OperationObject[]
+     */
+    private $operations;
+
+    /**
      * @param string $pathFileName
      * @param object $definition
      */
@@ -71,20 +76,30 @@ class SwaggerDocument
      * @param string $path
      * @param string $method
      *
+     * @return OperationObject
+     */
+    public function getOperationObject($path, $method)
+    {
+        $key = "$path::$method";
+
+        if (isset($this->operations[$key])) {
+            return $this->operations[$key];
+        }
+
+        return $this->operations[$key] = new OperationObject($this, $path, $method);
+    }
+
+    /**
+     * @deprecated
+     *
+     * @param string $path
+     * @param string $method
+     *
      * @return object
      */
     public function getOperationDefinition($path, $method)
     {
-        $paths = $this->getPathDefinitions();
-        if (!property_exists($paths, $path)) {
-            throw new \InvalidArgumentException("Path '$path' not in Swagger document");
-        }
-        $method = strtolower($method);
-        if (!property_exists($paths->$path, $method)) {
-            throw new \InvalidArgumentException("Method '$method' not supported for path '$path'");
-        }
-
-        return $paths->$path->$method;
+        return $this->getOperationObject($path, $method)->getDefinition();
     }
 
     /**

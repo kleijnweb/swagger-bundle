@@ -10,6 +10,7 @@ namespace KleijnWeb\SwaggerBundle\Tests\Request\ContentDecoder;
 
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
+use KleijnWeb\SwaggerBundle\Document\OperationObject;
 use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
 use KleijnWeb\SwaggerBundle\Serializer\JmsSerializerFactory;
 use KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver;
@@ -67,7 +68,9 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
             ]
         ];
 
-        $actual = $this->contentDecoder->decodeContent($request, $operationDefinition);
+        $operationObject = OperationObject::createFromOperationDefinition((object)$operationDefinition);
+
+        $actual = $this->contentDecoder->decodeContent($request, $operationObject);
 
         $className = 'KleijnWeb\SwaggerBundle\Tests\Request\ContentDecoder\JmsAnnotatedResourceStub';
         $expected = (new $className)->setFoo('bar');
@@ -86,8 +89,7 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
         $request = new Request([], [], [], [], [], [], $content);
         $request->headers->set('Content-Type', 'application/json');
 
-        $operationDefinition = [];
-
-        $this->contentDecoder->decodeContent($request, $operationDefinition);
+        $operationObject = OperationObject::createFromOperationDefinition((object)[]);
+        $this->contentDecoder->decodeContent($request, $operationObject);
     }
 }

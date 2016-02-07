@@ -7,6 +7,8 @@
  */
 namespace KleijnWeb\SwaggerBundle\Serializer;
 
+use KleijnWeb\SwaggerBundle\Document\OperationObject;
+
 class SerializationTypeResolver
 {
     /**
@@ -23,14 +25,14 @@ class SerializationTypeResolver
     }
 
     /**
-     * @param object $definitionFragment
+     * @param OperationObject $operationObject
      *
      * @return null|string
      */
-    public function resolve($definitionFragment)
+    public function resolve(OperationObject $operationObject)
     {
-        if (isset($definitionFragment->parameters)) {
-            foreach ($definitionFragment->parameters as $parameterDefinition) {
+        if (isset($operationObject->getDefinition()->parameters)) {
+            foreach ($operationObject->getDefinition()->parameters as $parameterDefinition) {
                 if ($parameterDefinition->in == 'body' && isset($parameterDefinition->schema)) {
                     return $this->resolveUsingSchema($parameterDefinition->schema);
                 }

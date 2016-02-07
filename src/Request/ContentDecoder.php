@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Request;
 
+use KleijnWeb\SwaggerBundle\Document\OperationObject;
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
 use KleijnWeb\SwaggerBundle\Exception\UnsupportedContentTypeException;
 use KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver;
@@ -53,17 +54,17 @@ class ContentDecoder
     }
 
     /**
-     * @param Request $request
-     * @param object  $operationDefinition
+     * @param Request         $request
+     * @param OperationObject $operationObject
      *
      * @return mixed|null
      * @throws MalformedContentException
      * @throws UnsupportedContentTypeException
      */
-    public function decodeContent(Request $request, $operationDefinition)
+    public function decodeContent(Request $request, OperationObject $operationObject)
     {
         if ($content = $request->getContent()) {
-            $type = $this->typeResolver ? $this->typeResolver->resolve($operationDefinition) : null;
+            $type = $this->typeResolver ? $this->typeResolver->resolve($operationObject) : null;
 
             try {
                 return $this->serializer->deserialize($content, $type, $request->getContentType());
