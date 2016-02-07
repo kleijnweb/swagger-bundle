@@ -23,7 +23,7 @@ class RefResolverTest extends \PHPUnit_Framework_TestCase
     {
         $resolver = $this->construct('petstore.yml');
         $resolver->resolve();
-        $schemas = $resolver->getDocument()->definitions;
+        $schemas = $resolver->getDefinition()->definitions;
         $propertySchema = $schemas->Pet->properties->category;
         $this->assertObjectNotHasAttribute('$ref', $propertySchema);
         $this->assertObjectHasAttribute('id', $propertySchema);
@@ -36,7 +36,7 @@ class RefResolverTest extends \PHPUnit_Framework_TestCase
     public function canResolveParameterSchemaReferences()
     {
         $resolver = $this->construct('instagram.yml');
-        $pathDefinitions = $resolver->getDocument()->paths;
+        $pathDefinitions = $resolver->getDefinition()->paths;
         $pathDefinition = $pathDefinitions->{'/users/{user-id}'};
         $this->assertInternalType('array', $pathDefinition->parameters);
         $pathDefinition = $pathDefinitions->{'/users/{user-id}'};
@@ -56,11 +56,19 @@ class RefResolverTest extends \PHPUnit_Framework_TestCase
     {
         $resolver = $this->construct('composite.yml');
         $resolver->resolve();
-        $document = $resolver->getDocument();
+        $document = $resolver->getDefinition();
         $schema = $document->responses->Created->schema;
         $this->assertObjectHasAttribute('type', $schema);
         $response = $document->paths->{'/pet'}->post->responses->{'500'};
         $this->assertObjectHasAttribute('description', $response);
+    }
+
+    /**
+     * @test
+     */
+    public function canUnResolve()
+    {
+        $this->markTestIncomplete();
     }
 
     /**

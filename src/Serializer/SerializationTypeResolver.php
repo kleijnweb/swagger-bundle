@@ -31,8 +31,8 @@ class SerializationTypeResolver
      */
     public function resolve(OperationObject $operationObject)
     {
-        if (isset($operationObject->getDefinition()->parameters)) {
-            foreach ($operationObject->getDefinition()->parameters as $parameterDefinition) {
+        if ($operationObject->hasParameters()) {
+            foreach ($operationObject->getParameters() as $parameterDefinition) {
                 if ($parameterDefinition->in == 'body' && isset($parameterDefinition->schema)) {
                     return $this->resolveUsingSchema($parameterDefinition->schema);
                 }

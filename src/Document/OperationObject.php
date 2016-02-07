@@ -88,6 +88,22 @@ class OperationObject
     }
 
     /**
+     * @return bool
+     */
+    public function hasParameters()
+    {
+        return property_exists($this->definition, 'parameters');
+    }
+
+    /**
+     * @return object
+     */
+    public function getParameters()
+    {
+        return $this->definition->parameters;
+    }
+
+    /**
      * @return string
      */
     public function getPath()

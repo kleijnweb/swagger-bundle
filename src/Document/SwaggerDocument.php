@@ -57,22 +57,6 @@ class SwaggerDocument
     }
 
     /**
-     * @return object
-     */
-    public function getResourceSchemas()
-    {
-        return $this->definition->definitions;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBasePath()
-    {
-        return $this->definition->basePath;
-    }
-
-    /**
      * @param string $path
      * @param string $method
      *
@@ -100,13 +84,5 @@ class SwaggerDocument
     public function getOperationDefinition($path, $method)
     {
         return $this->getOperationObject($path, $method)->getDefinition();
-    }
-
-    /**
-     * @return string
-     */
-    public function getUri()
-    {
-        return $this->uri;
     }
 }

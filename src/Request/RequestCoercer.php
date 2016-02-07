@@ -42,9 +42,6 @@ class RequestCoercer
     {
         $content = $this->contentDecoder->decodeContent($request, $operationObject);
 
-        if (!isset($operationObject->getDefinition()->parameters)) {
-            return;
-        }
         $paramBagMapping = [
             'query'  => 'query',
             'path'   => 'attributes',
@@ -59,12 +56,6 @@ class RequestCoercer
                 }
 
                 continue;
-            }
-
-            if (!isset($paramBagMapping[$paramDefinition->in])) {
-                throw new UnsupportedException(
-                    "Unsupported parameter 'in' value in definition '{$paramDefinition->in}'"
-                );
             }
             $paramBagName = $paramBagMapping[$paramDefinition->in];
             if (!$request->$paramBagName->has($paramName)) {

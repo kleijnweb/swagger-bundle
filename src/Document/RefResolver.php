@@ -19,7 +19,7 @@ class RefResolver
     /**
      * @var object
      */
-    private $document;
+    private $definition;
 
     /**
      * @var string
@@ -37,17 +37,13 @@ class RefResolver
     private $yamlParser;
 
     /**
-     * @param object     $document
+     * @param object     $definition
      * @param string     $uri
      * @param YamlParser $yamlParser
      */
-    public function __construct($document, $uri, YamlParser $yamlParser = null)
+    public function __construct($definition, $uri, YamlParser $yamlParser = null)
     {
-        if (!is_object($document)) {
-            throw new \InvalidArgumentException("Document must be object");
-        }
-
-        $this->document = $document;
+        $this->definition = $definition;
         $uriSegs = $this->parseUri($uri);
         if (!$uriSegs['proto']) {
             $uri = realpath($uri);
@@ -60,9 +56,9 @@ class RefResolver
     /**
      * @return object
      */
-    public function getDocument()
+    public function getDefinition()
     {
-        return $this->document;
+        return $this->definition;
     }
 
     /**
@@ -72,9 +68,9 @@ class RefResolver
      */
     public function resolve()
     {
-        $this->resolveRecursively($this->document);
+        $this->resolveRecursively($this->definition);
 
-        return $this->document;
+        return $this->definition;
     }
 
     /**
@@ -82,7 +78,7 @@ class RefResolver
      */
     public function unresolve()
     {
-        $this->unresolveRecursively($this->document, $this->document);
+        $this->unresolveRecursively($this->definition, $this->definition);
     }
 
     /**
@@ -95,7 +91,7 @@ class RefResolver
      */
     private function resolveRecursively(&$composite, $document = null, $uri = null)
     {
-        $document = $document ?: $this->document;
+        $document = $document ?: $this->definition;
         $uri = $uri ?: $this->uri;
 
         if (is_array($composite)) {

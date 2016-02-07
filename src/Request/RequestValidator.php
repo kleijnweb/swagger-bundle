@@ -78,10 +78,6 @@ class RequestValidator
      */
     private function assembleParameterDataForValidation(Request $request)
     {
-        if (!isset($this->operationObject->getDefinition()->parameters)) {
-            return new \stdClass;
-        }
-
         /**
          * TODO Hack
          * @see https://github.com/kleijnweb/swagger-bundle/issues/24
@@ -95,20 +91,9 @@ class RequestValidator
 
         $parameters = new \stdClass;
 
-        $paramBagMapping = [
-            'query'  => 'query',
-            'path'   => 'attributes',
-            'body'   => 'attributes',
-            'header' => 'headers'
-        ];
         foreach ($this->operationObject->getDefinition()->parameters as $paramDefinition) {
             $paramName = $paramDefinition->name;
 
-            if (!isset($paramBagMapping[$paramDefinition->in])) {
-                throw new UnsupportedException(
-                    "Unsupported parameter 'in' value in definition '{$paramDefinition->in}'"
-                );
-            }
             if (!$request->attributes->has($paramName)) {
                 continue;
             }
@@ -122,13 +107,11 @@ class RequestValidator
              * If value already coerced into \DateTime object, use any non-empty value for validation
              */
             if ($parameters->$paramName instanceof \DateTime) {
-                if (isset($paramDefinition->format)) {
-                    if ($paramDefinition->format === 'date') {
-                        $parameters->$paramName = '1970-01-01';
-                    }
-                    if ($paramDefinition->format === 'date-time') {
-                        $parameters->$paramName = '1970-01-01T00:00:00Z';
-                    }
+                if ($paramDefinition->format === 'date') {
+                    $parameters->$paramName = '1970-01-01';
+                }
+                if ($paramDefinition->format === 'date-time') {
+                    $parameters->$paramName = '1970-01-01T00:00:00Z';
                 }
             }
         }

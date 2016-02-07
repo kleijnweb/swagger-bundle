@@ -59,6 +59,8 @@ class ExceptionListener
 
     /**
      * @param GetResponseForExceptionEvent $event
+     *
+     * @throws \Exception
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
@@ -66,13 +68,7 @@ class ExceptionListener
 
         try {
             $exception = $event->getException();
-            if (!$exception instanceof \Exception) {
-                throw new \LogicException("No exception in event");
-            }
             $request = $event->getRequest();
-            if (!$request instanceof Request) {
-                throw new \LogicException("No request in event");
-            }
             $code = $exception->getCode();
 
             if ($exception instanceof InvalidParametersException) {
