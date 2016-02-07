@@ -23,17 +23,19 @@ class VndValidationErrorFactory
     /**
      * @param Request                    $request
      * @param InvalidParametersException $exception
-     *
      * @param string|null                $logRef
      *
      * @return VndError
      */
-    public function create(Request $request, InvalidParametersException $exception, $logRef)
+    public function create(Request $request, InvalidParametersException $exception, $logRef = null)
     {
         $vndError = new VndError(self::DEFAULT_MESSAGE, $logRef);
         $vndError->addLink('help', $request->attributes->get('_resource'), ['title' => 'Error Information']);
         $vndError->addLink('about', $request->getUri(), ['title' => 'Error Information']);
-        var_dump($exception->getValidationErrors());
+
+        foreach ($exception->getValidationErrors() as $errorSpec) {
+            $vndError->addResource($errorSpec['property'], new VndError($errorSpec['message']));
+        }
 
         return $vndError;
     }

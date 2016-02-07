@@ -9,9 +9,10 @@
 namespace KleijnWeb\SwaggerBundle\Tests\EventListener;
 
 use KleijnWeb\SwaggerBundle\EventListener\ExceptionListener;
-use KleijnWeb\SwaggerBundle\Response\VndValidationErrorFactory;
+use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use Ramsey\VndError\VndError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -40,6 +41,11 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
      * @var Request
      */
     private $request;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * @var ExceptionListener
@@ -77,9 +83,13 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
             ->method('getRequest')
             ->willReturn($this->request);
 
-        /** @var LoggerInterface $logger */
-        $logger = $this->getMockForAbstractClass('Psr\Log\LoggerInterface');
-        $this->exceptionListener = new ExceptionListener(new VndValidationErrorFactory(), $logger);
+        $this->validationErrorFactory = $this
+            ->getMockBuilder('KleijnWeb\SwaggerBundle\Response\VndValidationErrorFactory')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->logger = $this->getMockForAbstractClass('Psr\Log\LoggerInterface');
+        $this->exceptionListener = new ExceptionListener($this->validationErrorFactory, $this->logger);
     }
 
     /**
@@ -175,7 +185,8 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
             $this->codeProperty->setValue($this->exception, $code);
             $this->exceptionListener->onKernelException($this->event);
             $response = $this->event->getResponse();
-            $this->assertEquals($message, json_decode($response->getContent())->message);
+            $this->assertNotNull($body = json_decode($response->getContent()));
+            $this->assertEquals($message, $body->message);
         }
     }
 
@@ -245,5 +256,37 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $this->exceptionListener->onKernelException($event);
         $response = $event->getResponse();
         $this->assertSame(404, $response->getStatusCode());
+    }
+
+    /**
+     * @test
+     */
+    public function willCreateValidationErrorResponse()
+    {
+        $event = $this
+            ->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent')
+            ->disableOriginalConstructor()
+            ->setMethods(['getException', 'getRequest'])
+            ->getMock();
+
+        $exception = new InvalidParametersException('Oh noes', []);
+
+        $event->expects($this->any())
+            ->method('getException')
+            ->willReturn($exception);
+
+        $event->expects($this->any())
+            ->method('getRequest')
+            ->willReturn($this->request);
+
+        $this->validationErrorFactory
+            ->expects($this->any())
+            ->method('create')
+            ->with($this->request, $exception)
+            ->willReturn(new VndError('Try again'));
+
+        $this->exceptionListener->onKernelException($event);
+        $response = $event->getResponse();
+        $this->assertSame(400, $response->getStatusCode());
     }
 }
