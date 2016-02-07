@@ -225,7 +225,9 @@ public function placeOrder(Request $request)
    //...
 }
 ```
-When a controller action returns `NULL`, SwaggerBundle will return an empty `204` response.
+When a controller action returns `NULL`, SwaggerBundle will return an empty `204` response, provided that one is defined in the specification.
+
+Otherwise, it will default to the first 2xx type response defined in your spec, or if all else fails, simply 200.
   
 # Developing
 
