@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\EventListener;
 
+use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
 use KleijnWeb\SwaggerBundle\Response\VndErrorResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -72,7 +73,7 @@ class ExceptionListener
         } else {
             switch (substr($code, 0, 1)) {
                 case '4':
-                    $message = 'Input Error';
+                    $message = get_class($exception) === InvalidParametersException::class ? $exception->getMessage() : 'Input Error';
                     $this->logger->notice("Input error [logref $logRef]: " . $exception->__toString());
                     break;
                 case '5':
