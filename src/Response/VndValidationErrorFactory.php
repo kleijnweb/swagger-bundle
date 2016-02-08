@@ -20,6 +20,10 @@ class VndValidationErrorFactory
     const DEFAULT_MESSAGE = 'Input Validation Failure';
 
 
+    public function __construct(){
+
+    }
+
     /**
      * @param Request                    $request
      * @param InvalidParametersException $exception
