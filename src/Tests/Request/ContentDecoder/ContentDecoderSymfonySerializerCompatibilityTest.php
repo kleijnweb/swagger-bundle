@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Request\ContentDecoder;
 
+use KleijnWeb\SwaggerBundle\Document\OperationObject;
 use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
 use KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver;
 use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
@@ -90,19 +91,21 @@ class ContentDecoderSymfonySerializerCompatibilityTest extends \PHPUnit_Framewor
             }
         ");
 
-        $operationDefinition = [
+        $operationDefinition = (object)[
             'parameters' => [
-                [
+                (object)[
                     "in"     => "body",
                     "name"   => "body",
-                    "schema" => [
+                    "schema" => (object)[
                         '$ref' => "#/definitions/$className"
                     ]
                 ]
             ]
         ];
 
-        $actual = $this->contentDecoder->decodeContent($request, $operationDefinition);
+        $operationObject = OperationObject::createFromOperationDefinition((object)$operationDefinition);
+
+        $actual = $this->contentDecoder->decodeContent($request, $operationObject);
 
         $expected = (new $className)->setFoo('bar');
 
@@ -120,12 +123,13 @@ class ContentDecoderSymfonySerializerCompatibilityTest extends \PHPUnit_Framewor
         $request = new Request([], [], [], [], [], [], $content);
         $request->headers->set('Content-Type', 'application/json');
 
-        $operationDefinition = [];
         $this->jsonDecoderMock
             ->expects($this->once())
             ->method('decode')
             ->with($request->getContent(), 'json');
 
-        $this->contentDecoder->decodeContent($request, $operationDefinition);
+        $operationObject = OperationObject::createFromOperationDefinition((object)[]);
+
+        $this->contentDecoder->decodeContent($request, $operationObject);
     }
 }

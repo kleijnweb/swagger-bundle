@@ -14,20 +14,17 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class SerializationPetStoreApiTest extends WebTestCase
+class ApiTestCaseTest extends WebTestCase
 {
     use ApiTestCase;
 
     /**
-     * Use config_jms.yml
+     * Use config_basic.yml
      *
      * @var bool
      */
-    protected $env = 'jms';
+    protected $env = 'basic';
 
-    /**
-     * Initialize SwaggerAssertions Schema Manager
-     */
     public static function setUpBeforeClass()
     {
         static::initSchemaManager(__DIR__ . '/PetStore/app/swagger/petstore.yml');
@@ -35,18 +32,10 @@ class SerializationPetStoreApiTest extends WebTestCase
 
     /**
      * @test
+     * @expectedException \KleijnWeb\SwaggerBundle\Test\ApiResponseErrorException
      */
-    public function canPlaceOrder()
+    public function notFoundApiCallThrowsException()
     {
-        $content = [
-            'petId'    => 987654321,
-            'quantity' => 10,
-        ];
-
-        $actual = $this->post('/v2/store/order', $content);
-        $this->assertSame('placed', $actual->status);
-        $this->assertSame($content['petId'], $actual->petId);
-        $this->assertSame($content['quantity'], $actual->quantity);
-        $this->assertInternalType('integer', $actual->id);
+        $this->get('/foo');
     }
 }

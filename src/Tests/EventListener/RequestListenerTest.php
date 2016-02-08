@@ -6,8 +6,9 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Tests\Dev\EventListener;
+namespace KleijnWeb\SwaggerBundle\Tests\EventListener;
 
+use KleijnWeb\SwaggerBundle\Document\OperationObject;
 use KleijnWeb\SwaggerBundle\EventListener\RequestListener;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -95,8 +96,8 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
 
         $this->documentMock
             ->expects($this->once())
-            ->method('getOperationDefinition')
-            ->willReturn([]);
+            ->method('getOperationObject')
+            ->willReturn(OperationObject::createFromOperationDefinition((object)[]));
 
         $this->repositoryMock
             ->expects($this->once())
@@ -129,7 +130,7 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
 
         $this->documentMock
             ->expects($this->never())
-            ->method('getOperationDefinition');
+            ->method('getOperationObject');
 
         $this->transformerMock
             ->expects($this->never())
@@ -195,9 +196,9 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
 
         $this->documentMock
             ->expects($this->once())
-            ->method('getOperationDefinition')
+            ->method('getOperationObject')
             ->with(self::SWAGGER_PATH)
-            ->willReturn([]);
+            ->willReturn(OperationObject::createFromOperationDefinition((object)[]));
 
         $this->repositoryMock
             ->expects($this->once())

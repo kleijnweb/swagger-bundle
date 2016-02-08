@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Request;
 
+use KleijnWeb\SwaggerBundle\Document\OperationObject;
 use KleijnWeb\SwaggerBundle\Request\RequestValidator;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -21,18 +22,18 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function canOmitParameterWhenNotExplicitlyMarkedAsRequired()
     {
-        $operationDefinition = [
+        $operationDefinition = (object)[
             'parameters' => [
-                [
+                (object)[
                     'name'   => 'foo',
                     'in'     => 'body',
-                    'schema' => [
+                    'schema' => (object)[
                         'type' => 'integer'
                     ]
                 ]
             ]
         ];
-        $validator = new RequestValidator($operationDefinition);
+        $validator = new RequestValidator(OperationObject::createFromOperationDefinition($operationDefinition));
         $request = new Request();
         $validator->validateRequest($request);
     }
@@ -45,9 +46,9 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
     {
         $request = new Request();
 
-        $operationDefinition = [
+        $operationDefinition = (object)[
             'parameters' => [
-                [
+                (object)[
                     'name'     => 'foo',
                     'required' => true,
                     'in'       => 'query',
@@ -55,7 +56,7 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $validator = new RequestValidator($operationDefinition);
+        $validator = new RequestValidator(OperationObject::createFromOperationDefinition($operationDefinition));
         $validator->validateRequest($request);
     }
 
@@ -67,9 +68,9 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
     {
         $request = new Request();
 
-        $operationDefinition = [
+        $operationDefinition = (object)[
             'parameters' => [
-                [
+                (object)[
                     'name'     => 'foo',
                     'required' => true,
                     'in'       => 'query',
@@ -77,7 +78,7 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $validator = new RequestValidator($operationDefinition);
+        $validator = new RequestValidator(OperationObject::createFromOperationDefinition($operationDefinition));
         $validator->validateRequest($request);
     }
 }

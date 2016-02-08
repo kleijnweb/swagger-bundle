@@ -29,13 +29,16 @@
     "symfony/finder": ">=2.6.0",
     "symfony/property-access": ">=2.6.0",
     "doctrine/collections": "^1.3",
-    "justinrainbow/json-schema": ">=1.4.2 <1.5"
+    "justinrainbow/json-schema": ">=1.4.2 <1.5",
+    "ramsey/vnderror": "^3.0.0",
+    "nocarrier/hal": "^0.9.12"
   },
   "suggest": {
     "symfony/serializer": "Object de- serialization using Symfony Serializer Component",
     "jms/serializer": "Object de- serialization using JMS\\Serializer",
     "doctrine/annotations": "Object de- serialization annotation support",
-    "kleijnweb/jwt-bundle": "JWT authentication support"
+    "kleijnweb/jwt-bundle": "JWT authentication support",
+    "doctrine/cache": "Caching parsed and resolved Swagger documents"
   },
   "require-dev": {
     "phpunit/phpunit": ">=4.1.0",
@@ -52,9 +55,15 @@
     "jms/serializer": "1.0",
     "phpoption/phpoption": ">=1.1.0",
     "fr3d/swagger-assertions": "^0.2.0",
-    "satooshi/php-coveralls": "<1.0"
+    "satooshi/php-coveralls": "<1.0",
+    "doctrine/cache": "^1.5.0"
   },
   "config": {
     "bin-dir": "bin"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "3.0.x-dev"
+    }
   }
 }

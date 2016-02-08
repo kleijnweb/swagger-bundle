@@ -4,56 +4,42 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kleijnweb/swagger-bundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/kleijnweb/swagger-bundle/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/kleijnweb/swagger-bundle/v/stable)](https://packagist.org/packages/kleijnweb/swagger-bundle)
 
-Invert your workflow (contract first) using Swagger specs and set up a Symfony REST app with minimal config.
+Invert your workflow (contract first) using Swagger ([Open API](https://openapis.org/)) specs and set up a Symfony REST app with minimal config.
 
-Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig (except for dev purposes).
+Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig.
 
-*SwaggerBundle only supports json in- and output, and only YAML Swagger defintions.*
-
-Go to the [release page](https://github.com/kleijnweb/swagger-bundle/releases) to find details about the latest release.
-
-__This bundle is currently actively maintained.__
+## Important Notes
+ * You are looking at the documentation for the upcoming 3.0 release.
+ * SwaggerBundle only supports json in- and output, and only YAML Swagger definitions
+ * This bundle is currently actively maintained.
+ * Go to the [release page](https://github.com/kleijnweb/swagger-bundle/releases) to find details about the latest release.
 
 For a pretty complete example, see [swagger-bundle-example](https://github.com/kleijnweb/swagger-bundle-example).
+A minimal example is also [available](https://github.com/kleijnweb/symfony-swagger-microservice-edition).
 
-# This Bundle..
+## This bundle will..
 
-## Will:
-
- * Coerce parameters to their defined types when possible.
- * Validate content and parameters based on your Swagger spec.
- * Configure routing based on your Swagger spec. 
- * Handle standard status codes such as 500, 400 and 404.
- * Encode response data as JSON.
- * Return `application/vnd.error+json` responses when errors occur.
+ * Configure routing based on your Swagger documents(s), accounting for things like type, enums and pattern matches. 
+ * Validate body and parameters based on your Swagger documents(s).
+ * Coerce query and path parameters to their defined types when possible.
+ * Resolve [JSON Pointer](http://json-spec.readthedocs.org/en/latest/pointer.html)s anywhere in your Swagger documents and partials (not just in the [JSON Schema](http://json-schema.org/) bits).
+ * Return [vnd.error](https://github.com/blongden/vnd.error) (`application/vnd.error+json`) responses when errors occur.
  * Utilize vnd.error's `logref` to make errors traceable.
- * Resolve JSON-Schema `$ref`s in your Swagger spec to allow reusable partial specs.
- 
-## Can:
+ * Optionally (De-) Serialize objects using either the Symfony Component Serializer or JMS\Serializer
 
- * Amend your Swagger spec to include the error responses added by SwaggerBundle.
- * (De-) Serialize objects using either the Symfony Component Serializer or JMS\Serializer
- * Generate DTO-like classes representing resources in your Swagger spec.
-
-## Won't:
+## It won't, and probably never will:
 
  * Handle Form posts.
- * Generate your API documentation. Use your Swagger document, plenty of options.
+ * Generate your API documentation. Use your Swagger documents, plenty of options.
  * Mix well with GUI bundles. The bundle is biased towards lightweight API-only apps.
- * Update the resource schemas in your Swagger spec when these classes change (not yet, but __soon__, see [#3](https://github.com/kleijnweb/swagger-bundle/issues/3)).
- * Work with JSON Swagger documents (yet, see [#10](https://github.com/kleijnweb/swagger-bundle/issues/10)).
- * Do content negotiation. May support XML in the future (low priority, see [#1](https://github.com/kleijnweb/swagger-bundle/issues/1)).
-
-__TIP:__ Want to build an API-only app using this bundle? Try [kleijnweb/symfony-swagger-microservice-edition](https://github.com/kleijnweb/symfony-swagger-microservice-edition).
+ * Work with JSON Swagger documents.
+ * Do content negotiation or support XML.
 
 # Usage
 
 1. Create a Swagger file, for example using http://editor.swagger.io/.
 2. Install and configure this bundle 
-3. Create one or more controllers (as services!), doing the actual work, whatever that may be.
-4. You are DONE.
-
-Pretty much. ;)
+3. Create one or more controllers (as services), doing the actual work, whatever that may be.
 
 ## Install And Configure
 
@@ -63,16 +49,16 @@ Add Swagger-based routing to your app, for example:
  
 ```yml
 test:
-    resource: "config/yourapp.yml"
-    type: swagger
+  resource: "config/yourapp.yml"
+  type: swagger
 ```
 
 The path here is relative to the `swagger.document.base_path` configuration option. The above example would require something like this in your config:
 
 ```yml
 swagger:
-    document: 
-        base_path: "%kernel.root_dir%"
+  document: 
+    base_path: "%kernel.root_dir%"
 ```
 
 # Functional Details / Features
@@ -111,7 +97,7 @@ public function placeOrder(array $body)
 }
 ```
 
-__NOTE:__ SwaggerBundle applies some type conversion to input and adds the converted types to the Request `attributes`. 
+__NOTE:__ SwaggerBundle applies some type conversion to query and path parameters and adds the converted values to the Request `attributes`. 
 Using `Request::get()` will give precedence to parameters in `query`. These values will be 'raw', using `attributes` is preferred.
 
 Your controllers do not need to implement any interfaces or extend any classes. A controller might look like this (using object deserialization, see section below):
@@ -135,7 +121,17 @@ class StoreController
 
 It would make more sense to name the parameter `order` instead of `body`, but this is how it is in the pet store example provided by Swagger.
 
-Other parameters can be added to the signature as well, this is standard Symfony behaviour.
+All (type-casted) parameters can be added to the signature, since they are attributes when the controller is invoked. This is standard Symfony behaviour.
+
+## Caching
+
+Parsing YAML and resolving JSON Pointers can be slow, especially with larger specs with external references. SwaggerBundle can use a Doctrine cache to mitigate this. Use a DI key to reference the service you want to use:
+
+```yml
+swagger:
+  document: 
+    cache: "some.doctrine.cache.service"
+```
 
 ## Route Matching
 
@@ -145,24 +141,48 @@ and `enum` when dealing with string path parameters.
 
 ## Exception Handling
 
-Any exceptions are caught, logged by the `@logger` service, and result in `application/vnd.error+json`. Routing failure results in a 404 response without `logref`.
+Any exceptions are caught, logged by the `@logger` service, and result in `application/vnd.error+json`. The log-level/severity depends on the exception type and/or code. "Not Found" errors are logged as 'INFO'.  
 
 ## Input Validation
 
 ### Parameter Validation
 
-SwaggerBundle will attempt to convert string values to any scalar value specified in your swagger file, within reason.
+SwaggerBundle will attempt to convert path and query string values to the scalar value specified in your swagger file, within reason.
  For example, it will accept all of "0", "1", "TRUE", "FALSE", "true",  and "false" as boolean values, but wont blindly
  evaluate any string value as `TRUE`.
  
-Parameter validation errors will result in a `vnd.error` response with a status code of 400.
-
-__NOTE__: SwaggerBundle currently does not support `multi` for `collectionFormat` when handling array parameters.
+__NOTE__: SwaggerBundle currently does not support `multi` for `collectionFormat` when handling array parameters (see [#50](https://github.com/kleijnweb/swagger-bundle/issues/50)).
  
 ### Content Validation
 
-If the content cannot be decoded using the format specified by the request's Content-Type header, or if validation
-of the content using the resource schema failed, SwaggerBundle will return a `vnd.error` response with a 400 status code.
+If the content cannot be decoded as JSON, or if validation of the content using the resource schema failed, 
+SwaggerBundle will return a `vnd.error` response with a 400 status code.
+
+### Validation Feedback
+
+Parameter validation errors will result in a `vnd.error` response with a status code of 400.
+
+The validation errors (produced by [justinrainbow/json-schema](https://github.com/justinrainbow/json-schema)), are included in the response, with [HAL](http://stateless.co/hal_specification.html) links that are essentially JSON Pointers
+to the parameter definition in the relevant Swagger Document.
+
+In order for this to work properly, you may need some additional config.
+
+When SwaggerBundle generates the JSON Pointer URI, it uses the following conventions:
+
+1. For the protocol, it uses to the protocol used to make the request, unless globally configured otherwise, *or* if not in the specs `schemes` (in which case it will use, in order of preference: https, wss, http, ws).
+2. For the host name, it will prefer the global config. If not defined it will use the value of `host` in the spec, ultimately falling back to the host name used to make the request.
+3. For the relative path, it will use the path relative to `swagger.document.base_path`. If configured, it will prefix the `swagger.document.public.base_url`
+
+Example:
+
+```yaml
+swagger:
+  document:
+    public:
+      proto: 'http' # Even if the spec claims it support https, this will cause the links to use http, unless the request was made using https (likewise you can use this to force https even if the request was made using http)
+      base_url: specs # This will prefix '/specs' to all paths
+      host: some.host.tld # Fetch specs from said host, instead of what's defined in the spec or the current one
+```
 
 ### Object (De-) Serialization
 
@@ -218,58 +238,15 @@ public function placeOrder(Request $request)
    //...
 }
 ```
-When a controller action returns `NULL`, SwaggerBundle will return an empty `204` response.
+When a controller action returns `NULL`, SwaggerBundle will return an empty `204` response, provided that one is defined in the specification.
+
+Otherwise, it will default to the first 2xx type response defined in your spec, or if all else fails, simply 200.
   
-#### Using Annotations
-
-In order to use annotations, you should make sure you use an autoload bootstrap
- that will initialize doctrine/annotations:
- 
-```php
-use Doctrine\Common\Annotations\AnnotationRegistry;
-use Composer\Autoload\ClassLoader;
-
-/**
- * @var ClassLoader $loader
- */
-$loader = require __DIR__.'/../vendor/autoload.php';
-
-AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
-
-return $loader;
-```
-
-Good chance you are already using a bootstrap file like this, but if the annotations won't load, this is where to look.
-
-## Authentication
-
-SwaggerBundle 2.0+ does not include authentication functionality. The JWT support from 1.0 was moved into [kleijnweb/jwt-bundle](https://github.com/kleijnweb/jwt-bundle)).
-
-When using `SecurityDefinition` type `oauth2`, it would be possible to translate *scopes* to Symfony roles, 
- add them to the user, and automatically configure `access_control`. 
- This is not currently implemented (yet, see [#15](https://github.com/kleijnweb/swagger-bundle/issues/15)).
- 
-
 # Developing
 
-__NOTE:__ In order to use development tools, the `require-dev` dependencies are needed, as well as setting the `dev` configuration option:
+# Utilities
 
-```yml
-swagger:
-    dev: true # Or perhaps "%kernel.debug%"
-```
-
-## Amending Your Swagger Document
- 
-SwaggerBundle adds some standardized behavior, this should be reflected in your Swagger document. Instead of doing this manually, you can use the `swagger:document:amend` command.
-
-## Generating Resource Classes
- 
-SwaggerBundle can generate classes for you based on your Swagger resource definitions. 
-You can use the resulting classes as DTO-like objects for your services, or create Doctrine mapping config for them. Obviously this requires you to enable object serialization.
-The resulting classes will have JMS\Serializer annotations by default, the use of which is optional, remove them if you're using the standard Symfony serializer.
-
-See `app/console swagger:generate:resources --help` for more details.
+See [swagger-bundle-tools](https://github.com/kleijnweb/swagger-bundle-tools).
 
 ## Functional Testing Your API
 
@@ -321,8 +298,8 @@ class PetStoreApiTest extends WebTestCase
 }
 ```
 
-When using ApiTestCase, initSchemaManager() will also validate your Swagger spec against the official schema to ensure it is valid. 
-
+When using ApiTestCase, initSchemaManager() will also validate your Swagger spec against the official schema to ensure it is valid.
+ 
 ## License
 
 KleijnWeb\SwaggerBundle is made available under the terms of the [LGPL, version 3.0](https://spdx.org/licenses/LGPL-3.0.html#licenseText).

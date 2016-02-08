@@ -1,21 +1,21 @@
 parameters:
-  test.client.class: KleijnWeb\SwaggerBundle\Dev\Test\ApiTestClient
+  test.client.class: KleijnWeb\SwaggerBundle\Test\ApiTestClient
 
 swagger:
-  dev: true
   document:
-      base_path: 'src/Tests/Functional/PetStore/app'
+    base_path: 'src/Tests/Functional/PetStore/app'
+    cache: 'petstore.cache'
   serializer:
-      type: array
-      namespace: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Model\Resources
+    type: array
+    namespace: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Model\Resources
 
 services:
+  petstore.cache:
+    class: Doctrine\Common\Cache\ArrayCache
   swagger.controller.pet:
     class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller\PetController
-
   swagger.controller.store:
     class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller\StoreController
-
   swagger.controller.entity:
     class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller\EntityController
 
@@ -23,18 +23,18 @@ framework:
   test: true
   secret:  test
   router:
-      resource: "%kernel.root_dir%/routing.yml"
-      strict_requirements: ~
+    resource: "%kernel.root_dir%/routing.yml"
+    strict_requirements: ~
   fragments:       ~
   http_method_override: true
   session:
-      storage_id: session.storage.filesystem
+    storage_id: session.storage.filesystem
   profiler:
-      collect: false
+    collect: false
 
 monolog:
-    handlers:
-        stderr:
-            type:  stream
-            path:  php://stderr
-            level: notice
+  handlers:
+    stderr:
+      type:  stream
+      path:  php://stderr
+      level: notice

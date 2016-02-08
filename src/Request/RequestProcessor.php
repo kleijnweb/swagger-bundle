@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Request;
 
+use KleijnWeb\SwaggerBundle\Document\OperationObject;
 use Symfony\Component\HttpFoundation\Request;
 use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
@@ -39,17 +40,17 @@ class RequestProcessor
     }
 
     /**
-     * @param Request $request
-     * @param array   $operationDefinition
+     * @param Request         $request
+     * @param OperationObject $operationObject
      *
      * @throws InvalidParametersException
      * @throws MalformedContentException
      * @throws UnsupportedContentTypeException
      */
-    public function process(Request $request, array $operationDefinition)
+    public function process(Request $request, OperationObject $operationObject)
     {
-        $this->coercer->coerceRequest($request, $operationDefinition);
-        $this->validator->setOperationDefinition($operationDefinition);
+        $this->coercer->coerceRequest($request, $operationObject);
+        $this->validator->setOperationObject($operationObject);
         $this->validator->validateRequest($request);
     }
 }

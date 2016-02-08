@@ -8,12 +8,13 @@
 
 namespace KleijnWeb\SwaggerBundle\Document;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Cache\Cache;
+use KleijnWeb\SwaggerBundle\Document\Exception\ResourceNotReadableException;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class DocumentRepository extends ArrayCollection
+class DocumentRepository
 {
     /**
      * @var string
@@ -21,14 +22,25 @@ class DocumentRepository extends ArrayCollection
     private $basePath;
 
     /**
+     * @var array
+     */
+    private $documents = [];
+
+    /**
+     * @var Cache
+     */
+    private $cache;
+
+    /**
      * Initializes a new Repository.
      *
      * @param string $basePath
+     * @param Cache  $cache
      */
-    public function __construct($basePath = null)
+    public function __construct($basePath = null, Cache $cache = null)
     {
         $this->basePath = $basePath;
-        parent::__construct([]);
+        $this->cache = $cache;
     }
 
     /**
@@ -44,11 +56,35 @@ class DocumentRepository extends ArrayCollection
         if (!$documentPath) {
             throw new \InvalidArgumentException("No document path provided");
         }
-        $document = parent::get($documentPath);
+        if (!isset($this->documents[$documentPath])) {
+            $this->documents[$documentPath] = $this->load($documentPath);
+        }
 
-        if (!$document) {
-            $document = new SwaggerDocument($documentPath);
-            $this->set($documentPath, $document);
+        return $this->documents[$documentPath];
+    }
+
+    /**
+     * @param string $documentPath
+     *
+     * @return SwaggerDocument
+     * @throws ResourceNotReadableException
+     */
+    private function load($documentPath)
+    {
+        if ($this->cache && $document = $this->cache->fetch($documentPath)) {
+            return $document;
+        }
+
+        if (!is_readable($documentPath)) {
+            throw new ResourceNotReadableException("Document '$documentPath' is not readable");
+        }
+
+        $parser = new  YamlParser();
+        $resolver = new RefResolver($parser->parse(file_get_contents($documentPath)), $documentPath);
+        $document = new SwaggerDocument($documentPath, $resolver->resolve());
+
+        if ($this->cache) {
+            $this->cache->save($documentPath, $document);
         }
 
         return $document;

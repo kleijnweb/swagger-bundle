@@ -7,6 +7,8 @@
  */
 namespace KleijnWeb\SwaggerBundle\Serializer;
 
+use KleijnWeb\SwaggerBundle\Document\OperationObject;
+
 class SerializationTypeResolver
 {
     /**
@@ -23,19 +25,21 @@ class SerializationTypeResolver
     }
 
     /**
-     * @param array $definitionFragment
+     * @param OperationObject $operationObject
      *
      * @return null|string
      */
-    public function resolve(array $definitionFragment)
+    public function resolve(OperationObject $operationObject)
     {
-        if (isset($definitionFragment['parameters'])) {
-            foreach ($definitionFragment['parameters'] as $parameterDefinition) {
-                if ($parameterDefinition['in'] == 'body' && isset($parameterDefinition['schema'])) {
-                    return $this->resolveUsingSchema($parameterDefinition['schema']);
+        if ($operationObject->hasParameters()) {
+            foreach ($operationObject->getParameters() as $parameterDefinition) {
+                if ($parameterDefinition->in == 'body' && isset($parameterDefinition->schema)) {
+                    return $this->resolveUsingSchema($parameterDefinition->schema);
                 }
             }
         }
+
+        return null;
     }
 
     /**
@@ -49,13 +53,13 @@ class SerializationTypeResolver
     }
 
     /**
-     * @param array $schema
+     * @param object $schema
      *
      * @return string
      */
-    public function resolveUsingSchema(array $schema)
+    public function resolveUsingSchema($schema)
     {
-        $reference = isset($schema['$ref']) ? $schema['$ref'] : (isset($schema['id']) ? $schema['id'] : null);
+        $reference = isset($schema->{'$ref'}) ? $schema->{'$ref'} : (isset($schema->id) ? $schema->id : null);
 
         if (!$reference) {
             return null;

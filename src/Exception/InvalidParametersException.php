@@ -9,12 +9,33 @@
 namespace KleijnWeb\SwaggerBundle\Exception;
 
 /**
- * TODO Provide helpful info for vnd.error responses
- *
- * @see https://github.com/kleijnweb/swagger-bundle/issues/27
- *
  * @author John Kleijn <john@kleijnweb.nl>
  */
 class InvalidParametersException extends \Exception
 {
+    /**
+     * @var array
+     */
+    private $validationErrors;
+
+    /**
+     * @param string     $message
+     * @param int        $code
+     * @param array      $validationErrors
+     * @param \Exception $previous
+     */
+    public function __construct($message, array $validationErrors, $code = 400, $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+
+        $this->validationErrors = $validationErrors;
+    }
+
+    /**
+     * @return array
+     */
+    public function getValidationErrors()
+    {
+        return $this->validationErrors;
+    }
 }

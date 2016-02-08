@@ -30,10 +30,6 @@ class KleijnWebSwaggerExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
 
-        if ($config['dev']) {
-            $loader->load('services_dev.yml');
-        }
-
         $container->setParameter('swagger.document.base_path', $config['document']['base_path']);
         $container->setParameter('swagger.serializer.namespace', $config['serializer']['namespace']);
 
@@ -43,6 +39,11 @@ class KleijnWebSwaggerExtension extends Extension
         if ($serializerType !== 'array') {
             $resolverDefinition = $container->getDefinition('swagger.request.processor.content_decoder');
             $resolverDefinition->addArgument(new Reference('swagger.serializer.type_resolver'));
+        }
+
+        if (isset($config['document']['cache'])) {
+            $resolverDefinition = $container->getDefinition('swagger.document.repository');
+            $resolverDefinition->addArgument(new Reference($config['document']['cache']));
         }
     }
 

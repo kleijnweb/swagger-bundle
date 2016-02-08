@@ -8,8 +8,13 @@
 
 namespace KleijnWeb\SwaggerBundle\EventListener;
 
+use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
+use KleijnWeb\SwaggerBundle\Response\VndValidationErrorFactory;
 use KleijnWeb\SwaggerBundle\Response\VndErrorResponse;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
+use Ramsey\VndError\VndError;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -26,11 +31,18 @@ class ExceptionListener
     private $logger;
 
     /**
-     * @param LoggerInterface $logger
+     * @var VndValidationErrorFactory
      */
-    public function __construct(LoggerInterface $logger)
+    private $validationErrorFactory;
+
+    /**
+     * @param VndValidationErrorFactory $errorFactory
+     * @param LoggerInterface           $logger
+     */
+    public function __construct(VndValidationErrorFactory $errorFactory, LoggerInterface $logger)
     {
         $this->logger = $logger;
+        $this->validationErrorFactory = $errorFactory;
     }
 
     /**
@@ -47,56 +59,72 @@ class ExceptionListener
 
     /**
      * @param GetResponseForExceptionEvent $event
+     *
+     * @throws \Exception
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $logRef = uniqid();
-        $exception = $event->getException();
 
-        if ($exception instanceof NotFoundHttpException) {
-            $event->setResponse(new VndErrorResponse("Not found", Response::HTTP_NOT_FOUND));
+        try {
+            $exception = $event->getException();
+            $request = $event->getRequest();
+            $code = $exception->getCode();
 
-            return;
-        }
-
-        if ($exception instanceof AuthenticationException) {
-            $event->setResponse(new VndErrorResponse("Unauthorized", Response::HTTP_UNAUTHORIZED));
-
-            return;
-        }
-
-        $code = $exception->getCode();
-
-        if (strlen($code) !== 3) {
-            $this->fallback($message, $code, $logRef, $exception);
-        } else {
-            switch (substr($code, 0, 1)) {
-                case '4':
-                    $message = 'Input Error';
-                    $this->logger->notice("Input error [logref $logRef]: " . $exception->__toString());
-                    break;
-                case '5':
-                    $message = 'Server Error';
-                    $this->logger->error("Runtime error [logref $logRef]: " . $exception->__toString());
-                    break;
-                default:
-                    $this->fallback($message, $code, $logRef, $exception);
+            if ($exception instanceof InvalidParametersException) {
+                $severity = LogLevel::NOTICE;
+                $statusCode = Response::HTTP_BAD_REQUEST;
+                $vndError = $this->validationErrorFactory->create($request, $exception, $logRef);
+            } else {
+                if ($exception instanceof NotFoundHttpException) {
+                    $statusCode = Response::HTTP_NOT_FOUND;
+                    $severity = LogLevel::INFO;
+                } else {
+                    if ($exception instanceof AuthenticationException) {
+                        $statusCode = Response::HTTP_UNAUTHORIZED;
+                        $severity = LogLevel::WARNING;
+                    } else {
+                        $is3Digits = strlen($code) === 3;
+                        $class = (int)substr($code, 0, 1);
+                        if (!$is3Digits) {
+                            $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+                            $severity = LogLevel::CRITICAL;
+                        } else {
+                            switch ($class) {
+                                case 4:
+                                    $severity = LogLevel::NOTICE;
+                                    $statusCode = Response::HTTP_BAD_REQUEST;
+                                    break;
+                                case 5:
+                                    $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+                                    $severity = LogLevel::ERROR;
+                                    break;
+                                default:
+                                    $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+                                    $severity = LogLevel::CRITICAL;
+                            }
+                        }
+                    }
+                }
+                $message = Response::$statusTexts[$statusCode];
+                $vndError = new VndError($message, $logRef);
+                $vndError->addLink('help', $request->get('_resource'), ['title' => 'Error Information']);
+                $vndError->addLink('about', $request->getUri(), ['title' => 'Error Information']);
             }
+
+            $reference = $logRef ? " [logref $logRef]" : '';
+            $event->setResponse(new VndErrorResponse($vndError, $statusCode));
+            $this->logger->log($severity, "{$vndError->getMessage()}{$reference}: $exception");
+        } catch (\PHPUnit_Framework_Exception  $e) {
+            throw $e;
+        } catch (\PHPUnit_Framework_Error  $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            // A simpler response where less can go wrong
+            $message = "Error Handling Failure";
+            $vndError = new VndError($message, $logRef);
+            $this->logger->log(LogLevel::CRITICAL, "$message [logref $logRef]: $e");
+            $event->setResponse(new VndErrorResponse($vndError, Response::HTTP_INTERNAL_SERVER_ERROR));
         }
-
-        $event->setResponse(new VndErrorResponse($message, $code, $logRef));
-    }
-
-    /**
-     * @param string     $message
-     * @param string     $code
-     * @param string     $logRef
-     * @param \Exception $exception
-     */
-    private function fallback(&$message, &$code, $logRef, \Exception $exception)
-    {
-        $code = 500;
-        $message = 'Server Error';
-        $this->logger->critical("Runtime error [logref $logRef]: " . $exception->__toString());
     }
 }

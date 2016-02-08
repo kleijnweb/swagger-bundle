@@ -6,11 +6,12 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Dev\Test;
+namespace KleijnWeb\SwaggerBundle\Test;
 
 use FR3D\SwaggerAssertions\PhpUnit\AssertsTrait;
 use FR3D\SwaggerAssertions\SchemaManager;
 use JsonSchema\Validator;
+use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\Document\SwaggerDocument;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
@@ -56,7 +57,7 @@ trait ApiTestCase
         $validator = new Validator();
         $validator->check(
             json_decode(json_encode(Yaml::parse(file_get_contents($swaggerPath)))),
-            json_decode(file_get_contents(__DIR__ . '/../../../assets/swagger-schema.json'))
+            json_decode(file_get_contents(__DIR__ . '/../../assets/swagger-schema.json'))
         );
 
         if (!$validator->isValid()) {
@@ -74,7 +75,8 @@ trait ApiTestCase
         );
 
         self::$schemaManager = new SchemaManager(vfsStream::url('root') . '/swagger.json');
-        self::$document = new SwaggerDocument($swaggerPath);
+        $repository = new DocumentRepository(dirname($swaggerPath));
+        self::$document = $repository->get(basename($swaggerPath));
     }
 
     /**
@@ -205,7 +207,7 @@ trait ApiTestCase
         $data = json_decode($responseContent);
 
         if ($response->getStatusCode() !== 204) {
-            static $ERRORS = [
+            static $errors = [
                 JSON_ERROR_NONE           => 'No error',
                 JSON_ERROR_DEPTH          => 'Maximum stack depth exceeded',
                 JSON_ERROR_STATE_MISMATCH => 'State mismatch (invalid or malformed JSON)',
@@ -214,7 +216,7 @@ trait ApiTestCase
                 JSON_ERROR_UTF8           => 'Malformed UTF-8 characters, possibly incorrectly encoded'
             ];
             $error = json_last_error();
-            $jsonErrorMessage = isset($ERRORS[$error]) ? $ERRORS[$error] : 'Unknown error';
+            $jsonErrorMessage = isset($errors[$error]) ? $errors[$error] : 'Unknown error';
             $this->assertSame(
                 JSON_ERROR_NONE,
                 json_last_error(),
@@ -246,6 +248,9 @@ trait ApiTestCase
     {
         $request = $this->client->getRequest();
         if (!self::$schemaManager->hasPath(['paths', $request->get('_swagger_path'), $method, 'responses', $code])) {
+            if ($code === 404) {
+                return;
+            }
             throw new \UnexpectedValueException(
                 "There is no $code response definition for {$request->get('_swagger_path')}:$method. "
             );
