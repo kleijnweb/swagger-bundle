@@ -1,69 +1,73 @@
 services:
-    swagger.route_loader:
-        class: KleijnWeb\SwaggerBundle\Routing\SwaggerRouteLoader
-        arguments: ['@swagger.document.repository']
-        tags:
-            - { name: routing.loader }
+  swagger.route_loader:
+    class: KleijnWeb\SwaggerBundle\Routing\SwaggerRouteLoader
+    arguments: ['@swagger.document.repository']
+    tags:
+       - { name: routing.loader }
 
-    swagger.serializer:
-        class: KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter
-        arguments: ['@swagger.serializer.target']
+  swagger.serializer:
+    class: KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter
+    arguments: ['@swagger.serializer.target']
 
-    swagger.serializer.array:
-        class: KleijnWeb\SwaggerBundle\Serializer\ArraySerializer
+  swagger.serializer.array:
+    class: KleijnWeb\SwaggerBundle\Serializer\ArraySerializer
 
-    swagger.serializer.jms:
-        class:   JMS\Serializer\Serializer\Serializer
-        factory: [KleijnWeb\SwaggerBundle\Serializer\JmsSerializerFactory, factory]
+  swagger.serializer.jms:
+    class:   JMS\Serializer\Serializer\Serializer
+    factory: [KleijnWeb\SwaggerBundle\Serializer\JmsSerializerFactory, factory]
 
-    swagger.serializer.symfony:
-        class:   JMS\Serializer\Serializer\SymfonySerializerFactory
-        factory: [KleijnWeb\SwaggerBundle\Serializer\SymfonySerializerFactory, factory]
+  swagger.serializer.symfony:
+    class:   JMS\Serializer\Serializer\SymfonySerializerFactory
+    factory: [KleijnWeb\SwaggerBundle\Serializer\SymfonySerializerFactory, factory]
 
-    swagger.serializer.type_resolver:
-        class:   KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver
-        arguments: [%swagger.serializer.namespace%]
+  swagger.serializer.type_resolver:
+    class:   KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver
+    arguments: [%swagger.serializer.namespace%]
 
-    swagger.document.repository:
-        class: KleijnWeb\SwaggerBundle\Document\DocumentRepository
-        arguments: [%swagger.document.base_path%]
+  swagger.document.repository:
+    class: KleijnWeb\SwaggerBundle\Document\DocumentRepository
+    arguments: [%swagger.document.base_path%]
 
-    swagger.response.factory:
-        class: KleijnWeb\SwaggerBundle\Response\ResponseFactory
-        arguments: ['@swagger.document.repository', '@swagger.serializer']
+  swagger.response.factory:
+    class: KleijnWeb\SwaggerBundle\Response\ResponseFactory
+    arguments: ['@swagger.document.repository', '@swagger.serializer']
 
-    swagger.response.validation_error_factory:
-        class: KleijnWeb\SwaggerBundle\Response\VndValidationErrorFactory
+  swagger.response.vnd_validation_error_factory:
+    class: KleijnWeb\SwaggerBundle\Response\VndValidationErrorFactory
+    arguments: ['@swagger.document.parameter_ref_builder']
 
-    swagger.request.processor:
-        class: KleijnWeb\SwaggerBundle\Request\RequestProcessor
-        arguments: ['@swagger.request.processor.validator', '@swagger.request.processor.coercer']
+  swagger.document.parameter_ref_builder:
+    class: KleijnWeb\SwaggerBundle\Document\ParameterRefBuilder
 
-    swagger.request.processor.validator:
-        class: KleijnWeb\SwaggerBundle\Request\RequestValidator
+  swagger.request.processor:
+    class: KleijnWeb\SwaggerBundle\Request\RequestProcessor
+    arguments: ['@swagger.request.processor.validator', '@swagger.request.processor.coercer']
 
-    swagger.request.processor.coercer:
-        class: KleijnWeb\SwaggerBundle\Request\RequestCoercer
-        arguments: ['@swagger.request.processor.content_decoder']
+  swagger.request.processor.validator:
+    class: KleijnWeb\SwaggerBundle\Request\RequestValidator
 
-    swagger.request.processor.content_decoder:
-        class: KleijnWeb\SwaggerBundle\Request\ContentDecoder
-        arguments: ['@swagger.serializer', '@swagger.serializer.type_resolver']
+  swagger.request.processor.coercer:
+    class: KleijnWeb\SwaggerBundle\Request\RequestCoercer
+    arguments: ['@swagger.request.processor.content_decoder']
 
-    kernel.listener.swagger.view:
-        class: KleijnWeb\SwaggerBundle\EventListener\ViewListener
-        arguments: ['@swagger.response.factory']
-        tags:
-            - { name: kernel.event_listener, event: kernel.view, method: onKernelView }
+  swagger.request.processor.content_decoder:
+    class: KleijnWeb\SwaggerBundle\Request\ContentDecoder
+    arguments: ['@swagger.serializer', '@swagger.serializer.type_resolver']
 
-    kernel.listener.swagger.exception:
-        class: KleijnWeb\SwaggerBundle\EventListener\ExceptionListener
-        arguments: ['@swagger.response.validation_error_factory', '@logger']
-        tags:
-            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+  kernel.listener.swagger.view:
+    class: KleijnWeb\SwaggerBundle\EventListener\ViewListener
+    arguments: ['@swagger.response.factory']
+    tags:
+      - { name: kernel.event_listener, event: kernel.view, method: onKernelView }
 
-    kernel.listener.swagger.request:
-        class: KleijnWeb\SwaggerBundle\EventListener\RequestListener
-        arguments: ['@swagger.document.repository', '@swagger.request.processor']
-        tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+  kernel.listener.swagger.vnd_error_exception:
+    class: KleijnWeb\SwaggerBundle\EventListener\VndErrorExceptionListener
+    arguments: ['@swagger.response.vnd_validation_error_factory', '@logger']
+    tags:
+      - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+
+  kernel.listener.swagger.request:
+    class: KleijnWeb\SwaggerBundle\EventListener\RequestListener
+    arguments: ['@swagger.document.repository', '@swagger.request.processor']
+    tags:
+      - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }

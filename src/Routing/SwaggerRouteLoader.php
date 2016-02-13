@@ -12,7 +12,6 @@ use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -82,7 +81,7 @@ class SwaggerRouteLoader extends Loader
 
                 $requirements = [];
                 $operationDefinition = $document->getOperationDefinition($path, $methodName);
-                
+
                 if (isset($operationDefinition->parameters)) {
                     foreach ($operationDefinition->parameters as $paramDefinition) {
                         if ($paramDefinition->in === 'path' && isset($paramDefinition->type)) {

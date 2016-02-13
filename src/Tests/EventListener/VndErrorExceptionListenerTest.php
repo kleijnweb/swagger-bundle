@@ -8,7 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\EventListener;
 
-use KleijnWeb\SwaggerBundle\EventListener\ExceptionListener;
+use KleijnWeb\SwaggerBundle\EventListener\VndErrorExceptionListener;
 use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -20,7 +20,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
+class VndErrorExceptionListenerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var GetResponseForExceptionEvent
@@ -48,7 +48,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
     private $logger;
 
     /**
-     * @var ExceptionListener
+     * @var VndErrorExceptionListener
      */
     private $exceptionListener;
 
@@ -69,7 +69,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $this->codeProperty = $codeProperty;
         $this->codeProperty->setAccessible(true);
         $attributes = [
-            '_resource' => '/foo/bar'
+            '_definition' => '/foo/bar'
         ];
         $this->request = new Request($query = [], $request = [], $attributes);
 
@@ -89,7 +89,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         $this->logger = $this->getMockForAbstractClass('Psr\Log\LoggerInterface');
-        $this->exceptionListener = new ExceptionListener($this->validationErrorFactory, $this->logger);
+        $this->exceptionListener = new VndErrorExceptionListener($this->validationErrorFactory, $this->logger);
     }
 
     /**

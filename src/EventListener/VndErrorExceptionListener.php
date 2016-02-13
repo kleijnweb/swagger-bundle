@@ -23,7 +23,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class ExceptionListener
+class VndErrorExceptionListener
 {
     /**
      * @var LoggerInterface
@@ -108,7 +108,7 @@ class ExceptionListener
                 }
                 $message = Response::$statusTexts[$statusCode];
                 $vndError = new VndError($message, $logRef);
-                $vndError->addLink('help', $request->get('_resource'), ['title' => 'Error Information']);
+                $vndError->addLink('help', $request->get('_definition'), ['title' => 'Error Information']);
                 $vndError->addLink('about', $request->getUri(), ['title' => 'Error Information']);
             }
 

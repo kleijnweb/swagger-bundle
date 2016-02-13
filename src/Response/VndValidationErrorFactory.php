@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Response;
 
+use KleijnWeb\SwaggerBundle\Document\ParameterRefBuilder;
 use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
 use Ramsey\VndError\VndError;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,9 +20,17 @@ class VndValidationErrorFactory
 {
     const DEFAULT_MESSAGE = 'Input Validation Failure';
 
+    /**
+     * @var ParameterRefBuilder
+     */
+    private $refBuilder;
 
-    public function __construct(){
-
+    /**
+     * @param ParameterRefBuilder $refBuilder
+     */
+    public function __construct(ParameterRefBuilder $refBuilder)
+    {
+        $this->refBuilder = $refBuilder;
     }
 
     /**
@@ -34,11 +43,17 @@ class VndValidationErrorFactory
     public function create(Request $request, InvalidParametersException $exception, $logRef = null)
     {
         $vndError = new VndError(self::DEFAULT_MESSAGE, $logRef);
-        $vndError->addLink('help', $request->attributes->get('_resource'), ['title' => 'Error Information']);
+        $vndError->addLink('help', '', ['title' => 'Api Specification']);
         $vndError->addLink('about', $request->getUri(), ['title' => 'Error Information']);
 
         foreach ($exception->getValidationErrors() as $errorSpec) {
-            $vndError->addResource($errorSpec['property'], new VndError($errorSpec['message']));
+            $vndError->addResource(
+                $this->refBuilder->buildLink(
+                    $request,
+                    $errorSpec['property']
+                ),
+                new VndError($errorSpec['message'])
+            );
         }
 
         return $vndError;

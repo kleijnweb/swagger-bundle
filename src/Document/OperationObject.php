@@ -128,6 +128,27 @@ class OperationObject
     }
 
     /**
+     * @param string $parameterName
+     *
+     * @return string
+     */
+    public function createParameterPointer($parameterName)
+    {
+        foreach ($this->definition->parameters as $i => $paramDefinition) {
+            if ($paramDefinition->name === $parameterName) {
+                return '/' . implode('/', [
+                    'paths',
+                    str_replace(['~', '/'], ['~0', '~1'], $parameterName),
+                    'post',
+                    'parameters',
+                    $i
+                ]);
+            }
+        }
+        throw new \InvalidArgumentException("Parameter '$parameterName' not in document");
+    }
+
+    /**
      * @return object
      */
     private function assembleRequestSchema()

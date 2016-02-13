@@ -9,6 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Response;
 
 use JsonSchema\Validator;
+use KleijnWeb\SwaggerBundle\Document\ParameterRefBuilder;
 use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
 use KleijnWeb\SwaggerBundle\Response\VndValidationErrorFactory;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,9 +24,18 @@ class VndValidationErrorFactoryTest extends \PHPUnit_Framework_TestCase
      */
     private $factory;
 
+    /**
+     * @var ParameterRefBuilder
+     */
+    private $refBuilder;
+
     protected function setUp()
     {
-        $this->factory = new VndValidationErrorFactory();
+        $this->refBuilder = $this
+            ->getMockBuilder('KleijnWeb\SwaggerBundle\Document\ParameterRefBuilder')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->factory = new VndValidationErrorFactory($this->refBuilder);
     }
 
     /**
@@ -94,6 +104,14 @@ class VndValidationErrorFactoryTest extends \PHPUnit_Framework_TestCase
         $errors = $validator->getErrors();
 
         $exception = new InvalidParametersException('Nope', $errors);
+
+        $mock = $this->refBuilder;
+        /** @var \PHPUnit_Framework_MockObject_MockObject $mock */
+        $mock
+            ->expects($this->exactly(2))
+            ->method('buildLink')
+            ->willReturnOnConsecutiveCalls('http://1.net/1', 'http://2.net/2');
+
         $vndError = $this->factory->create(
             $this->createSimpleRequest(),
             $exception
@@ -103,7 +121,7 @@ class VndValidationErrorFactoryTest extends \PHPUnit_Framework_TestCase
         $resources = array_values($vndError->getResources());
 
         foreach ($errors as $i => $spec) {
-            $this->assertSame($spec['message'], $resources[$i][0]->getMessage());
+            $this->assertContains($spec['message'], $resources[$i][0]->getMessage());
         }
     }
 

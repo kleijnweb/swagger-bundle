@@ -50,12 +50,21 @@ class RefResolverTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     */
+    public function canResolveReferencesWithSlashed()
+    {
+        $resolver = $this->construct('partials/slashes.yml');
+        $this->assertSame('thevalue', $resolver->resolve()->Foo->bar);
+    }
+
+    /**
+     * @test
      *
      */
     public function canResolveExternalReferences()
     {
         $resolver = $this->construct('composite.yml');
-        $document =$resolver->resolve();
+        $document = $resolver->resolve();
         $this->assertObjectHasAttribute('schema', $document->responses->Created);
         $response = $document->paths->{'/pet'}->post->responses->{'500'};
         $this->assertObjectHasAttribute('description', $response);
