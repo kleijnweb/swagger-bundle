@@ -75,10 +75,14 @@ class RefResolver
 
     /**
      * Revert to original state
+     *
+     * @return object
      */
     public function unresolve()
     {
-        $this->unresolveRecursively($this->definition, $this->definition);
+        $this->unresolveRecursively($this->definition);
+
+        return $this->definition;
     }
 
     /**
@@ -96,7 +100,7 @@ class RefResolver
 
         if (is_array($composite)) {
             foreach ($composite as &$value) {
-                if (!is_scalar($value)) {
+                if ($value !== null && !is_scalar($value)) {
                     $this->resolveRecursively($value, $document, $uri);
                 }
             }
@@ -125,15 +129,15 @@ class RefResolver
     }
 
     /**
-     * @param object $current
-     * @param object $parent
+     * @param object|array $current
+     * @param object|array $parent
      *
      * @return void
      */
-    private function unresolveRecursively($current, &$parent = null)
+    private function unresolveRecursively(&$current, &$parent = null)
     {
         foreach ($current as $key => &$value) {
-            if (is_object($value)) {
+            if ($value !== null && !is_scalar($value)) {
                 $this->unresolveRecursively($value, $current);
             }
             if ($key === 'x-ref-id') {

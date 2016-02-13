@@ -55,10 +55,8 @@ class RefResolverTest extends \PHPUnit_Framework_TestCase
     public function canResolveExternalReferences()
     {
         $resolver = $this->construct('composite.yml');
-        $resolver->resolve();
-        $document = $resolver->getDefinition();
-        $schema = $document->responses->Created->schema;
-        $this->assertObjectHasAttribute('type', $schema);
+        $document =$resolver->resolve();
+        $this->assertObjectHasAttribute('schema', $document->responses->Created);
         $response = $document->paths->{'/pet'}->post->responses->{'500'};
         $this->assertObjectHasAttribute('description', $response);
     }
@@ -68,7 +66,12 @@ class RefResolverTest extends \PHPUnit_Framework_TestCase
      */
     public function canUnResolve()
     {
-        $this->markTestIncomplete();
+        $resolver = $this->construct('composite.yml');
+        $expected = clone $resolver->getDefinition();
+        $resolver->resolve();
+        $document = $resolver->unresolve();
+        $this->assertObjectNotHasAttribute('schema', $document->responses->Created);
+        $this->assertEquals($expected, $document);
     }
 
     /**
