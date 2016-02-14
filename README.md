@@ -179,7 +179,7 @@ Example:
 swagger:
   document:
     public:
-      proto: 'http' # Even if the spec claims it support https, this will cause the links to use http, unless the request was made using https (likewise you can use this to force https even if the request was made using http)
+      scheme: 'http' # Even if the spec claims it support https, this will cause the links to use http, unless the request was made using https (likewise you can use this to force https even if the request was made using http)
       base_url: specs # This will prefix '/specs' to all paths
       host: some.host.tld # Fetch specs from said host, instead of what's defined in the spec or the current one
 ```
