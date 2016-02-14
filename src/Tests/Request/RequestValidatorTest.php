@@ -153,7 +153,8 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
 
             $validator = new RequestValidator(OperationObject::createFromOperationDefinition($operationDefinition));
             $request = new Request();
-            $request->$paramBagMapping[$source]->set($parameterName, $rawDateTime);
+            $bagName = $paramBagMapping[$source];
+            $request->$bagName->set($parameterName, $rawDateTime);
             $request->attributes->set($parameterName, $dateTime);
             $validator->validateRequest($request);
         }
