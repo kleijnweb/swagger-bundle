@@ -10,6 +10,7 @@ namespace KleijnWeb\SwaggerBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
@@ -50,9 +51,8 @@ class KleijnWebSwaggerExtension extends Extension
         $parameterRefBuilderDefinition->setArguments($arguments);
 
 
-        if ($container->hasParameter('test.client.class')) {
-            $container->setParameter('test.client.class', 'KleijnWeb\SwaggerBundle\Test\ApiTestClient');
-        }
+        // TODO: test client should not be enabled by default,
+        // but no longer access to the resources in other extensions in 3.0
     }
 
     /**

@@ -1,4 +1,8 @@
 services:
+  swagger.test.client:
+    class: KleijnWeb\SwaggerBundle\Test\ApiTestClient
+    arguments: ['@test.client']
+
   swagger.route_loader:
     class: KleijnWeb\SwaggerBundle\Routing\SwaggerRouteLoader
     arguments: ['@swagger.document.repository']

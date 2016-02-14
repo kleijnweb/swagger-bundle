@@ -18,6 +18,19 @@ use Symfony\Component\DomCrawler\Crawler;
 class ApiTestClient extends Client
 {
     /**
+     * @var Client
+     */
+    private $target;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct(Client $client)
+    {
+        $this->target = $client;
+    }
+
+    /**
      * Makes a request from a Request object directly.
      *
      * @param Request $request       A Request instance
@@ -28,6 +41,70 @@ class ApiTestClient extends Client
      */
     public function requestFromRequest(Request $request, $changeHistory = true)
     {
-        return parent::requestFromRequest($request, $changeHistory);
+        return $this->target->requestFromRequest($request, $changeHistory);
+    }
+
+    /**
+     * @return null|\Symfony\Component\HttpFoundation\Request
+     */
+    public function getRequest()
+    {
+        return $this->target->getRequest();
+    }
+
+    /**
+     * @return null|\Symfony\Component\HttpFoundation\Response
+     */
+    public function getResponse()
+    {
+        return $this->target->getResponse();
+    }
+
+    /**
+     * @return \Symfony\Component\DependencyInjection\ContainerInterface
+     */
+    public function getContainer()
+    {
+        return $this->target->getContainer();
+    }
+
+    /**
+     * @return \Symfony\Component\HttpKernel\KernelInterface
+     */
+    public function getKernel()
+    {
+        return $this->target->getKernel();
+    }
+
+    /**
+     * @return \Symfony\Component\HttpKernel\Profiler\Profile
+     */
+    public function getProfile()
+    {
+        return $this->target->getProfile();
+    }
+
+    /**
+     * @return \Symfony\Component\HttpKernel\Profiler\Profile
+     */
+    public function enableProfiler()
+    {
+        return $this->target->getProfile();
+    }
+
+    /**
+     * @return void
+     */
+    public function disableReboot()
+    {
+        $this->target->disableReboot();
+    }
+
+    /**
+     * @return void
+     */
+    public function enableReboot()
+    {
+        $this->target->enableReboot();
     }
 }
