@@ -43,28 +43,29 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
      * @dataProvider malformedPrimitiveConversionProvider
      * @test
      *
-     * @expectedException \KleijnWeb\SwaggerBundle\Exception\MalformedContentException
-     *
      * @param string $type
      * @param mixed  $value
      */
-    public function willFailToInterpretPrimitivesAsExpected($type, $value)
+    public function willNotChangeUninterpretablePrimitives($type, $value)
     {
-        ParameterCoercer::coerceParameter((object)['type' => $type, 'name' => $value], $value);
+        $actual = ParameterCoercer::coerceParameter((object)['type' => $type, 'name' => $value], $value);
+        $this->assertSame($value, $actual);
     }
 
     /**
      * @dataProvider malformedDateTimeConversionProvider
      * @test
      *
-     * @expectedException \KleijnWeb\SwaggerBundle\Exception\MalformedContentException
-     *
      * @param string $format
      * @param mixed  $value
      */
-    public function willFailToInterpretDateTimeAsExpected($format, $value)
+    public function willNotChangeUninterpretableDateTimeAsExpected($format, $value)
     {
-        ParameterCoercer::coerceParameter((object)['type' => 'string', 'format' => $format, 'name' => $value], $value);
+        $actual = ParameterCoercer::coerceParameter(
+            (object)['type' => 'string', 'format' => $format, 'name' => $value],
+            $value
+        );
+        $this->assertSame($value, $actual);
     }
 
     /**

@@ -35,25 +35,19 @@ class ParameterCoercer
                 }
                 switch ($paramDefinition->format) {
                     case 'date':
-                        $value = \DateTime::createFromFormat('Y-m-d\TH:i:s\Z', "{$value}T00:00:00Z");
-                        if ($value === false) {
-                            throw new MalformedContentException(
-                                "Unable to decode param {$paramDefinition->name}",
-                                400
-                            );
+                        $dateTime = \DateTime::createFromFormat('Y-m-d\TH:i:s\Z', "{$value}T00:00:00Z");
+                        if ($dateTime === false) {
+                            return $value;
                         }
 
-                        return $value;
+                        return $dateTime;
                     case 'date-time':
-                        $value = \DateTime::createFromFormat(\DateTime::W3C, $value);
-                        if ($value === false) {
-                            throw new MalformedContentException(
-                                "Unable to decode param {$paramDefinition->name}",
-                                400
-                            );
+                        $dateTime = \DateTime::createFromFormat(\DateTime::W3C, $value);
+                        if ($dateTime === false) {
+                            return $value;
                         }
 
-                        return $value;
+                        return $dateTime;
                     default:
                         return $value;
                 }
@@ -69,12 +63,12 @@ class ParameterCoercer
                     case '0':
                         return false;
                     default:
-                        throw new MalformedContentException("Unable to decode param {$paramDefinition->name}", 400);
+                        return $value;
                 }
                 break;
             case 'number':
                 if (!is_numeric($value)) {
-                    throw new MalformedContentException("Unable to decode param {$paramDefinition->name}", 400);
+                    return $value;
                 }
 
                 return (float)$value;
@@ -103,13 +97,13 @@ class ParameterCoercer
                 break;
             case 'integer':
                 if (!ctype_digit($value)) {
-                    throw new MalformedContentException("Unable to decode param {$paramDefinition->name}", 400);
+                    return $value;
                 }
 
                 return (integer)$value;
             case 'null':
                 if ($value !== '') {
-                    throw new MalformedContentException("Unable to decode param {$paramDefinition->name}", 400);
+                    return $value;
                 }
 
                 return null;
