@@ -6,10 +6,9 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Tests\Dev\Routing;
+namespace KleijnWeb\SwaggerBundle\Tests\Routing;
 
 use KleijnWeb\SwaggerBundle\Routing\SwaggerRouteLoader;
-use Symfony\Component\Routing\Route;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -84,10 +83,10 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function loadingMultipleDocumentWillPreventRouteKeyCollisions()
     {
-        $pathDefinitions = [
-            '/a'     => ['get' => []],
-            '/a/b'   => ['get' => [], 'post' => []],
-            '/a/b/c' => ['put' => []],
+        $pathDefinitions = (object)[
+            '/a'     => (object)['get' => (object)[]],
+            '/a/b'   => (object)['get' => (object)[], 'post' => (object)[]],
+            '/a/b/c' => (object)['put' => (object)[]],
         ];
 
         $this->documentMock
@@ -134,9 +133,9 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function routeCollectionWillContainOneRouteForEveryPathAndMethod()
     {
-        $pathDefinitions = [
-            '/a' => ['get' => [], 'post' => []],
-            '/b' => ['get' => []],
+        $pathDefinitions = (object)[
+            '/a' => (object)['get' => (object)[], 'post' => (object)[]],
+            '/b' => (object)['get' => (object)[]],
         ];
 
         $this->documentMock
@@ -154,10 +153,10 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function routeCollectionWillIncludeSeparateRoutesForSubPaths()
     {
-        $pathDefinitions = [
-            '/a'     => ['get' => []],
-            '/a/b'   => ['get' => []],
-            '/a/b/c' => ['get' => []],
+        $pathDefinitions = (object)[
+            '/a'     => (object)['get' => (object)[]],
+            '/a/b'   => (object)['get' => (object)[]],
+            '/a/b/c' => (object)['get' => (object)[]],
         ];
 
         $this->documentMock
@@ -176,14 +175,12 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
     public function canUseDiKeyAsOperationId()
     {
         $expected = 'my.controller.key:methodName';
-        $pathDefinitions = [
+        $pathDefinitions = (object)[
             '/a' => [
-                'get'  => [],
-                'post' => [
-                    'operationId' => $expected
-                ]
+                'get'  => (object)[],
+                'post' => (object)['operationId' => $expected]
             ],
-            '/b' => ['get' => []],
+            '/b' => (object)['get' => (object)[]],
         ];
 
         $this->documentMock
@@ -203,10 +200,10 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function routeCollectionWillIncludeSeparateRoutesForSubPathMethodCombinations()
     {
-        $pathDefinitions = [
-            '/a'     => ['get' => []],
-            '/a/b'   => ['get' => [], 'post' => []],
-            '/a/b/c' => ['put' => []],
+        $pathDefinitions = (object)[
+            '/a'     => (object)['get' => (object)[]],
+            '/a/b'   => (object)['get' => (object)[], 'post' => (object)[]],
+            '/a/b/c' => (object)['put' => (object)[]],
         ];
 
         $this->documentMock
@@ -224,14 +221,14 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function routeCollectionWillContainPathFromSwaggerDoc()
     {
-        $pathDefinitions = [
-            '/a'                => ['get' => []],
-            '/a/b'              => ['get' => []],
-            '/a/b/c'            => ['get' => []],
-            '/d/f/g'            => ['get' => []],
-            '/1/2/3'            => ['get' => []],
-            '/foo/{bar}/{blah}' => ['get' => []],
-            '/z'                => ['get' => []],
+        $pathDefinitions = (object)[
+            '/a'                => (object)['get' => (object)[]],
+            '/a/b'              => (object)['get' => (object)[]],
+            '/a/b/c'            => (object)['get' => (object)[]],
+            '/d/f/g'            => (object)['get' => (object)[]],
+            '/1/2/3'            => (object)['get' => (object)[]],
+            '/foo/{bar}/{blah}' => (object)['get' => (object)[]],
+            '/z'                => (object)['get' => (object)[]],
         ];
 
         $this->documentMock
@@ -241,7 +238,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
 
-        $definitionPaths = array_keys($pathDefinitions);
+        $definitionPaths = array_keys((array)$pathDefinitions);
         sort($definitionPaths);
         $routePaths = array_map(function ($route) {
             return $route->getPath();
@@ -255,11 +252,11 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function willAddRequirementsForIntegerPathParams()
     {
-        $pathDefinitions = [
-            '/a' => [
-                'get' => [
-                    'parameters' => [
-                        ['name' => 'foo', 'in' => 'path', 'type' => 'integer']
+        $pathDefinitions = (object)[
+            '/a' => (object)[
+                'get' => (object)[
+                    'parameters' => (object)[
+                        (object)['name' => 'foo', 'in' => 'path', 'type' => 'integer']
                     ]
                 ]
             ],
@@ -274,7 +271,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('getOperationDefinition')
             ->with('/a', 'get')
-            ->willReturn($pathDefinitions['/a']['get']);
+            ->willReturn($pathDefinitions->{'/a'}->get);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
         $actual = $routes->get('swagger.path.a.get');
@@ -291,11 +288,11 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
     public function willAddRequirementsForStringPatternParams()
     {
         $expected = '\d{2}hello';
-        $pathDefinitions = [
-            '/a' => [
-                'get' => [
-                    'parameters' => [
-                        ['name' => 'aString', 'in' => 'path', 'type' => 'string', 'pattern' => $expected]
+        $pathDefinitions = (object)[
+            '/a' => (object)[
+                'get' => (object)[
+                    'parameters' => (object)[
+                        (object)['name' => 'aString', 'in' => 'path', 'type' => 'string', 'pattern' => $expected]
                     ]
                 ]
             ],
@@ -310,7 +307,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('getOperationDefinition')
             ->with('/a', 'get')
-            ->willReturn($pathDefinitions['/a']['get']);
+            ->willReturn($pathDefinitions->{'/a'}->get);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
         $actual = $routes->get('swagger.path.a.get');
@@ -328,11 +325,11 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $enum = ['a', 'b', 'c'];
         $expected = '(a|b|c)';
-        $pathDefinitions = [
-            '/a' => [
-                'get' => [
-                    'parameters' => [
-                        ['name' => 'aString', 'in' => 'path', 'type' => 'string', 'enum' => $enum]
+        $pathDefinitions = (object)[
+            '/a' => (object)[
+                'get' => (object)[
+                    'parameters' => (object)[
+                        (object)['name' => 'aString', 'in' => 'path', 'type' => 'string', 'enum' => $enum]
                     ]
                 ]
             ],
@@ -347,7 +344,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('getOperationDefinition')
             ->with('/a', 'get')
-            ->willReturn($pathDefinitions['/a']['get']);
+            ->willReturn($pathDefinitions->{'/a'}->get);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
         $actual = $routes->get('swagger.path.a.get');

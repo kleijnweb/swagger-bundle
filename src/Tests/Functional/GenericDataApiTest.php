@@ -8,7 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Functional;
 
-use KleijnWeb\SwaggerBundle\Dev\Test\ApiTestCase;
+use KleijnWeb\SwaggerBundle\Test\ApiTestCase;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
@@ -46,6 +46,45 @@ class GenericDataApiTest extends WebTestCase
         $this->assertSame($content['foo'], $responseData->foo);
         $this->assertSame($content['blah'], $responseData->blah);
         $this->assertSame('foo', $responseData->type);
+    }
+
+    /**
+     * @test
+     */
+    public function canFindUsingDateTimeQuery()
+    {
+        $responseData = $this->get('/data/v1/entity/bar', ['lastModified' => (new \DateTime)->format(\DateTime::W3C)]);
+
+        $this->assertSame(2, $responseData[0]->id);
+        $this->assertSame('bar', $responseData[0]->foo);
+        $this->assertSame('bar', $responseData[0]->type);
+    }
+
+    /**
+     * @test
+     */
+    public function canFindByCriteria()
+    {
+        $criteria = [
+            (object)[
+                'fieldName' => 'x',
+                'operator'  => 'eq',
+                'value'     => 'y'
+            ],
+
+            (object)[
+                'fieldName' => 'a',
+                'operator'  => 'eq',
+                'value'     => 'b'
+            ]
+        ];
+        $responseData = $this->post('/data/v1/entity/bar/findByCriteria', $criteria);
+
+        $this->assertSame(3, $responseData[0]->id);
+        $this->assertSame('bar', $responseData[0]->foo);
+        $this->assertSame('bar', $responseData[0]->type);
+
+        $this->assertSame(4, $responseData[1]->id);
     }
 
     /**

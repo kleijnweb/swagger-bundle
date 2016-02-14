@@ -8,8 +8,6 @@
 
 namespace KleijnWeb\SwaggerBundle\DependencyInjection;
 
-use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
-use KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Reference;
@@ -30,10 +28,6 @@ class KleijnWebSwaggerExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
 
-        if ($config['dev']) {
-            $loader->load('services_dev.yml');
-        }
-
         $container->setParameter('swagger.document.base_path', $config['document']['base_path']);
         $container->setParameter('swagger.serializer.namespace', $config['serializer']['namespace']);
 
@@ -43,6 +37,21 @@ class KleijnWebSwaggerExtension extends Extension
         if ($serializerType !== 'array') {
             $resolverDefinition = $container->getDefinition('swagger.request.processor.content_decoder');
             $resolverDefinition->addArgument(new Reference('swagger.serializer.type_resolver'));
+        }
+
+        if (isset($config['document']['cache'])) {
+            $resolverDefinition = $container->getDefinition('swagger.document.repository');
+            $resolverDefinition->addArgument(new Reference($config['document']['cache']));
+        }
+
+        $parameterRefBuilderDefinition = $container->getDefinition('swagger.document.parameter_ref_builder');
+        $publicDocsConfig = $config['document']['public'];
+        $arguments = [$publicDocsConfig['base_url'], $publicDocsConfig['scheme'], $publicDocsConfig['host']];
+        $parameterRefBuilderDefinition->setArguments($arguments);
+
+
+        if ($container->hasParameter('test.client.class')) {
+            $container->setParameter('test.client.class', 'KleijnWeb\SwaggerBundle\Test\ApiTestClient');
         }
     }
 

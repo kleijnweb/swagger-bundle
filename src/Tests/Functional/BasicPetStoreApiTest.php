@@ -8,7 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Functional;
 
-use KleijnWeb\SwaggerBundle\Dev\Test\ApiTestCase;
+use KleijnWeb\SwaggerBundle\Test\ApiTestCase;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
@@ -46,7 +46,7 @@ class BasicPetStoreApiTest extends WebTestCase
     public function canAddPet()
     {
         $content = [
-            'name' => 'Joe',
+            'name'      => 'Joe',
             'photoUrls' => ['foobar']
         ];
 

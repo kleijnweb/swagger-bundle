@@ -27,8 +27,10 @@ class ResponseFactoryJmsSerializerCompatibilityTest extends \PHPUnit_Framework_T
     {
         $serializer = new SerializerAdapter(JmsSerializerFactory::factory());
         $factory = new ResponseFactory(new DocumentRepository(), $serializer);
-
-        $response = $factory->createResponse(new Request(), (new JmsAnnotatedResourceStub())->setFoo('bar'));
+        $request = new Request();
+        $request->attributes->set('_definition', 'src/Tests/Functional/PetStore/app/swagger/composite.yml');
+        $request->attributes->set('_swagger_path', '/pet/{id}');
+        $response = $factory->createResponse($request, (new JmsAnnotatedResourceStub())->setFoo('bar'));
 
         $expected = json_encode(
             ['foo' => 'bar']

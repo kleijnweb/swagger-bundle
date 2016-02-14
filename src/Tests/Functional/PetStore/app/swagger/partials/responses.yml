@@ -1,0 +1,24 @@
+ServerError:
+  description: 'Server Error'
+  schema:
+    $ref: '#/definitions/VndError'
+EntityNotFoundError:
+  description: 'Entity Not Found'
+  schema:
+    $ref: '#/definitions/VndError'
+InputError:
+  description: 'Input Error'
+  schema:
+    $ref: '#/definitions/VndError'
+
+definitions:
+  VndError:
+    type: object
+    required:
+      - message
+      - logref
+    properties:
+      message:
+        type: string
+      logref:
+        type: string

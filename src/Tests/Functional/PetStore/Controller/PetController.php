@@ -23,7 +23,13 @@ class PetController
      */
     public function findPetsByStatus(Request $request)
     {
-        return [];
+        return [
+            [
+                'id'        => 1,
+                'name'      => 'Scooby',
+                'photoUrls' => []
+            ]
+        ];
     }
 
     /**
@@ -46,8 +52,8 @@ class PetController
     public function getPetById($petId)
     {
         return [
-            'id' => $petId,
-            'name' => 'Chuckie',
+            'id'        => $petId,
+            'name'      => 'Chuckie',
             'photoUrls' => []
         ];
     }

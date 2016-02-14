@@ -34,7 +34,7 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
             $spec['format'] = $format;
         }
 
-        $actual = ParameterCoercer::coerceParameter($spec, $value);
+        $actual = ParameterCoercer::coerceParameter((object)$spec, $value);
 
         $this->assertEquals($expected, $actual);
     }
@@ -43,28 +43,29 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
      * @dataProvider malformedPrimitiveConversionProvider
      * @test
      *
-     * @expectedException \KleijnWeb\SwaggerBundle\Exception\MalformedContentException
-     *
      * @param string $type
      * @param mixed  $value
      */
-    public function willFailToInterpretPrimitivesAsExpected($type, $value)
+    public function willNotChangeUninterpretablePrimitives($type, $value)
     {
-        ParameterCoercer::coerceParameter(['type' => $type, 'name' => $value], $value);
+        $actual = ParameterCoercer::coerceParameter((object)['type' => $type, 'name' => $value], $value);
+        $this->assertSame($value, $actual);
     }
 
     /**
      * @dataProvider malformedDateTimeConversionProvider
      * @test
      *
-     * @expectedException \KleijnWeb\SwaggerBundle\Exception\MalformedContentException
-     *
      * @param string $format
      * @param mixed  $value
      */
-    public function willFailToInterpretDateTimeAsExpected($format, $value)
+    public function willNotChangeUninterpretableDateTimeAsExpected($format, $value)
     {
-        ParameterCoercer::coerceParameter(['type' => 'string', 'format' => $format, 'name' => $value], $value);
+        $actual = ParameterCoercer::coerceParameter(
+            (object)['type' => 'string', 'format' => $format, 'name' => $value],
+            $value
+        );
+        $this->assertSame($value, $actual);
     }
 
     /**
@@ -79,7 +80,7 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
     public function willThrowUnsupportedExceptionInPredefinedCases($spec, $value)
     {
         $spec = array_merge(['type' => 'string', 'name' => $value], $spec);
-        ParameterCoercer::coerceParameter($spec, $value);
+        ParameterCoercer::coerceParameter((object)$spec, $value);
     }
 
     /**

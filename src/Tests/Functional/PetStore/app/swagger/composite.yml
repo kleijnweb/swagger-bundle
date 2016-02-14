@@ -1,0 +1,71 @@
+swagger: '2.0'
+info:
+  description: 'Data api'
+  version: 1.0.0
+basePath: /data/v1
+paths:
+  '/pet':
+    post:
+      parameters:
+        - in: body
+          name: data
+          required: true
+          schema:
+            type: object
+      responses:
+        '302':
+          description: "Found"
+          schema:
+            type: null
+        '201':
+          $ref: "#/responses/Created"
+        '200':
+          $ref: "#/responses/Created"
+        '500':
+          $ref: "partials/responses.yml#/ServerError"
+
+  '/pet/{id}':
+    put:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+        - in: body
+          name: data
+          required: true
+          schema:
+            type: object
+      responses:
+        '200':
+          description: "The modified resource"
+          schema:
+            type: object
+    delete:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        '204':
+          description: "Empty response"
+          schema:
+            type: null
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: "The requested resource"
+          schema:
+            type: object
+
+responses:
+  Created:
+    description: 'Created a Pet'
+    schema:
+      $ref: "file://partials/resources.yml#/Pet"

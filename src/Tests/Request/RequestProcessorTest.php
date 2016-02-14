@@ -8,7 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Request;
 
-use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
+use KleijnWeb\SwaggerBundle\Document\OperationObject;
 use KleijnWeb\SwaggerBundle\Request\RequestCoercer;
 use KleijnWeb\SwaggerBundle\Request\RequestProcessor;
 use KleijnWeb\SwaggerBundle\Request\RequestValidator;
@@ -30,14 +30,16 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $operationDefinition = [
+        $operationDefinition = (object)[
             'parameters' => [
-                [
-                    'name' => 'myContent',
-                    'in'   => 'body'
+                (object)[
+                    'name' => 'find',
+                    'in'   => 'query'
                 ]
             ]
         ];
+
+        $operationObject = OperationObject::createFromOperationDefinition((object)$operationDefinition);
 
         $request = new Request();
         $validatorMock
@@ -46,8 +48,8 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->with($request);
         $validatorMock
             ->expects($this->once())
-            ->method('setOperationDefinition')
-            ->with($operationDefinition);
+            ->method('setOperationObject')
+            ->with($operationObject);
 
         /** @var RequestCoercer $contentDecoderMock */
         $coercerMock = $this
@@ -57,9 +59,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 
         $processor = new RequestProcessor($validatorMock, $coercerMock);
 
-
-
-        $processor->process($request, $operationDefinition);
+        $processor->process($request, $operationObject);
     }
 
     /**
@@ -89,14 +89,16 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $processor = new RequestProcessor($validatorMock, $coercerMock);
 
         $operationDefinition = [
-            'parameters' => [
-                [
+            'parameters' => (object)[
+                (object)[
                     'name' => 'myContent',
                     'in'   => 'body'
                 ]
             ]
         ];
 
-        $processor->process($request, $operationDefinition);
+        $operationObject = OperationObject::createFromOperationDefinition((object)$operationDefinition);
+
+        $processor->process($request, $operationObject);
     }
 }

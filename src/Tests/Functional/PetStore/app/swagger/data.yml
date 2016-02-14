@@ -5,6 +5,21 @@ info:
 basePath: /data/v1
 paths:
   '/entity/{type}':
+    get:
+      operationId: 'find'
+      parameters:
+        - in: query
+          name: lastModified
+          required: true
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: "Found resources"
+          schema:
+            type: array
+            items:
+              type: object
     post:
       parameters:
         - in: body
@@ -17,6 +32,23 @@ paths:
           description: "The created resource"
           schema:
             type: object
+
+  '/entity/{type}/findByCriteria':
+    post:
+      operationId: 'findByCriteria'
+      parameters:
+        - in: body
+          name: criteria
+          required: true
+          schema:
+            $ref: '#/definitions/Criteria'
+      responses:
+        '200':
+          description: "Found resources"
+          schema:
+            type: array
+            items:
+              type: object
 
   '/entity/{type}/{id}':
     put:
@@ -57,3 +89,18 @@ paths:
           description: "The requested resource"
           schema:
             type: object
+
+definitions:
+  Criteria:
+     type: array
+     items:
+       $ref: '#/definitions/FieldCriteria'
+  FieldCriteria:
+     properties:
+       fieldName:
+         type: 'string'
+       operator:
+         type: 'string'
+       value:
+         type: 'string'
+
