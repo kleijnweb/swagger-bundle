@@ -48,6 +48,10 @@ class VndValidationErrorFactory
         $error->setUri($request->getUri());
 
         foreach ($exception->getValidationErrors() as $errorSpec) {
+            // For older versions, try to extract the property name from the message
+            if (!$errorSpec['property']) {
+                $errorSpec['property'] = preg_replace('/the property (.*) is required/', '\\1', $errorSpec['message']);
+            }
             $normalizedPropertyName = preg_replace('/\[\d+\]/', '', $errorSpec['property']);
             $data = [
                 'message' => $errorSpec['message'],
