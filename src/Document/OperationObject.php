@@ -196,6 +196,9 @@ class OperationObject
 
             $type = property_exists($paramDefinition, 'type') ? $paramDefinition->type : 'string';
             $propertyDefinition = $schema->properties->{$paramDefinition->name} = (object)['type' => $type];
+            if (property_exists($paramDefinition, 'format')) {
+                $propertyDefinition->format = $paramDefinition->format;
+            }
             if (property_exists($paramDefinition, 'items')) {
                 $propertyDefinition->items = $paramDefinition->items;
             }

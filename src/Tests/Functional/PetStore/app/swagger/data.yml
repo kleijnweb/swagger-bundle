@@ -5,6 +5,21 @@ info:
 basePath: /data/v1
 paths:
   '/entity/{type}':
+    get:
+      operationId: 'find'
+      parameters:
+        - in: query
+          name: lastModified
+          required: true
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: "Found resources"
+          schema:
+            type: array
+            items:
+              type: object
     post:
       parameters:
         - in: body

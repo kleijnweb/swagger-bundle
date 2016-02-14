@@ -20,6 +20,46 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function canValidateDate()
+    {
+        $dateTime = new \DateTime();
+        $this->runTimeTest('date', '2015-12-12', $dateTime);
+    }
+
+    /**
+     * @test
+     * @expectedException \KleijnWeb\SwaggerBundle\Exception\InvalidParametersException
+     */
+    public function canInvalidateDate()
+    {
+        $this->runTimeTest('date', '2016-01-01T00:00:00Z', '2016-01-01T00:00:00Z');
+        $dateTime = new \DateTime();
+        $this->runTimeTest('date', '2016-01-01T00:00:00Z', $dateTime);
+    }
+
+    /**
+     * @test
+     */
+    public function canValidateDateTime()
+    {
+        $dateTime = new \DateTime();
+        $this->runTimeTest('date-time', $dateTime->format(\DateTime::W3C), $dateTime);
+        $this->runTimeTest('date-time', '2016-01-01T00:00:00Z', '2016-01-01T00:00:00Z');
+    }
+
+    /**
+     * @test
+     * @expectedException \KleijnWeb\SwaggerBundle\Exception\InvalidParametersException
+     */
+    public function canInvalidateDateTime()
+    {
+        $this->runTimeTest('date-time', 'm-d-Y', new \DateTime());
+        $this->runTimeTest('date-time', '01-01-2014T00:00:00Z', new \DateTime());
+    }
+
+    /**
+     * @test
+     */
     public function canOmitParameterWhenNotExplicitlyMarkedAsRequired()
     {
         $operationDefinition = (object)[
@@ -80,5 +120,42 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
         ];
         $validator = new RequestValidator(OperationObject::createFromOperationDefinition($operationDefinition));
         $validator->validateRequest($request);
+    }
+
+    /**
+     * @param string           $format
+     * @param string           $rawDateTime
+     * @param \DateTime|string $dateTime
+     *
+     * @throws \KleijnWeb\SwaggerBundle\Exception\InvalidParametersException
+     */
+    private function runTimeTest($format, $rawDateTime, $dateTime)
+    {
+        $paramBagMapping = [
+            'query'  => 'query',
+            'path'   => 'attributes',
+            'header' => 'headers'
+        ];
+
+        $parameterName = 'time';
+
+        foreach (['query', 'path', 'header'] as $source) {
+            $operationDefinition = (object)[
+                'parameters' => [
+                    (object)[
+                        'name'   => $parameterName,
+                        'in'     => $source,
+                        'type'   => 'string',
+                        'format' => $format
+                    ]
+                ]
+            ];
+
+            $validator = new RequestValidator(OperationObject::createFromOperationDefinition($operationDefinition));
+            $request = new Request();
+            $request->$paramBagMapping[$source]->set($parameterName, $rawDateTime);
+            $request->attributes->set($parameterName, $dateTime);
+            $validator->validateRequest($request);
+        }
     }
 }

@@ -14,6 +14,23 @@ namespace KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller;
 class EntityController
 {
     /**
+     * @param string    $type
+     * @param \DateTime $lastModified
+     *
+     * @return array
+     */
+    public function find($type, \DateTime $lastModified)
+    {
+        return [
+            [
+                'id'   => 2,
+                'type' => $type,
+                'foo'  => 'bar'
+            ]
+        ];
+    }
+
+    /**
      * @param string $type
      * @param int    $id
      *

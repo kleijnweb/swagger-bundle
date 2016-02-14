@@ -104,14 +104,22 @@ class RequestValidator
             $parameters->$paramName = $request->attributes->get($paramName);
 
             /**
-             * If value already coerced into \DateTime object, use any non-empty value for validation
+             * If value already coerced into \DateTime object, get the raw value for validation instead
+             *
+             * TODO Keep raw value of attributes around
              */
             if ($parameters->$paramName instanceof \DateTime) {
-                if ($paramDefinition->format === 'date') {
-                    $parameters->$paramName = '1970-01-01';
-                }
-                if ($paramDefinition->format === 'date-time') {
-                    $parameters->$paramName = '1970-01-01T00:00:00Z';
+                if ($paramDefinition->in === 'query') {
+                    $parameters->$paramName = $request->query->get($paramName);
+                } elseif ($paramDefinition->in === 'header') {
+                    $parameters->$paramName = $request->headers->get($paramName);
+                } elseif ($paramDefinition->in === 'path') {
+                    if ($paramDefinition->format === 'date') {
+                        $parameters->$paramName = $parameters->$paramName->format('Y-m-d');
+                    }
+                    if ($paramDefinition->format === 'date-time') {
+                        $parameters->$paramName = $parameters->$paramName->format(\DateTime::W3C);
+                    }
                 }
             }
         }
