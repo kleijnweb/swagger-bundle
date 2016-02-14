@@ -93,6 +93,7 @@ class RefResolverTest extends \PHPUnit_Framework_TestCase
         $filePath = "src/Tests/Functional/PetStore/app/swagger/$path";
         $contents = file_get_contents($filePath);
         $parser = new YamlParser();
+        /** @var object $object */
         $object = $parser->parse($contents);
         $resolver = new RefResolver($object, $filePath);
 

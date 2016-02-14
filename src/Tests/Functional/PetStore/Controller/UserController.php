@@ -14,6 +14,8 @@ namespace KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller;
 class UserController
 {
     /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     *
      * @param string $username
      * @param string $password
      *

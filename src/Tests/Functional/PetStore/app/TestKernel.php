@@ -5,11 +5,6 @@ use Symfony\Component\HttpKernel\Kernel;
 class TestKernel extends Kernel
 {
     /**
-     * @var string
-     */
-    private $cacheDir;
-
-    /**
      * {@inheritdoc}
      */
     public function registerBundles()

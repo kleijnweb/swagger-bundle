@@ -33,7 +33,7 @@ class YamlParser
     /**
      * @param string $string
      *
-     * @return object
+     * @return mixed
      */
     public function parse($string)
     {
@@ -48,7 +48,7 @@ class YamlParser
      *
      * @param mixed $data
      *
-     * @return \stdClass
+     * @return mixed
      */
     private function fixHashMaps(&$data)
     {

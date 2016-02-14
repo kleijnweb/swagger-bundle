@@ -9,7 +9,6 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Request;
 
 use KleijnWeb\SwaggerBundle\Document\OperationObject;
-use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
 use KleijnWeb\SwaggerBundle\Request\RequestCoercer;
 use KleijnWeb\SwaggerBundle\Request\RequestProcessor;
 use KleijnWeb\SwaggerBundle\Request\RequestValidator;

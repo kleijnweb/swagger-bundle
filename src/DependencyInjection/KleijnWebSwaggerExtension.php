@@ -8,8 +8,6 @@
 
 namespace KleijnWeb\SwaggerBundle\DependencyInjection;
 
-use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
-use KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Reference;

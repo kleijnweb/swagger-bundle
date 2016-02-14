@@ -8,8 +8,6 @@
 
 namespace KleijnWeb\SwaggerBundle\Document;
 
-use Symfony\Component\Yaml\Yaml;
-
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */

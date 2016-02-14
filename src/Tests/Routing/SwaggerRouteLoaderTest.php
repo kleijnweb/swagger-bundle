@@ -9,7 +9,6 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Routing;
 
 use KleijnWeb\SwaggerBundle\Routing\SwaggerRouteLoader;
-use Symfony\Component\Routing\Route;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>

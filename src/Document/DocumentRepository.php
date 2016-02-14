@@ -80,7 +80,7 @@ class DocumentRepository
         }
 
         $parser = new  YamlParser();
-        $resolver = new RefResolver($parser->parse(file_get_contents($documentPath)), $documentPath);
+        $resolver = new RefResolver($parser->parse((string)file_get_contents($documentPath)), $documentPath);
         $document = new SwaggerDocument($documentPath, $resolver->resolve());
 
         if ($this->cache) {

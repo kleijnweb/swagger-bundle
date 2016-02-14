@@ -10,6 +10,7 @@ namespace KleijnWeb\SwaggerBundle\Tests\EventListener;
 
 use KleijnWeb\SwaggerBundle\EventListener\VndErrorExceptionListener;
 use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
+use KleijnWeb\SwaggerBundle\Response\VndValidationErrorFactory;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Ramsey\VndError\VndError;
@@ -51,6 +52,11 @@ class VndErrorExceptionListenerTest extends \PHPUnit_Framework_TestCase
      * @var VndErrorExceptionListener
      */
     private $exceptionListener;
+
+    /**
+     * @var VndValidationErrorFactory
+     */
+    private $validationErrorFactory;
 
     /**
      * Set up mocking
