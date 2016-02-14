@@ -9,7 +9,6 @@ Invert your workflow (contract first) using Swagger ([Open API](https://openapis
 Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig.
 
 ## Important Notes
- * You are looking at the documentation for the upcoming 3.0 release.
  * SwaggerBundle only supports json in- and output, and only YAML Swagger definitions
  * This bundle is currently actively maintained.
  * Go to the [release page](https://github.com/kleijnweb/swagger-bundle/releases) to find details about the latest release.
@@ -149,7 +148,7 @@ Any exceptions are caught, logged by the `@logger` service, and result in `appli
 
 SwaggerBundle will attempt to convert path and query string values to the scalar value specified in your swagger file, within reason.
  For example, it will accept all of "0", "1", "TRUE", "FALSE", "true",  and "false" as boolean values, but wont blindly
- evaluate any string value as `TRUE`.
+ evaluate any string value as `TRUE`. When a parameter can not be sensibly coerced into its specified type, the value is left as is and will likely fail validation.
  
 __NOTE__: SwaggerBundle currently does not support `multi` for `collectionFormat` when handling array parameters (see [#50](https://github.com/kleijnweb/swagger-bundle/issues/50)).
  
@@ -184,6 +183,45 @@ swagger:
       host: some.host.tld # Fetch specs from said host, instead of what's defined in the spec or the current one
 ```
 
+Example validation failure response:
+
+```json
+{
+    "message": "Input Validation Failure",
+    "logref": "56c083be3f9de",
+    "_links": {
+        "self": {
+            "href": "http:\/\/localhost\/v2\/user\/login"
+        },
+        "about": {
+            "href": "http:\/\/petstore.swagger.io\/swagger\/petstore.yml",
+            "title": "Api Specification"
+        }
+    },
+    "_embedded": {
+        "errors": [
+            {
+                "message": "the property username is required",
+                "path": "\/paths\/~1user~1login\/get\/x-request-schema\/properties\/username",
+                "_links": {
+                    "self": {
+                        "href": "http:\/\/petstore.swagger.io\/swagger\/petstore.yml#\/paths\/~1user~1login\/get\/parameters\/0"
+                    }
+                }
+            },
+            {
+                "message": "the property password is required",
+                "path": "\/paths\/~1user~1login\/get\/x-request-schema\/properties\/password",
+                "_links": {
+                    "self": {
+                        "href": "http:\/\/petstore.swagger.io\/swagger\/petstore.yml#\/paths\/~1user~1login\/get\/parameters\/1"
+                    }
+                }
+            }
+        ]
+    }
+}
+```
 ### Object (De-) Serialization
 
 By default Swagger bundle will simply encode and decode arrays. This means your controllers can expect `$request->getContent()`
@@ -238,10 +276,48 @@ public function placeOrder(Request $request)
    //...
 }
 ```
-When a controller action returns `NULL`, SwaggerBundle will return an empty `204` response, provided that one is defined in the specification.
 
+### The HTTP Response
+ 
+When a controller action returns `NULL`, SwaggerBundle will return an empty `204` response, provided that one is defined in the specification.
 Otherwise, it will default to the first 2xx type response defined in your spec, or if all else fails, simply 200.
-  
+
+You cannot return Symfony responses from your controllers. Any response manipulation (including custom status codes) you want needs to be implemented using "Response Listeners". Example that sets some headers:
+
+```yaml
+services:
+  your_response_listener:
+    class: Some\Namespace\ResponseListener
+    tags:
+      - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+```
+```php
+class ResponseListener
+{
+    /**
+     * @param FilterResponseEvent $event
+     */
+    public function onKernelResponse(FilterResponseEvent $event)
+    {
+        if (!$event->isMasterRequest()) {
+            return;
+        }
+        $request = $event->getRequest();
+        $headers = $event->getResponse()->headers;
+        switch ($request->attributes->get('_swagger_path')) {
+            case '/user/login':
+                $headers->set('X-Rate-Limit', 123456789);
+                $headers->set('X-Expires-After', date('Y-m-d\TH:i:s\Z'));
+                break;
+            default:
+                //noop
+        }
+    }
+}
+
+```
+
+
 # Developing
 
 # Utilities
