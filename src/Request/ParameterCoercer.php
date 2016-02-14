@@ -20,7 +20,7 @@ class ParameterCoercer
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      *
      * @param object $paramDefinition
-     * @param mixed $value
+     * @param mixed  $value
      *
      * @return mixed
      * @throws MalformedContentException

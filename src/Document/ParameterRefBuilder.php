@@ -89,6 +89,7 @@ class ParameterRefBuilder
                 }
             }
         }
+
         return "$scheme://$host{$basePath}{$filePath}";
     }
 
@@ -102,6 +103,7 @@ class ParameterRefBuilder
     {
         /** @var OperationObject $operation */
         $operation = $request->attributes->get('_swagger_operation');
+
         return $operation->createParameterPointer($parameterName);
     }
 
@@ -115,6 +117,7 @@ class ParameterRefBuilder
     {
         /** @var OperationObject $operation */
         $operation = $request->attributes->get('_swagger_operation');
+
         return $operation->createParameterSchemaPointer($parameterName);
     }
 }

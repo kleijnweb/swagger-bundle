@@ -17,11 +17,13 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 class PetStoreBundle extends Bundle
 {
     /**
-     * @return ExtensionInterface
+     * @return null
      */
     public function getContainerExtension()
     {
-        return $this->extension = false;
+        $this->extension = false;
+
+        return null;
     }
 
     /**

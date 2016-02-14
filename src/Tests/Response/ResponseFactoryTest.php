@@ -44,7 +44,7 @@ class ResponseFactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param mixed $data
+     * @param mixed  $data
      * @param string $path
      * @param string $method
      *

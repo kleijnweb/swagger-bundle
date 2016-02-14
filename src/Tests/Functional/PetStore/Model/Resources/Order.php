@@ -13,37 +13,37 @@ class Order
      * @Type("integer")
      */
     private $id;
-        
+
     /**
      * @var integer
      * @Type("integer")
      */
     private $petId;
-        
+
     /**
      * @var integer
      * @Type("integer")
      */
     private $quantity;
-        
+
     /**
      * @var \DateTime
      * @Type("DateTime<'Y-m-d'>")
      */
     private $shipDate;
-        
+
     /**
      * @var string
      * @Type("string")
      */
     private $status;
-        
+
     /**
      * @var boolean
      * @Type("boolean")
      */
     private $complete;
-            
+
     /**
      * @param integer
      *
@@ -55,7 +55,7 @@ class Order
 
         return $this;
     }
-    
+
     /**
      * @param integer
      *
@@ -67,7 +67,7 @@ class Order
 
         return $this;
     }
-    
+
     /**
      * @param integer
      *
@@ -79,7 +79,7 @@ class Order
 
         return $this;
     }
-    
+
     /**
      * @param \DateTime
      *
@@ -91,7 +91,7 @@ class Order
 
         return $this;
     }
-    
+
     /**
      * @param string
      *
@@ -103,7 +103,7 @@ class Order
 
         return $this;
     }
-    
+
     /**
      * @param boolean
      *
@@ -115,7 +115,7 @@ class Order
 
         return $this;
     }
-            
+
     /**
      * @return integer
      */
@@ -123,7 +123,7 @@ class Order
     {
         return $this->id;
     }
-    
+
     /**
      * @return integer
      */
@@ -131,7 +131,7 @@ class Order
     {
         return $this->petId;
     }
-    
+
     /**
      * @return integer
      */
@@ -139,16 +139,16 @@ class Order
     {
         return $this->quantity;
     }
-    
+
     /**
      * @return \DateTime
      */
-    
+
     public function getShipdate()
     {
         return $this->shipDate;
     }
-    
+
     /**
      * @return string
      */
@@ -156,7 +156,7 @@ class Order
     {
         return $this->status;
     }
-    
+
     /**
      * @return boolean
      */

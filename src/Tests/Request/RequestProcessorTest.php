@@ -90,7 +90,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 
         $operationDefinition = [
             'parameters' => (object)[
-                (object) [
+                (object)[
                     'name' => 'myContent',
                     'in'   => 'body'
                 ]

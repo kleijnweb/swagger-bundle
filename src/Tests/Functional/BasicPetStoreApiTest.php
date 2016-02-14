@@ -46,7 +46,7 @@ class BasicPetStoreApiTest extends WebTestCase
     public function canAddPet()
     {
         $content = [
-            'name' => 'Joe',
+            'name'      => 'Joe',
             'photoUrls' => ['foobar']
         ];
 
