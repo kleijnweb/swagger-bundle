@@ -55,12 +55,20 @@ class ParameterRefBuilder
      *
      * @return string
      */
-    public function buildLink(Request $request, $parameterName)
+    public function buildSpecificationLink(Request $request, $parameterName)
+    {
+        return "{$this->buildDocumentLink($request)}#{$this->createParameterPointer($request, $parameterName)}";
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return string
+     */
+    public function buildDocumentLink(Request $request)
     {
         /** @var SwaggerDocument $document */
         $document = $request->attributes->get('_swagger_document');
-        /** @var OperationObject $operation */
-        $operation = $request->attributes->get('_swagger_operation');
         /** @var string $filePath */
         $filePath = $request->attributes->get('_definition');
 
@@ -81,8 +89,32 @@ class ParameterRefBuilder
                 }
             }
         }
-        $pointer = $operation->createParameterPointer($parameterName);
+        return "$scheme://$host{$basePath}{$filePath}";
+    }
 
-        return "$scheme://$host{$basePath}/{$filePath}#$pointer";
+    /**
+     * @param Request $request
+     * @param string  $parameterName
+     *
+     * @return string
+     */
+    public function createParameterPointer(Request $request, $parameterName)
+    {
+        /** @var OperationObject $operation */
+        $operation = $request->attributes->get('_swagger_operation');
+        return $operation->createParameterPointer($parameterName);
+    }
+
+    /**
+     * @param Request $request
+     * @param string  $parameterName
+     *
+     * @return string
+     */
+    public function createParameterSchemaPointer(Request $request, $parameterName)
+    {
+        /** @var OperationObject $operation */
+        $operation = $request->attributes->get('_swagger_operation');
+        return $operation->createParameterSchemaPointer($parameterName);
     }
 }

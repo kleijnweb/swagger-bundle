@@ -56,7 +56,7 @@ class RequestListener
         $request->attributes->set('_swagger_document', $swaggerDocument);
 
         $operation = $swaggerDocument->getOperationObject($request->get('_swagger_path'), $request->getMethod());
-        $request->attributes->set('_swagger_operation', $swaggerDocument);
+        $request->attributes->set('_swagger_operation', $operation);
 
         $this->processor->process($request, $operation);
     }

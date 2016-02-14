@@ -138,10 +138,32 @@ class OperationObject
             if ($paramDefinition->name === $parameterName) {
                 return '/' . implode('/', [
                     'paths',
-                    str_replace(['~', '/'], ['~0', '~1'], $parameterName),
-                    'post',
+                    str_replace(['~', '/'], ['~0', '~1'], $this->getPath()),
+                    $this->getMethod(),
                     'parameters',
                     $i
+                ]);
+            }
+        }
+        throw new \InvalidArgumentException("Parameter '$parameterName' not in document");
+    }
+
+    /**
+     * @param string $parameterName
+     *
+     * @return string
+     */
+    public function createParameterSchemaPointer($parameterName)
+    {
+        foreach ($this->definition->{'x-request-schema'}->properties as $propertyName => $schema) {
+            if ($propertyName === $parameterName) {
+                return '/' . implode('/', [
+                    'paths',
+                    str_replace(['~', '/'], ['~0', '~1'], $this->getPath()),
+                    $this->getMethod(),
+                    'x-request-schema',
+                    'properties',
+                    $propertyName
                 ]);
             }
         }
@@ -173,7 +195,10 @@ class OperationObject
             }
 
             $type = property_exists($paramDefinition, 'type') ? $paramDefinition->type : 'string';
-            $schema->properties->{$paramDefinition->name} = (object)['type' => $type];
+            $propertyDefinition = $schema->properties->{$paramDefinition->name} = (object)['type' => $type];
+            if (property_exists($paramDefinition, 'items')) {
+                $propertyDefinition->items = $paramDefinition->items;
+            }
         }
 
         return $schema;

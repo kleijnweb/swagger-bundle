@@ -16,8 +16,15 @@ services:
     class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller\PetController
   swagger.controller.store:
     class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller\StoreController
+  swagger.controller.user:
+    class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller\UserController
   swagger.controller.entity:
     class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller\EntityController
+
+  kernel.listener.petstore_response:
+    class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\EventListener\ResponseListener
+    tags:
+      - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
 
 framework:
   test: true

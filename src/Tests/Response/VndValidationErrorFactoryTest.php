@@ -109,19 +109,24 @@ class VndValidationErrorFactoryTest extends \PHPUnit_Framework_TestCase
         /** @var \PHPUnit_Framework_MockObject_MockObject $mock */
         $mock
             ->expects($this->exactly(2))
-            ->method('buildLink')
+            ->method('buildSpecificationLink')
             ->willReturnOnConsecutiveCalls('http://1.net/1', 'http://2.net/2');
 
         $vndError = $this->factory->create(
             $this->createSimpleRequest(),
             $exception
         );
-        $this->assertSame(count($errors), count($vndError->getResources()));
 
-        $resources = array_values($vndError->getResources());
+        $resources = $vndError->getResources();
+        $this->assertArrayHasKey('errors', $resources);
+        $errorResources = $resources['errors'];
+        $this->assertSame(count($errors), count($errorResources));
+
+        $resources = array_values($errorResources);
 
         foreach ($errors as $i => $spec) {
-            $this->assertContains($spec['message'], $resources[$i][0]->getMessage());
+            $data = $resources[$i]->getData();
+            $this->assertContains($spec['message'], $data['message']);
         }
     }
 

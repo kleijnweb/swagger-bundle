@@ -34,7 +34,7 @@ class ParameterRefBuilderTest extends \PHPUnit_Framework_TestCase
         $request->attributes->set('_swagger_document', $document);
         $request->attributes->set('_swagger_operation', $document->getOperationObject('/pet/{petId}', 'POST'));
 
-        $actual = $builder->buildLink($request, 'name');
+        $actual = $builder->buildSpecificationLink($request, 'name');
 
         $this->assertStringStartsWith('http://petstore.swagger.io/swagger/petstore.yml', $actual);
     }
@@ -47,7 +47,7 @@ class ParameterRefBuilderTest extends \PHPUnit_Framework_TestCase
      */
     private function construct($scheme = null, $host = null)
     {
-        $builder = new ParameterRefBuilder($scheme, $host);
+        $builder = new ParameterRefBuilder('/', $scheme, $host);
 
         return $builder;
     }

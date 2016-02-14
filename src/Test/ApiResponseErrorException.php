@@ -14,20 +14,49 @@ namespace KleijnWeb\SwaggerBundle\Test;
 class ApiResponseErrorException extends \Exception
 {
     /**
-     * @param object $json
+     * @var object
+     */
+    private $data;
+
+    /**
+     * @var string
+     */
+    private $json;
+
+    /**
+     * @param string $json
+     * @param object $data
      * @param int    $httpStatusCode
      */
-    public function __construct($json, $httpStatusCode)
+    public function __construct($json, $data, $httpStatusCode)
     {
         $this->message = "Returned $httpStatusCode";
-        if ($json) {
-            $this->message = $json->message;
-            if (isset($json->logref)) {
-                $this->message = "$json->message [logref $json->logref]";
+        if ($data) {
+            $this->message = $data->message;
+            if (isset($data->logref)) {
+                $this->message = "$data->message [logref $data->logref]";
             }
 
         }
 
         $this->code = $httpStatusCode;
+        $this->data = $data;
+        $this->json = $json;
+    }
+
+    /**
+     * @return string
+     */
+    public function getJson()
+    {
+        return $this->json;
+    }
+
+    /**
+     * @return object
+     */
+    public function getData()
+    {
+        return $this->data;
     }
 }

@@ -10,6 +10,7 @@ namespace KleijnWeb\SwaggerBundle\Response;
 
 use KleijnWeb\SwaggerBundle\Document\ParameterRefBuilder;
 use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
+use Nocarrier\Hal;
 use Ramsey\VndError\VndError;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -42,20 +43,25 @@ class VndValidationErrorFactory
      */
     public function create(Request $request, InvalidParametersException $exception, $logRef = null)
     {
-        $vndError = new VndError(self::DEFAULT_MESSAGE, $logRef);
-        $vndError->addLink('help', '', ['title' => 'Api Specification']);
-        $vndError->addLink('about', $request->getUri(), ['title' => 'Error Information']);
+        $error = new VndError(self::DEFAULT_MESSAGE, $logRef);
+        $error->addLink('about', $this->refBuilder->buildDocumentLink($request), ['title' => 'Api Specification']);
+        $error->setUri($request->getUri());
 
         foreach ($exception->getValidationErrors() as $errorSpec) {
-            $vndError->addResource(
-                $this->refBuilder->buildLink(
-                    $request,
-                    $errorSpec['property']
-                ),
-                new VndError($errorSpec['message'])
+            $normalizedPropertyName = preg_replace('/\[\d+\]/', '', $errorSpec['property']);
+            $data = [
+                'message' => $errorSpec['message'],
+                'path'    => $this->refBuilder->createParameterSchemaPointer($request, $normalizedPropertyName)
+            ];
+            $parameterDefinitionUri = $this->refBuilder->buildSpecificationLink($request, $normalizedPropertyName);
+
+            $validationError = new Hal($parameterDefinitionUri, $data);
+            $error->addResource(
+                'errors',
+                $validationError
             );
         }
 
-        return $vndError;
+        return $error;
     }
 }
