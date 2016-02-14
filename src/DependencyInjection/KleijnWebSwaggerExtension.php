@@ -43,6 +43,10 @@ class KleijnWebSwaggerExtension extends Extension
             $resolverDefinition = $container->getDefinition('swagger.document.repository');
             $resolverDefinition->addArgument(new Reference($config['document']['cache']));
         }
+
+        if ($container->hasParameter('test.client.class')) {
+            $container->setParameter('test.client.class', 'KleijnWeb\SwaggerBundle\Test\ApiTestClient');
+        }
     }
 
     /**
