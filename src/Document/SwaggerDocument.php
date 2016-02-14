@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -30,7 +31,7 @@ class SwaggerDocument
 
     /**
      * @param string $pathFileName
-     * @param object $definition
+     * @param \stdClass $definition
      */
     public function __construct($pathFileName, $definition)
     {
@@ -39,7 +40,7 @@ class SwaggerDocument
     }
 
     /**
-     * @return object
+     * @return \stdClass
      */
     public function getDefinition()
     {
@@ -47,7 +48,7 @@ class SwaggerDocument
     }
 
     /**
-     * @return object
+     * @return \stdClass
      */
     public function getPathDefinitions()
     {
@@ -77,7 +78,7 @@ class SwaggerDocument
      * @param string $path
      * @param string $method
      *
-     * @return object
+     * @return \stdClass
      */
     public function getOperationDefinition($path, $method)
     {

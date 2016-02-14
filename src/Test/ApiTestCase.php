@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -8,16 +9,11 @@
 
 namespace KleijnWeb\SwaggerBundle\Test;
 
-use FR3D\SwaggerAssertions\PhpUnit\AssertsTrait;
-use FR3D\SwaggerAssertions\SchemaManager;
+use FR3D\SwaggerAssertions\{PhpUnit\AssertsTrait, SchemaManager};
+use org\bovigo\vfs\{vfsStream, vfsStreamDirectory, vfsStreamWrapper};
+use Symfony\Component\{Yaml\Yaml, HttpFoundation\Response};
+use KleijnWeb\SwaggerBundle\Document\{DocumentRepository, SwaggerDocument};
 use JsonSchema\Validator;
-use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
-use KleijnWeb\SwaggerBundle\Document\SwaggerDocument;
-use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamDirectory;
-use org\bovigo\vfs\vfsStreamWrapper;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -111,7 +107,7 @@ trait ApiTestCase
      * @param string $path
      * @param array  $params
      *
-     * @return object
+     * @return \stdClass
      * @throws ApiResponseErrorException
      */
     protected function get($path, array $params = [])
@@ -123,7 +119,7 @@ trait ApiTestCase
      * @param string $path
      * @param array  $params
      *
-     * @return object
+     * @return \stdClass
      * @throws ApiResponseErrorException
      */
     protected function delete($path, array $params = [])
@@ -136,7 +132,7 @@ trait ApiTestCase
      * @param array  $content
      * @param array  $params
      *
-     * @return object
+     * @return \stdClass
      * @throws ApiResponseErrorException
      */
     protected function patch($path, array $content, array $params = [])
@@ -149,7 +145,7 @@ trait ApiTestCase
      * @param array  $content
      * @param array  $params
      *
-     * @return object
+     * @return \stdClass
      * @throws ApiResponseErrorException
      */
     protected function post($path, array $content, array $params = [])
@@ -162,7 +158,7 @@ trait ApiTestCase
      * @param array  $content
      * @param array  $params
      *
-     * @return object
+     * @return \stdClass
      * @throws ApiResponseErrorException
      */
     protected function put($path, array $content, array $params = [])
@@ -176,13 +172,13 @@ trait ApiTestCase
      * @param array      $params
      * @param array|null $content
      *
-     * @return object
+     * @return \stdClass
      * @throws ApiResponseErrorException
      */
     protected function sendRequest($path, $method, array $params = [], array $content = null)
     {
         $request = new ApiRequest($this->assembleUri($path, $params), $method);
-        $defaults = isset($this->defaultServerVars) ? $this->defaultServerVars : [];
+        $defaults = $this->defaultServerVars ?? [];
         $request->setServer(array_merge($defaults ?: [], ['CONTENT_TYPE' => 'application/json']));
         if ($content !== null) {
             $request->setContent(json_encode($content));
@@ -213,7 +209,7 @@ trait ApiTestCase
      * @param string $fullPath
      * @param string $method
      *
-     * @return object|null
+     * @return \stdClass|null
      * @throws ApiResponseErrorException
      */
     private function getJsonForLastRequest($fullPath, $method)
@@ -241,7 +237,7 @@ trait ApiTestCase
             );
         }
 
-        if (substr($response->getStatusCode(), 0, 1) != '2') {
+        if (substr((string)$response->getStatusCode(), 0, 1) != '2') {
             if (!isset($this->validateErrorResponse) || $this->validateErrorResponse) {
                 $this->validateResponse($response->getStatusCode(), $response, $method, $fullPath, $data);
             }

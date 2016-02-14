@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -14,6 +15,7 @@ use KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver;
 use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
 use KleijnWeb\SwaggerBundle\Serializer\SymfonySerializerFactory;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\Encoder\DecoderInterface;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -41,7 +43,7 @@ class ContentDecoderSymfonySerializerCompatibilityTest extends \PHPUnit_Framewor
     protected function setUp()
     {
         $this->jsonDecoderMock = $this
-            ->getMockBuilder('Symfony\Component\Serializer\Encoder\DecoderInterface')
+            ->getMockBuilder(DecoderInterface::class)
             ->getMockForAbstractClass();
         $this->jsonDecoderMock
             ->expects($this->any())

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -37,7 +38,7 @@ class RefResolver
     private $yamlParser;
 
     /**
-     * @param object     $definition
+     * @param \stdClass     $definition
      * @param string     $uri
      * @param YamlParser $yamlParser
      */
@@ -54,7 +55,7 @@ class RefResolver
     }
 
     /**
-     * @return object
+     * @return \stdClass
      */
     public function getDefinition()
     {
@@ -64,7 +65,7 @@ class RefResolver
     /**
      * Resolve all references
      *
-     * @return object
+     * @return \stdClass
      */
     public function resolve()
     {
@@ -76,7 +77,7 @@ class RefResolver
     /**
      * Revert to original state
      *
-     * @return object
+     * @return \stdClass
      */
     public function unresolve()
     {
@@ -86,8 +87,8 @@ class RefResolver
     }
 
     /**
-     * @param object|array $current
-     * @param object       $document
+     * @param \stdClass|array $current
+     * @param \stdClass       $document
      * @param string       $uri
      *
      * @throws InvalidReferenceException
@@ -130,8 +131,8 @@ class RefResolver
     }
 
     /**
-     * @param object|array $current
-     * @param object|array $parent
+     * @param \stdClass|array $current
+     * @param \stdClass|array $parent
      *
      * @return void
      */
@@ -149,7 +150,7 @@ class RefResolver
 
     /**
      * @param string $path
-     * @param object $document
+     * @param \stdClass $document
      * @param string $uri
      *
      * @return mixed
@@ -172,7 +173,7 @@ class RefResolver
 
     /**
      * @param array  $segments
-     * @param object $context
+     * @param \stdClass $context
      *
      * @return mixed
      */
@@ -193,7 +194,7 @@ class RefResolver
     /**
      * @param string $uri
      *
-     * @return object
+     * @return \stdClass
      * @throws ResourceNotReadableException
      */
     private function loadExternal($uri)

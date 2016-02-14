@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -53,13 +54,13 @@ class SerializationTypeResolver
     }
 
     /**
-     * @param object $schema
+     * @param \stdClass $schema
      *
      * @return string
      */
     public function resolveUsingSchema($schema)
     {
-        $reference = isset($schema->{'$ref'}) ? $schema->{'$ref'} : (isset($schema->id) ? $schema->id : null);
+        $reference = $schema->{'$ref'} ?? $schema->id ?? null;
 
         if (!$reference) {
             return null;

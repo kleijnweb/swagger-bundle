@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -74,7 +75,7 @@ class SerializerAdapter
      * @param string                     $format
      * @param SerializationContext|array $context
      *
-     * @return object|array
+     * @return \stdClass|array
      */
     public function deserialize($data, $type, $format, $context = null)
     {

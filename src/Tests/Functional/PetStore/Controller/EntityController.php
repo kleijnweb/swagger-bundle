@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -15,11 +16,11 @@ class EntityController
 {
     /**
      * @param string    $type
-     * @param \DateTime $lastModified
+     * @param \DateTimeImmutable $lastModified
      *
      * @return array
      */
-    public function find($type, \DateTime $lastModified)
+    public function find($type, \DateTimeImmutable $lastModified)
     {
         return [
             [

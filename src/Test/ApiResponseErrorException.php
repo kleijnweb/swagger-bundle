@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -25,7 +26,7 @@ class ApiResponseErrorException extends \Exception
 
     /**
      * @param string $json
-     * @param object $data
+     * @param \stdClass $data
      * @param int    $httpStatusCode
      */
     public function __construct($json, $data, $httpStatusCode)
@@ -53,7 +54,7 @@ class ApiResponseErrorException extends \Exception
     }
 
     /**
-     * @return object
+     * @return \stdClass
      */
     public function getData()
     {

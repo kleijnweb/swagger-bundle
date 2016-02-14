@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -9,8 +10,10 @@
 namespace KleijnWeb\SwaggerBundle\Tests\EventListener;
 
 use KleijnWeb\SwaggerBundle\EventListener\ViewListener;
+use KleijnWeb\SwaggerBundle\Response\ResponseFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -27,7 +30,7 @@ class ViewListenerTest extends \PHPUnit_Framework_TestCase
         $result = [uniqid()];
 
         $eventMock = $this
-            ->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent')
+            ->getMockBuilder(GetResponseForControllerResultEvent::class)
             ->disableOriginalConstructor()
             ->getMock();
         $eventMock
@@ -44,7 +47,7 @@ class ViewListenerTest extends \PHPUnit_Framework_TestCase
             ->willReturn($response);
 
         $factoryMock = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Response\ResponseFactory')
+            ->getMockBuilder(ResponseFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
         $factoryMock

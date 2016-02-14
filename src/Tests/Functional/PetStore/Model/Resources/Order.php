@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Model\Resources;
 
 use JMS\Serializer\Annotation\Type;
@@ -27,7 +28,7 @@ class Order
     private $quantity;
 
     /**
-     * @var \DateTime
+     * @var \DateTimeImmutable
      * @Type("DateTime<'Y-m-d'>")
      */
     private $shipDate;
@@ -81,7 +82,7 @@ class Order
     }
 
     /**
-     * @param \DateTime
+     * @param \DateTimeImmutable
      *
      * @return $this
      */
@@ -141,7 +142,7 @@ class Order
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTimeImmutable
      */
 
     public function getShipdate()

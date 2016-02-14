@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -27,7 +28,7 @@ class RequestCoercerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->contentDecoderMock = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Request\ContentDecoder')
+            ->getMockBuilder(ContentDecoder::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->contentDecoderMock
@@ -90,7 +91,7 @@ class RequestCoercerTest extends \PHPUnit_Framework_TestCase
         $expected = ParameterCoercer::coerceParameter($operationDefinition->parameters[0], "2015-01-01");
 
         // Sanity check
-        $this->assertInstanceOf('DateTime', $expected);
+        $this->assertInstanceOf('DateTimeInterface', $expected);
 
         $this->assertEquals($expected, $request->attributes->get('foo'));
     }

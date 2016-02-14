@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -64,7 +65,7 @@ class VndErrorExceptionListenerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->event = $this
-            ->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent')
+            ->getMockBuilder(GetResponseForExceptionEvent::class)
             ->disableOriginalConstructor()
             ->setMethods(['getException', 'getRequest'])
             ->getMock();
@@ -90,7 +91,7 @@ class VndErrorExceptionListenerTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->request);
 
         $this->validationErrorFactory = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Response\VndValidationErrorFactory')
+            ->getMockBuilder(VndValidationErrorFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -246,7 +247,7 @@ class VndErrorExceptionListenerTest extends \PHPUnit_Framework_TestCase
     public function willReturn404Responses()
     {
         $event = $this
-            ->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent')
+            ->getMockBuilder(GetResponseForExceptionEvent::class)
             ->disableOriginalConstructor()
             ->setMethods(['getException', 'getRequest'])
             ->getMock();
@@ -270,7 +271,7 @@ class VndErrorExceptionListenerTest extends \PHPUnit_Framework_TestCase
     public function willCreateValidationErrorResponse()
     {
         $event = $this
-            ->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent')
+            ->getMockBuilder(GetResponseForExceptionEvent::class)
             ->disableOriginalConstructor()
             ->setMethods(['getException', 'getRequest'])
             ->getMock();

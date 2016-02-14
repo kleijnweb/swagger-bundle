@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -88,8 +89,8 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
      */
     public static function primitiveConversionProvider()
     {
-        $now = new \DateTime();
-        $midnight = new \DateTime('midnight today');
+        $now = new \DateTimeImmutable();
+        $midnight = new \DateTimeImmutable('midnight today');
 
         return [
             ['boolean', '0', false],

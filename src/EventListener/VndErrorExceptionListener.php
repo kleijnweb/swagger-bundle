@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -59,7 +60,7 @@ class VndErrorExceptionListener
     /**
      * @param GetResponseForExceptionEvent $event
      *
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
@@ -83,8 +84,8 @@ class VndErrorExceptionListener
                         $statusCode = Response::HTTP_UNAUTHORIZED;
                         $severity = LogLevel::WARNING;
                     } else {
-                        $is3Digits = strlen($code) === 3;
-                        $class = (int)substr($code, 0, 1);
+                        $is3Digits = strlen((string)$code) === 3;
+                        $class = (int)substr((string)$code, 0, 1);
                         if (!$is3Digits) {
                             $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
                             $severity = LogLevel::CRITICAL;
@@ -118,7 +119,7 @@ class VndErrorExceptionListener
             throw $e;
         } catch (\PHPUnit_Framework_Error  $e) {
             throw $e;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             // A simpler response where less can go wrong
             $message = "Error Handling Failure";
             $vndError = new VndError($message, $logRef);

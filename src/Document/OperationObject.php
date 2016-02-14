@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -33,12 +34,7 @@ class OperationObject
      */
     private $method;
 
-    /**
-     * @param SwaggerDocument $document
-     * @param string          $path
-     * @param string          $method
-     */
-    public function __construct(SwaggerDocument $document, $path, $method)
+    public function __construct(SwaggerDocument $document, string $path, string $method)
     {
         $paths = $document->getPathDefinitions();
 
@@ -57,14 +53,11 @@ class OperationObject
         $this->definition->{'x-request-schema'} = $this->assembleRequestSchema();
     }
 
-    /**
-     * @param object $definition
-     * @param string $path
-     * @param string $method
-     *
-     * @return static
-     */
-    public static function createFromOperationDefinition($definition, $path = '/', $method = 'GET')
+    public static function createFromOperationDefinition(
+        \stdClass $definition,
+        string $path = '/',
+        string $method = 'GET'
+    ): OperationObject
     {
         $method = strtolower($method);
         $documentDefinition = (object)[
@@ -80,59 +73,39 @@ class OperationObject
     }
 
     /**
-     * @return object
+     * @return \stdClass
      */
-    public function getRequestSchema()
+    public function getRequestSchema():  \stdClass
     {
         return $this->definition->{'x-request-schema'};
     }
 
-    /**
-     * @return bool
-     */
-    public function hasParameters()
+    public function hasParameters(): bool
     {
         return property_exists($this->definition, 'parameters');
     }
 
-    /**
-     * @return object
-     */
-    public function getParameters()
+    public function getParameters(): array
     {
         return $this->definition->parameters;
     }
 
-    /**
-     * @return string
-     */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
 
-    /**
-     * @return string
-     */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
 
-    /**
-     * @return object
-     */
-    public function getDefinition()
+    public function getDefinition(): \stdClass
     {
         return $this->definition;
     }
 
-    /**
-     * @param string $parameterName
-     *
-     * @return string
-     */
-    public function createParameterPointer($parameterName)
+    public function createParameterPointer(string $parameterName): string
     {
         foreach ($this->definition->parameters as $i => $paramDefinition) {
             if ($paramDefinition->name === $parameterName) {
@@ -148,12 +121,7 @@ class OperationObject
         throw new \InvalidArgumentException("Parameter '$parameterName' not in document");
     }
 
-    /**
-     * @param string $parameterName
-     *
-     * @return string
-     */
-    public function createParameterSchemaPointer($parameterName)
+    public function createParameterSchemaPointer(string $parameterName): string
     {
         foreach ($this->definition->{'x-request-schema'}->properties as $propertyName => $schema) {
             if ($propertyName === $parameterName) {
@@ -171,7 +139,7 @@ class OperationObject
     }
 
     /**
-     * @return object
+     * @return \stdClass
      */
     private function assembleRequestSchema()
     {

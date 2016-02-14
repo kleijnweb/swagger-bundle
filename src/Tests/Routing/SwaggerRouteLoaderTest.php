@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -8,6 +9,8 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Routing;
 
+use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
+use KleijnWeb\SwaggerBundle\Document\SwaggerDocument;
 use KleijnWeb\SwaggerBundle\Routing\SwaggerRouteLoader;
 
 /**
@@ -38,12 +41,12 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->documentMock = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Document\SwaggerDocument')
+            ->getMockBuilder(SwaggerDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->repositoryMock = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Document\DocumentRepository')
+            ->getMockBuilder(DocumentRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 

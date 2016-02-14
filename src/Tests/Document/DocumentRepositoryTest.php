@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -8,6 +9,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Document;
 
+use Doctrine\Common\Cache\ArrayCache;
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 
 /**
@@ -67,7 +69,7 @@ class DocumentRepositoryTest extends \PHPUnit_Framework_TestCase
     public function willCache()
     {
         $path = 'src/Tests/Functional/PetStore/app/swagger/petstore.yml';
-        $cache = $this->getMockBuilder('Doctrine\Common\Cache\ArrayCache')->disableOriginalConstructor()->getMock();
+        $cache = $this->getMockBuilder(ArrayCache::class)->disableOriginalConstructor()->getMock();
         $repository = new DocumentRepository(null, $cache);
         $cache->expects($this->exactly(1))->method('fetch')->with($path);
         $cache->expects($this->exactly(1))->method('save')->with($path, $this->isType('object'));

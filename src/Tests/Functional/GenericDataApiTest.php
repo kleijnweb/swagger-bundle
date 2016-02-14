@@ -53,7 +53,7 @@ class GenericDataApiTest extends WebTestCase
      */
     public function canFindUsingDateTimeQuery()
     {
-        $responseData = $this->get('/data/v1/entity/bar', ['lastModified' => (new \DateTime)->format(\DateTime::W3C)]);
+        $responseData = $this->get('/data/v1/entity/bar', ['lastModified' => (new \DateTimeImmutable)->format(\DateTime::W3C)]);
 
         $this->assertSame(2, $responseData[0]->id);
         $this->assertSame('bar', $responseData[0]->foo);
