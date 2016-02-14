@@ -23,7 +23,7 @@ class RefResolverTest extends \PHPUnit_Framework_TestCase
     {
         $resolver = $this->construct('petstore.yml');
         $resolver->resolve();
-        $schemas = $resolver->getDocument()->definitions;
+        $schemas = $resolver->getDefinition()->definitions;
         $propertySchema = $schemas->Pet->properties->category;
         $this->assertObjectNotHasAttribute('$ref', $propertySchema);
         $this->assertObjectHasAttribute('id', $propertySchema);
@@ -36,7 +36,7 @@ class RefResolverTest extends \PHPUnit_Framework_TestCase
     public function canResolveParameterSchemaReferences()
     {
         $resolver = $this->construct('instagram.yml');
-        $pathDefinitions = $resolver->getDocument()->paths;
+        $pathDefinitions = $resolver->getDefinition()->paths;
         $pathDefinition = $pathDefinitions->{'/users/{user-id}'};
         $this->assertInternalType('array', $pathDefinition->parameters);
         $pathDefinition = $pathDefinitions->{'/users/{user-id}'};
@@ -50,17 +50,37 @@ class RefResolverTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     */
+    public function canResolveReferencesWithSlashed()
+    {
+        $resolver = $this->construct('partials/slashes.yml');
+        $this->assertSame('thevalue', $resolver->resolve()->Foo->bar);
+    }
+
+    /**
+     * @test
      *
      */
     public function canResolveExternalReferences()
     {
         $resolver = $this->construct('composite.yml');
-        $resolver->resolve();
-        $document = $resolver->getDocument();
-        $schema = $document->responses->Created->schema;
-        $this->assertObjectHasAttribute('type', $schema);
+        $document = $resolver->resolve();
+        $this->assertObjectHasAttribute('schema', $document->responses->Created);
         $response = $document->paths->{'/pet'}->post->responses->{'500'};
         $this->assertObjectHasAttribute('description', $response);
+    }
+
+    /**
+     * @test
+     */
+    public function canUnResolve()
+    {
+        $resolver = $this->construct('composite.yml');
+        $expected = clone $resolver->getDefinition();
+        $resolver->resolve();
+        $document = $resolver->unresolve();
+        $this->assertObjectNotHasAttribute('schema', $document->responses->Created);
+        $this->assertEquals($expected, $document);
     }
 
     /**

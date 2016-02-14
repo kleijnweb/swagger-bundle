@@ -19,7 +19,7 @@ class RefResolver
     /**
      * @var object
      */
-    private $document;
+    private $definition;
 
     /**
      * @var string
@@ -37,17 +37,13 @@ class RefResolver
     private $yamlParser;
 
     /**
-     * @param object     $document
+     * @param object     $definition
      * @param string     $uri
      * @param YamlParser $yamlParser
      */
-    public function __construct($document, $uri, YamlParser $yamlParser = null)
+    public function __construct($definition, $uri, YamlParser $yamlParser = null)
     {
-        if (!is_object($document)) {
-            throw new \InvalidArgumentException("Document must be object");
-        }
-
-        $this->document = $document;
+        $this->definition = $definition;
         $uriSegs = $this->parseUri($uri);
         if (!$uriSegs['proto']) {
             $uri = realpath($uri);
@@ -60,9 +56,9 @@ class RefResolver
     /**
      * @return object
      */
-    public function getDocument()
+    public function getDefinition()
     {
-        return $this->document;
+        return $this->definition;
     }
 
     /**
@@ -72,72 +68,77 @@ class RefResolver
      */
     public function resolve()
     {
-        $this->resolveRecursively($this->document);
+        $this->resolveRecursively($this->definition);
 
-        return $this->document;
+        return $this->definition;
     }
 
     /**
      * Revert to original state
+     *
+     * @return object
      */
     public function unresolve()
     {
-        $this->unresolveRecursively($this->document, $this->document);
+        $this->unresolveRecursively($this->definition);
+
+        return $this->definition;
     }
 
     /**
-     * @param object|array $composite
+     * @param object|array $current
      * @param object       $document
      * @param string       $uri
      *
      * @throws InvalidReferenceException
      * @throws ResourceNotReadableException
      */
-    private function resolveRecursively(&$composite, $document = null, $uri = null)
+    private function resolveRecursively(&$current, $document = null, $uri = null)
     {
-        $document = $document ?: $this->document;
+        $document = $document ?: $this->definition;
         $uri = $uri ?: $this->uri;
 
-        if (is_array($composite)) {
-            foreach ($composite as &$value) {
-                if (!is_scalar($value)) {
+        if (is_array($current)) {
+            foreach ($current as &$value) {
+                if ($value !== null && !is_scalar($value)) {
                     $this->resolveRecursively($value, $document, $uri);
                 }
             }
-        } elseif (is_object($composite)) {
-            if (property_exists($composite, '$ref')) {
-                $uri = $composite->{'$ref'};
+        } elseif (is_object($current)) {
+            if (property_exists($current, '$ref')) {
+                $uri = $current->{'$ref'};
                 if ('#' === $uri[0]) {
-                    $composite = $this->lookup($uri, $document, $uri);
+                    $current = $this->lookup($uri, $document);
                 } else {
                     $uriSegs = $this->parseUri($uri);
                     $normalizedUri = $this->normalizeUri($uriSegs);
                     $externalDocument = $this->loadExternal($normalizedUri);
-                    $composite = $this->lookup($uriSegs['segment'], $externalDocument, $normalizedUri);
-                    $this->resolveRecursively($composite, $externalDocument, $normalizedUri);
+                    $current = $this->lookup($uriSegs['segment'], $externalDocument, $normalizedUri);
+                    $this->resolveRecursively($current, $externalDocument, $normalizedUri);
                 }
-
-                $composite->id = $uri;
-                $composite->{'x-ref-id'} = $uri;
+                if (is_object($current)) {
+                    $current->id = $uri;
+                    $current->{'x-ref-id'} = $uri;
+                }
 
                 return;
             }
-            foreach ($composite as $propertyName => &$propertyValue) {
+            foreach ($current as $propertyName => &$propertyValue) {
                 $this->resolveRecursively($propertyValue, $document, $uri);
             }
         }
     }
 
     /**
-     * @param object $current
-     * @param object $parent
+     * @param object|array $current
+     * @param object|array $parent
      *
      * @return void
      */
-    private function unresolveRecursively($current, &$parent = null)
+    private function unresolveRecursively(&$current, &$parent = null)
     {
         foreach ($current as $key => &$value) {
-            if (is_object($value)) {
+            if ($value !== null && !is_scalar($value)) {
                 $this->unresolveRecursively($value, $current);
             }
             if ($key === 'x-ref-id') {
@@ -154,14 +155,16 @@ class RefResolver
      * @return mixed
      * @throws InvalidReferenceException
      */
-    private function lookup($path, $document, $uri)
+    private function lookup($path, $document, $uri = null)
     {
         $target = $this->lookupRecursively(
             explode('/', trim($path, '/#')),
             $document
         );
         if (!$target) {
-            throw new InvalidReferenceException("Target '$path' does not exist' at '$uri''");
+            throw new InvalidReferenceException(
+                "Target '$path' does not exist'" . ($uri ? " at '$uri''" : '')
+            );
         }
 
         return $target;
@@ -175,7 +178,7 @@ class RefResolver
      */
     private function lookupRecursively(array $segments, $context)
     {
-        $segment = array_shift($segments);
+        $segment = str_replace(['~0', '~1'], ['~', '/'], array_shift($segments));
         if (property_exists($context, $segment)) {
             if (!count($segments)) {
                 return $context->$segment;

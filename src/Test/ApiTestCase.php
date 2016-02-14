@@ -203,8 +203,8 @@ trait ApiTestCase
     {
         $method = strtolower($method);
         $response = $this->client->getResponse();
-        $responseContent = $response->getContent();
-        $data = json_decode($responseContent);
+        $json = $response->getContent();
+        $data = json_decode($json);
 
         if ($response->getStatusCode() !== 204) {
             static $errors = [
@@ -220,7 +220,7 @@ trait ApiTestCase
             $this->assertSame(
                 JSON_ERROR_NONE,
                 json_last_error(),
-                "Not valid JSON: " . $jsonErrorMessage . "(" . var_export($responseContent, true) . ")"
+                "Not valid JSON: " . $jsonErrorMessage . "(" . var_export($json, true) . ")"
             );
         }
 
@@ -229,7 +229,7 @@ trait ApiTestCase
                 $this->validateResponse($response->getStatusCode(), $response, $method, $fullPath, $data);
             }
             // This throws an exception so that tests can catch it when it is expected
-            throw new ApiResponseErrorException($data, $response->getStatusCode());
+            throw new ApiResponseErrorException($json, $data, $response->getStatusCode());
         }
 
         $this->validateResponse($response->getStatusCode(), $response, $method, $fullPath, $data);
@@ -248,7 +248,8 @@ trait ApiTestCase
     {
         $request = $this->client->getRequest();
         if (!self::$schemaManager->hasPath(['paths', $request->get('_swagger_path'), $method, 'responses', $code])) {
-            if ($code === 404) {
+            $statusClass = (int)substr((string)$code, 0, 1);
+            if (in_array($statusClass, [4, 5])) {
                 return;
             }
             throw new \UnexpectedValueException(
@@ -260,7 +261,14 @@ trait ApiTestCase
         foreach ($response->headers->all() as $key => $values) {
             $headers[str_replace(' ', '-', ucwords(str_replace('-', ' ', $key)))] = $values[0];
         }
-        $this->assertResponseHeadersMatch($headers, self::$schemaManager, $fullPath, $method, $code);
-        $this->assertResponseBodyMatch($data, self::$schemaManager, $fullPath, $method, $code);
+        try {
+            $this->assertResponseHeadersMatch($headers, self::$schemaManager, $fullPath, $method, $code);
+            $this->assertResponseBodyMatch($data, self::$schemaManager, $fullPath, $method, $code);
+        } catch (\UnexpectedValueException $e) {
+            $statusClass = (int)(string)$code[0];
+            if (in_array($statusClass, [4, 5])) {
+                return;
+            }
+        }
     }
 }

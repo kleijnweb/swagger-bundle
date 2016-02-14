@@ -1,0 +1,5 @@
+Foo:
+  bar:
+    $ref: '#/Bar/~1some~1path'
+Bar:
+  '/some/path': thevalue

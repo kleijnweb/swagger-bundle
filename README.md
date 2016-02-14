@@ -4,53 +4,42 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kleijnweb/swagger-bundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/kleijnweb/swagger-bundle/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/kleijnweb/swagger-bundle/v/stable)](https://packagist.org/packages/kleijnweb/swagger-bundle)
 
-Invert your workflow (contract first) using Swagger specs and set up a Symfony REST app with minimal config.
+Invert your workflow (contract first) using Swagger ([Open API](https://openapis.org/)) specs and set up a Symfony REST app with minimal config.
 
 Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig.
 
 ## Important Notes
  * You are looking at the documentation for the upcoming 3.0 release.
- * SwaggerBundle only supports json in- and output, and only YAML Swagger defintions
+ * SwaggerBundle only supports json in- and output, and only YAML Swagger definitions
  * This bundle is currently actively maintained.
  * Go to the [release page](https://github.com/kleijnweb/swagger-bundle/releases) to find details about the latest release.
 
 For a pretty complete example, see [swagger-bundle-example](https://github.com/kleijnweb/swagger-bundle-example).
+A minimal example is also [available](https://github.com/kleijnweb/symfony-swagger-microservice-edition).
 
-# This Bundle..
+## This bundle will..
 
-## Will:
-
- * Coerce parameters to their defined types when possible.
- * Validate content and parameters based on your Swagger documents(s).
- * Configure routing based on your Swagger documents(s). 
- * Encode response data as JSON.
- * Resolve JSON Pointers anywhere in your Swagger documents and partials.
- 
-## Can:
-
- * (De-) Serialize objects using either the Symfony Component Serializer or JMS\Serializer
- * Handle standard status codes such as 500, 400 and 404.
- * Return `application/vnd.error+json` responses when errors occur.
+ * Configure routing based on your Swagger documents(s), accounting for things like type, enums and pattern matches. 
+ * Validate body and parameters based on your Swagger documents(s).
+ * Coerce query and path parameters to their defined types when possible.
+ * Resolve [JSON Pointer](http://json-spec.readthedocs.org/en/latest/pointer.html)s anywhere in your Swagger documents and partials (not just in the [JSON Schema](http://json-schema.org/) bits).
+ * Return [vnd.error](https://github.com/blongden/vnd.error) (`application/vnd.error+json`) responses when errors occur.
  * Utilize vnd.error's `logref` to make errors traceable.
+ * Optionally (De-) Serialize objects using either the Symfony Component Serializer or JMS\Serializer
 
-## Won't:
+## It won't, and probably never will:
 
  * Handle Form posts.
  * Generate your API documentation. Use your Swagger documents, plenty of options.
  * Mix well with GUI bundles. The bundle is biased towards lightweight API-only apps.
  * Work with JSON Swagger documents.
- * Do content negotiation. May support XML in the future (low priority, see [#1](https://github.com/kleijnweb/swagger-bundle/issues/1)).
-
-__TIP:__ Want to build an API-only app using this bundle? Try [kleijnweb/symfony-swagger-microservice-edition](https://github.com/kleijnweb/symfony-swagger-microservice-edition).
+ * Do content negotiation or support XML.
 
 # Usage
 
 1. Create a Swagger file, for example using http://editor.swagger.io/.
 2. Install and configure this bundle 
-3. Create one or more controllers (as services!), doing the actual work, whatever that may be.
-4. You are DONE.
-
-Pretty much. ;)
+3. Create one or more controllers (as services), doing the actual work, whatever that may be.
 
 ## Install And Configure
 
@@ -108,7 +97,7 @@ public function placeOrder(array $body)
 }
 ```
 
-__NOTE:__ SwaggerBundle applies some type conversion to input and adds the converted types to the Request `attributes`. 
+__NOTE:__ SwaggerBundle applies some type conversion to query and path parameters and adds the converted values to the Request `attributes`. 
 Using `Request::get()` will give precedence to parameters in `query`. These values will be 'raw', using `attributes` is preferred.
 
 Your controllers do not need to implement any interfaces or extend any classes. A controller might look like this (using object deserialization, see section below):
@@ -132,7 +121,7 @@ class StoreController
 
 It would make more sense to name the parameter `order` instead of `body`, but this is how it is in the pet store example provided by Swagger.
 
-Other parameters can be added to the signature as well, this is standard Symfony behaviour.
+All (type-casted) parameters can be added to the signature, since they are attributes when the controller is invoked. This is standard Symfony behaviour.
 
 ## Caching
 
@@ -152,24 +141,48 @@ and `enum` when dealing with string path parameters.
 
 ## Exception Handling
 
-Any exceptions are caught, logged by the `@logger` service, and result in `application/vnd.error+json`. Routing failure results in a 404 response without `logref`.
+Any exceptions are caught, logged by the `@logger` service, and result in `application/vnd.error+json`. The log-level/severity depends on the exception type and/or code. "Not Found" errors are logged as 'INFO'.  
 
 ## Input Validation
 
 ### Parameter Validation
 
-SwaggerBundle will attempt to convert string values to any scalar value specified in your swagger file, within reason.
+SwaggerBundle will attempt to convert path and query string values to the scalar value specified in your swagger file, within reason.
  For example, it will accept all of "0", "1", "TRUE", "FALSE", "true",  and "false" as boolean values, but wont blindly
  evaluate any string value as `TRUE`.
  
-Parameter validation errors will result in a `vnd.error` response with a status code of 400.
-
-__NOTE__: SwaggerBundle currently does not support `multi` for `collectionFormat` when handling array parameters.
+__NOTE__: SwaggerBundle currently does not support `multi` for `collectionFormat` when handling array parameters (see [#50](https://github.com/kleijnweb/swagger-bundle/issues/50)).
  
 ### Content Validation
 
-If the content cannot be decoded using the format specified by the request's Content-Type header, or if validation
-of the content using the resource schema failed, SwaggerBundle will return a `vnd.error` response with a 400 status code.
+If the content cannot be decoded as JSON, or if validation of the content using the resource schema failed, 
+SwaggerBundle will return a `vnd.error` response with a 400 status code.
+
+### Validation Feedback
+
+Parameter validation errors will result in a `vnd.error` response with a status code of 400.
+
+The validation errors (produced by [justinrainbow/json-schema](https://github.com/justinrainbow/json-schema)), are included in the response, with [HAL](http://stateless.co/hal_specification.html) links that are essentially JSON Pointers
+to the parameter definition in the relevant Swagger Document.
+
+In order for this to work properly, you may need some additional config.
+
+When SwaggerBundle generates the JSON Pointer URI, it uses the following conventions:
+
+1. For the protocol/scheme, it uses to the scheme used to make the request, unless globally configured otherwise, *or* if not in the specs `schemes` (in which case it will use, in order of preference: https, wss, http, ws).
+2. For the host name, it will prefer the global config. If not defined it will use the value of `host` in the spec, ultimately falling back to the host name used to make the request.
+3. For the relative path, it will use the path relative to `swagger.document.base_path`. If configured, it will prefix the `swagger.document.public.base_url`
+
+Example:
+
+```yaml
+swagger:
+  document:
+    public:
+      proto: 'http' # Even if the spec claims it support https, this will cause the links to use http, unless the request was made using https (likewise you can use this to force https even if the request was made using http)
+      base_url: specs # This will prefix '/specs' to all paths
+      host: some.host.tld # Fetch specs from said host, instead of what's defined in the spec or the current one
+```
 
 ### Object (De-) Serialization
 

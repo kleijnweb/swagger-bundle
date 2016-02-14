@@ -26,6 +26,11 @@ class SwaggerDocument
     private $definition;
 
     /**
+     * @var OperationObject[]
+     */
+    private $operations;
+
+    /**
      * @param string $pathFileName
      * @param object $definition
      */
@@ -52,22 +57,25 @@ class SwaggerDocument
     }
 
     /**
-     * @return object
+     * @param string $path
+     * @param string $method
+     *
+     * @return OperationObject
      */
-    public function getResourceSchemas()
+    public function getOperationObject($path, $method)
     {
-        return $this->definition->definitions;
+        $key = "$path::$method";
+
+        if (isset($this->operations[$key])) {
+            return $this->operations[$key];
+        }
+
+        return $this->operations[$key] = new OperationObject($this, $path, $method);
     }
 
     /**
-     * @return string
-     */
-    public function getBasePath()
-    {
-        return $this->definition->basePath;
-    }
-
-    /**
+     * @deprecated
+     *
      * @param string $path
      * @param string $method
      *
@@ -75,23 +83,6 @@ class SwaggerDocument
      */
     public function getOperationDefinition($path, $method)
     {
-        $paths = $this->getPathDefinitions();
-        if (!property_exists($paths, $path)) {
-            throw new \InvalidArgumentException("Path '$path' not in Swagger document");
-        }
-        $method = strtolower($method);
-        if (!property_exists($paths->$path, $method)) {
-            throw new \InvalidArgumentException("Method '$method' not supported for path '$path'");
-        }
-
-        return $paths->$path->$method;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUri()
-    {
-        return $this->uri;
+        return $this->getOperationObject($path, $method)->getDefinition();
     }
 }

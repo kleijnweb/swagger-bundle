@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Request;
 
+use KleijnWeb\SwaggerBundle\Document\OperationObject;
 use KleijnWeb\SwaggerBundle\Exception\UnsupportedException;
 use Symfony\Component\HttpFoundation\Request;
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
@@ -31,25 +32,22 @@ class RequestCoercer
     }
 
     /**
-     * @param Request $request
-     * @param object   $operationDefinition
+     * @param Request         $request
+     * @param OperationObject $operationObject
      *
      * @throws MalformedContentException
      * @throws UnsupportedException
      */
-    public function coerceRequest(Request $request, $operationDefinition)
+    public function coerceRequest(Request $request, OperationObject $operationObject)
     {
-        $content = $this->contentDecoder->decodeContent($request, $operationDefinition);
+        $content = $this->contentDecoder->decodeContent($request, $operationObject);
 
-        if (!isset($operationDefinition->parameters)) {
-            return;
-        }
         $paramBagMapping = [
             'query'  => 'query',
             'path'   => 'attributes',
             'header' => 'headers'
         ];
-        foreach ($operationDefinition->parameters as $paramDefinition) {
+        foreach ($operationObject->getDefinition()->parameters as $paramDefinition) {
             $paramName = $paramDefinition->name;
 
             if ($paramDefinition->in === 'body') {
@@ -58,12 +56,6 @@ class RequestCoercer
                 }
 
                 continue;
-            }
-
-            if (!isset($paramBagMapping[$paramDefinition->in])) {
-                throw new UnsupportedException(
-                    "Unsupported parameter 'in' value in definition '{$paramDefinition->in}'"
-                );
             }
             $paramBagName = $paramBagMapping[$paramDefinition->in];
             if (!$request->$paramBagName->has($paramName)) {

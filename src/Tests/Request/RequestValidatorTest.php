@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Request;
 
+use KleijnWeb\SwaggerBundle\Document\OperationObject;
 use KleijnWeb\SwaggerBundle\Request\RequestValidator;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -32,7 +33,7 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $validator = new RequestValidator($operationDefinition);
+        $validator = new RequestValidator(OperationObject::createFromOperationDefinition($operationDefinition));
         $request = new Request();
         $validator->validateRequest($request);
     }
@@ -55,7 +56,7 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $validator = new RequestValidator($operationDefinition);
+        $validator = new RequestValidator(OperationObject::createFromOperationDefinition($operationDefinition));
         $validator->validateRequest($request);
     }
 
@@ -77,7 +78,7 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $validator = new RequestValidator($operationDefinition);
+        $validator = new RequestValidator(OperationObject::createFromOperationDefinition($operationDefinition));
         $validator->validateRequest($request);
     }
 }

@@ -10,9 +10,6 @@ namespace KleijnWeb\SwaggerBundle\Tests\Document;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\Document\SwaggerDocument;
-use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamDirectory;
-use org\bovigo\vfs\vfsStreamWrapper;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>

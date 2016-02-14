@@ -8,15 +8,19 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\EventListener;
 
-use KleijnWeb\SwaggerBundle\EventListener\ExceptionListener;
+use KleijnWeb\SwaggerBundle\EventListener\VndErrorExceptionListener;
+use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
+use Ramsey\VndError\VndError;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
+class VndErrorExceptionListenerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var GetResponseForExceptionEvent
@@ -34,7 +38,17 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
     private $exception;
 
     /**
-     * @var ExceptionListener
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @var VndErrorExceptionListener
      */
     private $exceptionListener;
 
@@ -43,38 +57,52 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
+        $this->event = $this
+            ->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent')
+            ->disableOriginalConstructor()
+            ->setMethods(['getException', 'getRequest'])
+            ->getMock();
+
         $this->exception = new \Exception("Mary had a little lamb");
         $reflection = new \ReflectionClass($this->exception);
         $codeProperty = $reflection->getProperty('code');
         $this->codeProperty = $codeProperty;
         $this->codeProperty->setAccessible(true);
+        $attributes = [
+            '_definition' => '/foo/bar'
+        ];
+        $this->request = new Request($query = [], $request = [], $attributes);
 
-        $this->event = $this
-            ->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent')
-            ->disableOriginalConstructor()
-            ->setMethods(['getException'])
-            ->getMock();
-
-        $this->event->expects($this->any())
+        $this->event
+            ->expects($this->any())
             ->method('getException')
             ->willReturn($this->exception);
 
-        /** @var LoggerInterface $logger */
-        $logger = $this->getMockForAbstractClass('Psr\Log\LoggerInterface');
-        $this->exceptionListener = new ExceptionListener($logger);
+        $this->event
+            ->expects($this->any())
+            ->method('getRequest')
+            ->willReturn($this->request);
+
+        $this->validationErrorFactory = $this
+            ->getMockBuilder('KleijnWeb\SwaggerBundle\Response\VndValidationErrorFactory')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->logger = $this->getMockForAbstractClass('Psr\Log\LoggerInterface');
+        $this->exceptionListener = new VndErrorExceptionListener($this->validationErrorFactory, $this->logger);
     }
 
     /**
      * @test
      */
-    public function willLogExceptionsWith4xxCodesAsInputErrorNotices()
+    public function willLogExceptionsWith4xxCodesAsBadRequestNotices()
     {
         for ($i = 0; $i < 99; $i++) {
             $logger = $this->getMockForAbstractClass('Psr\Log\LoggerInterface');
             $logger
                 ->expects($this->once())
-                ->method('notice')
-                ->with($this->stringStartsWith('Input error'));
+                ->method('log')
+                ->with(LogLevel::NOTICE, $this->stringStartsWith('Bad Request'));
 
             /** @var LoggerInterface $logger */
             $this->exceptionListener->setLogger($logger);
@@ -92,8 +120,8 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
             $logger = $this->getMockForAbstractClass('Psr\Log\LoggerInterface');
             $logger
                 ->expects($this->once())
-                ->method('error')
-                ->with($this->stringStartsWith('Runtime error'));
+                ->method('log')
+                ->with(LogLevel::ERROR, $this->stringStartsWith('Internal Server Error'));
 
             /** @var LoggerInterface $logger */
             $this->exceptionListener->setLogger($logger);
@@ -112,8 +140,8 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
             $logger = $this->getMockForAbstractClass('Psr\Log\LoggerInterface');
             $logger
                 ->expects($this->once())
-                ->method('critical')
-                ->with($this->stringStartsWith('Runtime error'));
+                ->method('log')
+                ->with(LogLevel::CRITICAL, $this->stringStartsWith('Internal Server Error'));
 
             /** @var LoggerInterface $logger */
             $this->exceptionListener->setLogger($logger);
@@ -153,11 +181,12 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
      */
     public function willSetResponseWithSimpleMessage()
     {
-        foreach ([400 => 'Input Error', 500 => 'Server Error'] as $code => $message) {
+        foreach ([400 => 'Bad Request', 500 => 'Internal Server Error'] as $code => $message) {
             $this->codeProperty->setValue($this->exception, $code);
             $this->exceptionListener->onKernelException($this->event);
             $response = $this->event->getResponse();
-            $this->assertEquals($message, json_decode($response->getContent())->message);
+            $this->assertNotNull($body = json_decode($response->getContent()));
+            $this->assertEquals($message, $body->message);
         }
     }
 
@@ -184,8 +213,8 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
             $logger = $this->getMockForAbstractClass('Psr\Log\LoggerInterface');
             $logger
                 ->expects($this->once())
-                ->method($this->anything())
-                ->with($this->callback(function ($message) use (&$logref) {
+                ->method('log')
+                ->with($this->anything(), $this->callback(function ($message) use (&$logref) {
                     $matches = [];
                     if (preg_match('/logref ([a-z0-9]*)/', $message, $matches)) {
                         $logref = $matches[1];
@@ -213,17 +242,51 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $event = $this
             ->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent')
             ->disableOriginalConstructor()
-            ->setMethods(['getException'])
+            ->setMethods(['getException', 'getRequest'])
             ->getMock();
 
         $event->expects($this->any())
             ->method('getException')
             ->willReturn(new NotFoundHttpException());
 
+        $event->expects($this->any())
+            ->method('getRequest')
+            ->willReturn($this->request);
+
         $this->exceptionListener->onKernelException($event);
-
         $response = $event->getResponse();
-
         $this->assertSame(404, $response->getStatusCode());
+    }
+
+    /**
+     * @test
+     */
+    public function willCreateValidationErrorResponse()
+    {
+        $event = $this
+            ->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent')
+            ->disableOriginalConstructor()
+            ->setMethods(['getException', 'getRequest'])
+            ->getMock();
+
+        $exception = new InvalidParametersException('Oh noes', []);
+
+        $event->expects($this->any())
+            ->method('getException')
+            ->willReturn($exception);
+
+        $event->expects($this->any())
+            ->method('getRequest')
+            ->willReturn($this->request);
+
+        $this->validationErrorFactory
+            ->expects($this->any())
+            ->method('create')
+            ->with($this->request, $exception)
+            ->willReturn(new VndError('Try again'));
+
+        $this->exceptionListener->onKernelException($event);
+        $response = $event->getResponse();
+        $this->assertSame(400, $response->getStatusCode());
     }
 }

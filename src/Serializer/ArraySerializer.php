@@ -16,11 +16,11 @@ namespace KleijnWeb\SwaggerBundle\Serializer;
 class ArraySerializer
 {
     /**
-     * @param array $data
+     * @param mixed $data
      *
      * @return string
      */
-    public function serialize(array $data)
+    public function serialize($data)
     {
         return json_encode($data);
     }

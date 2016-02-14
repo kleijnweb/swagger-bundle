@@ -9,7 +9,6 @@
 namespace KleijnWeb\SwaggerBundle\Document;
 
 use Symfony\Component\Yaml\Parser;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Facade/Adapter for Symfony\Yaml
