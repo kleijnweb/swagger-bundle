@@ -23,9 +23,9 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
      * @param string $type
      * @param mixed  $value
      * @param mixed  $expected
-     * @param string $format
+     * @param c      $format
      */
-    public function willInterpretPrimitivesAsExpected($type, $value, $expected, $format = null)
+    public function willInterpretPrimitivesAsExpected(string $type, $value, $expected, string $format = null)
     {
         $spec = ['type' => $type, 'name' => $value];
         if ($type === 'array') {
@@ -47,7 +47,7 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
      * @param string $type
      * @param mixed  $value
      */
-    public function willNotChangeUninterpretablePrimitives($type, $value)
+    public function willNotChangeUninterpretablePrimitives(string $type, $value)
     {
         $actual = ParameterCoercer::coerceParameter((object)['type' => $type, 'name' => $value], $value);
         $this->assertSame($value, $actual);
@@ -78,7 +78,7 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
      * @param array $spec
      * @param mixed $value
      */
-    public function willThrowUnsupportedExceptionInPredefinedCases($spec, $value)
+    public function willThrowUnsupportedExceptionInPredefinedCases(array $spec, $value)
     {
         $spec = array_merge(['type' => 'string', 'name' => $value], $spec);
         ParameterCoercer::coerceParameter((object)$spec, $value);
@@ -91,6 +91,7 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
     {
         $now = new \DateTimeImmutable();
         $midnight = new \DateTimeImmutable('midnight today');
+        $new = \DateTimeZone::AFRICA;
 
         return [
             ['boolean', '0', false],
@@ -111,7 +112,13 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
             ['string', '€', '€'],
             ['null', '', null],
             ['string', $midnight->format('Y-m-d'), $midnight, 'date'],
-            ['string', $now->format(\DateTime::W3C), $now, 'date-time'],
+            ['string', $now->format(ParameterCoercer::DATE_TIME_ZULU), $now, 'date-time'],
+            [
+                'string',
+                $now->format(\DateTime::W3C), // Workaround for timezone_type
+                \DateTimeImmutable::createFromFormat(\DateTime::W3C, $now->format(\DateTime::W3C)),
+                'date-time'
+            ],
             ['array', [1, 2, 3, 4], [1, 2, 3, 4]],
             ['array', 'a', ['a']],
             ['array', 'a,b,c', ['a', 'b', 'c']],
