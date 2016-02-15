@@ -34,6 +34,13 @@ class OperationObject
      */
     private $method;
 
+    /**
+     * OperationObject constructor.
+     *
+     * @param SwaggerDocument $document
+     * @param string          $path
+     * @param string          $method
+     */
     public function __construct(SwaggerDocument $document, string $path, string $method)
     {
         $paths = $document->getPathDefinitions();
@@ -53,6 +60,13 @@ class OperationObject
         $this->definition->{'x-request-schema'} = $this->assembleRequestSchema();
     }
 
+    /**
+     * @param \stdClass $definition
+     * @param string    $path
+     * @param string    $method
+     *
+     * @return OperationObject
+     */
     public static function createFromOperationDefinition(
         \stdClass $definition,
         string $path = '/',
@@ -80,31 +94,51 @@ class OperationObject
         return $this->definition->{'x-request-schema'};
     }
 
+    /**
+     * @return bool
+     */
     public function hasParameters(): bool
     {
         return property_exists($this->definition, 'parameters');
     }
 
+    /**
+     * @return array
+     */
     public function getParameters(): array
     {
         return $this->definition->parameters;
     }
 
+    /**
+     * @return string
+     */
     public function getPath(): string
     {
         return $this->path;
     }
 
+    /**
+     * @return string
+     */
     public function getMethod(): string
     {
         return $this->method;
     }
 
+    /**
+     * @return \stdClass
+     */
     public function getDefinition(): \stdClass
     {
         return $this->definition;
     }
 
+    /**
+     * @param string $parameterName
+     *
+     * @return string
+     */
     public function createParameterPointer(string $parameterName): string
     {
         foreach ($this->definition->parameters as $i => $paramDefinition) {
@@ -121,6 +155,11 @@ class OperationObject
         throw new \InvalidArgumentException("Parameter '$parameterName' not in document");
     }
 
+    /**
+     * @param string $parameterName
+     *
+     * @return string
+     */
     public function createParameterSchemaPointer(string $parameterName): string
     {
         foreach ($this->definition->{'x-request-schema'}->properties as $propertyName => $schema) {

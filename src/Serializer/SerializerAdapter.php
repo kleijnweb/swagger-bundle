@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -41,9 +41,9 @@ class SerializerAdapter
     /**
      * @param SymfonySerializer|JmsSerializer|ArraySerializer $target
      *
-     * @return $this
+     * @return SerializerAdapter
      */
-    public function setTarget($target)
+    public function setTarget($target): SerializerAdapter
     {
         $this->target = $target;
         if ($target instanceof SymfonySerializer) {

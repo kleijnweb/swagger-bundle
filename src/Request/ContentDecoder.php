@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -32,8 +32,10 @@ class ContentDecoder
     private $typeResolver;
 
     /**
-     * @param SerializerAdapter         $serializer
-     * @param SerializationTypeResolver $typeResolver
+     * ContentDecoder constructor.
+     *
+     * @param SerializerAdapter              $serializer
+     * @param SerializationTypeResolver|null $typeResolver
      */
     public function __construct(SerializerAdapter $serializer, SerializationTypeResolver $typeResolver = null)
     {
@@ -43,11 +45,11 @@ class ContentDecoder
     }
 
     /**
-     * @param SerializationTypeResolver $typeResolver
+     * @param SerializationTypeResolver|null $typeResolver
      *
-     * @return $this
+     * @return ContentDecoder
      */
-    public function setTypeResolver(SerializationTypeResolver $typeResolver = null)
+    public function setTypeResolver(SerializationTypeResolver $typeResolver = null): ContentDecoder
     {
         $this->typeResolver = $typeResolver;
 
@@ -58,7 +60,7 @@ class ContentDecoder
      * @param Request         $request
      * @param OperationObject $operationObject
      *
-     * @return mixed|null
+     * @return mixed
      * @throws MalformedContentException
      * @throws UnsupportedContentTypeException
      */
@@ -69,7 +71,7 @@ class ContentDecoder
 
             try {
                 return $this->serializer->deserialize($content, $type, $request->getContentType());
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 throw new MalformedContentException("Unable to decode payload", 400, $e);
             }
         }

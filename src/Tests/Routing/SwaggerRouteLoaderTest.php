@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -75,7 +75,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
         $this->documentMock
             ->expects($this->any())
             ->method('getPathDefinitions')
-            ->willReturn([]);
+            ->willReturn((object)[]);
 
         $this->loader->load(self::DOCUMENT_PATH);
         $this->loader->load(self::DOCUMENT_PATH . '2');
@@ -111,7 +111,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
         $this->documentMock
             ->expects($this->any())
             ->method('getPathDefinitions')
-            ->willReturn([]);
+            ->willReturn((object)[]);
 
         $this->loader->load(self::DOCUMENT_PATH);
         $this->loader->load(self::DOCUMENT_PATH);
@@ -125,7 +125,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
         $this->documentMock
             ->expects($this->once())
             ->method('getPathDefinitions')
-            ->willReturn([]);
+            ->willReturn((object)[]);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
         $this->assertInstanceOf('Symfony\Component\Routing\RouteCollection', $routes);

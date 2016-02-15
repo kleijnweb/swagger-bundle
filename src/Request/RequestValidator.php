@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -38,9 +38,9 @@ class RequestValidator
     /**
      * @param OperationObject $operationObject
      *
-     * @return $this
+     * @return RequestValidator
      */
-    public function setOperationObject(OperationObject $operationObject)
+    public function setOperationObject(OperationObject $operationObject): RequestValidator
     {
         $this->operationObject = $operationObject;
 
@@ -77,7 +77,7 @@ class RequestValidator
      * @return \stdClass
      * @throws UnsupportedException
      */
-    private function assembleParameterDataForValidation(Request $request)
+    private function assembleParameterDataForValidation(Request $request): \stdClass
     {
         /**
          * TODO Hack

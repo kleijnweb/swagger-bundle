@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -19,9 +19,9 @@ class ApiRequest extends Request
     /**
      * @param string $uri
      *
-     * @return $this
+     * @return ApiRequest
      */
-    public function setUri($uri)
+    public function setUri(string $uri)
     {
         $this->uri = $uri;
 
@@ -31,9 +31,9 @@ class ApiRequest extends Request
     /**
      * @param string $method
      *
-     * @return $this
+     * @return ApiRequest
      */
-    public function setMethod($method)
+    public function setMethod(string $method): ApiRequest
     {
         $this->method = $method;
 
@@ -43,9 +43,9 @@ class ApiRequest extends Request
     /**
      * @param array $parameters
      *
-     * @return $this
+     * @return ApiRequest
      */
-    public function setParameters(array $parameters)
+    public function setParameters(array $parameters): ApiRequest
     {
         $this->parameters = $parameters;
 
@@ -55,9 +55,9 @@ class ApiRequest extends Request
     /**
      * @param array $files
      *
-     * @return $this
+     * @return ApiRequest
      */
-    public function setFiles(array $files)
+    public function setFiles(array $files): ApiRequest
     {
         $this->files = $files;
 
@@ -67,9 +67,9 @@ class ApiRequest extends Request
     /**
      * @param array $cookies
      *
-     * @return $this
+     * @return ApiRequest
      */
-    public function setCookies(array $cookies)
+    public function setCookies(array $cookies): ApiRequest
     {
         $this->cookies = $cookies;
 
@@ -79,9 +79,9 @@ class ApiRequest extends Request
     /**
      * @param array $server
      *
-     * @return $this
+     * @return ApiRequest
      */
-    public function setServer(array $server)
+    public function setServer(array $server): ApiRequest
     {
         $this->server = $server;
 
@@ -91,9 +91,9 @@ class ApiRequest extends Request
     /**
      * @param mixed $content
      *
-     * @return $this
+     * @return ApiRequest
      */
-    public function setContent($content)
+    public function setContent($content): ApiRequest
     {
         $this->content = $content;
 

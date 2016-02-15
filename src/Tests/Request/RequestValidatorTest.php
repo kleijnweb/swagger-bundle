@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -124,8 +124,8 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param string           $format
-     * @param string           $rawDateTime
+     * @param string                    $format
+     * @param string                    $rawDateTime
      * @param \DateTimeImmutable|string $dateTime
      *
      * @throws \KleijnWeb\SwaggerBundle\Exception\InvalidParametersException

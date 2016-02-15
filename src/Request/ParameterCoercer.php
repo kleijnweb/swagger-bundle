@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -21,7 +21,7 @@ class ParameterCoercer
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      *
      * @param \stdClass $paramDefinition
-     * @param mixed  $value
+     * @param mixed     $value
      *
      * @return mixed
      * @throws MalformedContentException

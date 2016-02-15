@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 namespace KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Model\Resources;
 
 use JMS\Serializer\Annotation\Type;
@@ -48,9 +48,9 @@ class Order
     /**
      * @param integer
      *
-     * @return $this
+     * @return Order
      */
-    public function setId($id)
+    public function setId(int $id): Order
     {
         $this->id = $id;
 
@@ -60,9 +60,9 @@ class Order
     /**
      * @param integer
      *
-     * @return $this
+     * @return Order
      */
-    public function setPetid($petId)
+    public function setPetid(int $petId): Order
     {
         $this->petId = $petId;
 
@@ -72,9 +72,9 @@ class Order
     /**
      * @param integer
      *
-     * @return $this
+     * @return Order
      */
-    public function setQuantity($quantity)
+    public function setQuantity(int $quantity): Order
     {
         $this->quantity = $quantity;
 
@@ -84,9 +84,9 @@ class Order
     /**
      * @param \DateTimeImmutable
      *
-     * @return $this
+     * @return Order
      */
-    public function setShipdate($shipDate)
+    public function setShipdate(\DateTimeImmutable $shipDate): Order
     {
         $this->shipDate = $shipDate;
 
@@ -96,9 +96,9 @@ class Order
     /**
      * @param string
      *
-     * @return $this
+     * @return Order
      */
-    public function setStatus($status)
+    public function setStatus(string $status): Order
     {
         $this->status = $status;
 
@@ -108,9 +108,9 @@ class Order
     /**
      * @param boolean
      *
-     * @return $this
+     * @return Order
      */
-    public function setComplete($complete)
+    public function setComplete(bool $complete): Order
     {
         $this->complete = $complete;
 
@@ -120,7 +120,7 @@ class Order
     /**
      * @return integer
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -128,7 +128,7 @@ class Order
     /**
      * @return integer
      */
-    public function getPetid()
+    public function getPetid(): int
     {
         return $this->petId;
     }
@@ -136,7 +136,7 @@ class Order
     /**
      * @return integer
      */
-    public function getQuantity()
+    public function getQuantity(): int
     {
         return $this->quantity;
     }
@@ -145,7 +145,7 @@ class Order
      * @return \DateTimeImmutable
      */
 
-    public function getShipdate()
+    public function getShipdate(): \DateTimeImmutable
     {
         return $this->shipDate;
     }
@@ -153,7 +153,7 @@ class Order
     /**
      * @return string
      */
-    public function getStatus()
+    public function getStatus(): string
     {
         return $this->status;
     }
@@ -161,7 +161,7 @@ class Order
     /**
      * @return boolean
      */
-    public function getComplete()
+    public function getComplete(): bool
     {
         return $this->complete;
     }

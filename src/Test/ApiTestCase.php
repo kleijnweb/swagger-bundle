@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -9,11 +9,16 @@ declare(strict_types=1);
 
 namespace KleijnWeb\SwaggerBundle\Test;
 
-use FR3D\SwaggerAssertions\{PhpUnit\AssertsTrait, SchemaManager};
-use org\bovigo\vfs\{vfsStream, vfsStreamDirectory, vfsStreamWrapper};
-use Symfony\Component\{Yaml\Yaml, HttpFoundation\Response};
-use KleijnWeb\SwaggerBundle\Document\{DocumentRepository, SwaggerDocument};
+use FR3D\SwaggerAssertions\PhpUnit\AssertsTrait;
+use FR3D\SwaggerAssertions\SchemaManager;
 use JsonSchema\Validator;
+use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
+use KleijnWeb\SwaggerBundle\Document\SwaggerDocument;
+use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
+use org\bovigo\vfs\vfsStreamWrapper;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -47,7 +52,7 @@ trait ApiTestCase
      * @throws \InvalidArgumentException
      * @throws \org\bovigo\vfs\vfsStreamException
      */
-    public static function initSchemaManager($swaggerPath)
+    public static function initSchemaManager(string $swaggerPath)
     {
         $validator = new Validator();
         $validator->check(
@@ -92,7 +97,7 @@ trait ApiTestCase
      *
      * @return Client A Client instance
      */
-    protected static function createClient(array $options = array(), array $server = array())
+    protected static function createClient(array $options = [], array $server = [])
     {
         static::bootKernel($options);
 
@@ -110,7 +115,7 @@ trait ApiTestCase
      * @return \stdClass
      * @throws ApiResponseErrorException
      */
-    protected function get($path, array $params = [])
+    protected function get(string $path, array $params = [])
     {
         return $this->sendRequest($path, 'GET', $params);
     }
@@ -122,7 +127,7 @@ trait ApiTestCase
      * @return \stdClass
      * @throws ApiResponseErrorException
      */
-    protected function delete($path, array $params = [])
+    protected function delete(string $path, array $params = [])
     {
         return $this->sendRequest($path, 'DELETE', $params);
     }
@@ -135,7 +140,7 @@ trait ApiTestCase
      * @return \stdClass
      * @throws ApiResponseErrorException
      */
-    protected function patch($path, array $content, array $params = [])
+    protected function patch(string $path, array $content, array $params = [])
     {
         return $this->sendRequest($path, 'PATCH', $params, $content);
     }
@@ -148,7 +153,7 @@ trait ApiTestCase
      * @return \stdClass
      * @throws ApiResponseErrorException
      */
-    protected function post($path, array $content, array $params = [])
+    protected function post(string $path, array $content, array $params = [])
     {
         return $this->sendRequest($path, 'POST', $params, $content);
     }
@@ -161,7 +166,7 @@ trait ApiTestCase
      * @return \stdClass
      * @throws ApiResponseErrorException
      */
-    protected function put($path, array $content, array $params = [])
+    protected function put(string $path, array $content, array $params = [])
     {
         return $this->sendRequest($path, 'PUT', $params, $content);
     }
@@ -175,7 +180,7 @@ trait ApiTestCase
      * @return \stdClass
      * @throws ApiResponseErrorException
      */
-    protected function sendRequest($path, $method, array $params = [], array $content = null)
+    protected function sendRequest(string $path, string $method, array $params = [], array $content = null)
     {
         $request = new ApiRequest($this->assembleUri($path, $params), $method);
         $defaults = $this->defaultServerVars ?? [];
@@ -195,7 +200,7 @@ trait ApiTestCase
      *
      * @return string
      */
-    private function assembleUri($path, array $params = [])
+    private function assembleUri(string $path, array $params = [])
     {
         $uri = $path;
         if ($params) {
@@ -212,7 +217,7 @@ trait ApiTestCase
      * @return \stdClass|null
      * @throws ApiResponseErrorException
      */
-    private function getJsonForLastRequest($fullPath, $method)
+    private function getJsonForLastRequest(string $fullPath, string $method)
     {
         $method = strtolower($method);
         $response = $this->client->getResponse();
@@ -251,13 +256,13 @@ trait ApiTestCase
     }
 
     /**
-     * @param          $code
+     * @param int      $code
      * @param Response $response
      * @param string   $method
      * @param string   $fullPath
      * @param mixed    $data
      */
-    private function validateResponse($code, $response, $method, $fullPath, $data)
+    private function validateResponse(int $code, Response $response, string $method, string $fullPath, $data)
     {
         $request = $this->client->getRequest();
         if (!self::$schemaManager->hasPath(['paths', $request->get('_swagger_path'), $method, 'responses', $code])) {

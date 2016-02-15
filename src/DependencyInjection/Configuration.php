@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -9,7 +9,8 @@ declare(strict_types=1);
 
 namespace KleijnWeb\SwaggerBundle\DependencyInjection;
 
-use Symfony\Component\Config\Definition\{Builder\TreeBuilder, ConfigurationInterface};
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>

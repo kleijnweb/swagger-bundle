@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -46,7 +46,7 @@ class ParameterRefBuilderTest extends \PHPUnit_Framework_TestCase
      *
      * @return ParameterRefBuilder
      */
-    private function construct($scheme = null, $host = null)
+    private function construct(string $scheme = null, string $host = null): ParameterRefBuilder
     {
         $builder = new ParameterRefBuilder('/', $scheme, $host);
 

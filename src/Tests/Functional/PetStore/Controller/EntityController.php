@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -15,12 +15,13 @@ namespace KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller;
 class EntityController
 {
     /**
-     * @param string    $type
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @param string             $type
      * @param \DateTimeImmutable $lastModified
      *
      * @return array
      */
-    public function find($type, \DateTimeImmutable $lastModified)
+    public function find(string $type, \DateTimeImmutable $lastModified)
     {
         return [
             [
@@ -38,7 +39,7 @@ class EntityController
      *
      * @return array
      */
-    public function findByCriteria($type, array $criteria)
+    public function findByCriteria(string $type, array $criteria)
     {
         $entities = [];
 
@@ -59,7 +60,7 @@ class EntityController
      *
      * @return array
      */
-    public function get($type, $id)
+    public function get(string $type, int $id)
     {
         return [
             'id'   => $id,
@@ -75,7 +76,7 @@ class EntityController
      *
      * @return array
      */
-    public function put($type, $id, $data)
+    public function put(string $type, int $id, array $data)
     {
         $data['id'] = $id;
         $data['type'] = $type;
@@ -89,7 +90,7 @@ class EntityController
      *
      * @return array
      */
-    public function post($type, $data)
+    public function post(string $type, array $data)
     {
         $data['id'] = rand();
         $data['type'] = $type;
@@ -104,7 +105,7 @@ class EntityController
      *
      * @return null
      */
-    public function delete($type, $id)
+    public function delete(string $type, int $id)
     {
         return null;
     }

@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -21,7 +21,7 @@ class KleijnWebSwaggerBundle extends Bundle
     /**
      * @return string The Bundle namespace
      */
-    public function getNamespace()
+    public function getNamespace(): string
     {
         return __NAMESPACE__;
     }
@@ -29,7 +29,7 @@ class KleijnWebSwaggerBundle extends Bundle
     /**
      * @return ExtensionInterface
      */
-    public function getContainerExtension()
+    public function getContainerExtension(): ExtensionInterface
     {
         if (null === $this->extension) {
             $this->extension = new KleijnWebSwaggerExtension();

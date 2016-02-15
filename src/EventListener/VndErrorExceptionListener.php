@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -45,12 +45,7 @@ class VndErrorExceptionListener
         $this->validationErrorFactory = $errorFactory;
     }
 
-    /**
-     * @param LoggerInterface $logger
-     *
-     * @return $this
-     */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger): VndErrorExceptionListener
     {
         $this->logger = $logger;
 
@@ -116,8 +111,6 @@ class VndErrorExceptionListener
             $event->setResponse(new VndErrorResponse($vndError, $statusCode));
             $this->logger->log($severity, "{$vndError->getMessage()}{$reference}: $exception");
         } catch (\PHPUnit_Framework_Exception  $e) {
-            throw $e;
-        } catch (\PHPUnit_Framework_Error  $e) {
             throw $e;
         } catch (\Throwable $e) {
             // A simpler response where less can go wrong
