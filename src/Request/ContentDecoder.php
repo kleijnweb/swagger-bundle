@@ -11,7 +11,6 @@ namespace KleijnWeb\SwaggerBundle\Request;
 
 use KleijnWeb\SwaggerBundle\Document\OperationObject;
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
-use KleijnWeb\SwaggerBundle\Exception\UnsupportedContentTypeException;
 use KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver;
 use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
 use Symfony\Component\HttpFoundation\Request;
@@ -62,7 +61,6 @@ class ContentDecoder
      *
      * @return mixed
      * @throws MalformedContentException
-     * @throws UnsupportedContentTypeException
      */
     public function decodeContent(Request $request, OperationObject $operationObject)
     {
