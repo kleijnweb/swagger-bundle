@@ -45,7 +45,7 @@ class ApiTestClient extends Client
      *
      * @return Crawler
      */
-    public function requestFromRequest(BrowserRequest $request, $changeHistory = true)
+    public function requestFromRequest(BrowserRequest $request, $changeHistory = true): Crawler
     {
         return $this->target->requestFromRequest($request, $changeHistory);
     }

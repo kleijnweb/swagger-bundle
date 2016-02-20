@@ -180,7 +180,7 @@ class OperationObject
     /**
      * @return \stdClass
      */
-    private function assembleRequestSchema()
+    private function assembleRequestSchema(): \stdClass
     {
         if (!isset($this->definition->parameters)) {
             return new \stdClass;
