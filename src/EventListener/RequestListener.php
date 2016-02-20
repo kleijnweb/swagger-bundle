@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -28,6 +29,8 @@ class RequestListener
     private $processor;
 
     /**
+     * RequestListener constructor.
+     *
      * @param DocumentRepository $schemaRepository
      * @param RequestProcessor   $processor
      */

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -8,9 +9,13 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\EventListener;
 
+use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\Document\OperationObject;
+use KleijnWeb\SwaggerBundle\Document\SwaggerDocument;
 use KleijnWeb\SwaggerBundle\EventListener\RequestListener;
+use KleijnWeb\SwaggerBundle\Request\RequestProcessor;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -62,22 +67,22 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->documentMock = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Document\SwaggerDocument')
+            ->getMockBuilder(SwaggerDocument::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->eventMock = $this
-            ->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent')
+            ->getMockBuilder(GetResponseForExceptionEvent::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->repositoryMock = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Document\DocumentRepository')
+            ->getMockBuilder(DocumentRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->transformerMock = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Request\RequestProcessor')
+            ->getMockBuilder(RequestProcessor::class)
             ->disableOriginalConstructor()
             ->getMock();
 

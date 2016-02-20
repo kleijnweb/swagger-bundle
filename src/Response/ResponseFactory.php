@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -29,6 +30,8 @@ class ResponseFactory
     private $documentRepository;
 
     /**
+     * ResponseFactory constructor.
+     *
      * @param DocumentRepository $documentRepository
      * @param SerializerAdapter  $serializer
      */

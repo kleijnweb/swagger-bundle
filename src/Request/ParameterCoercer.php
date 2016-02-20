@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -16,17 +17,19 @@ use KleijnWeb\SwaggerBundle\Exception\UnsupportedException;
  */
 class ParameterCoercer
 {
+    const DATE_TIME_ZULU = 'Y-m-d\TH:i:s\Z';
+
     /**
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      *
-     * @param object $paramDefinition
-     * @param mixed  $value
+     * @param \stdClass $paramDefinition
+     * @param mixed     $value
      *
      * @return mixed
      * @throws MalformedContentException
      * @throws UnsupportedException
      */
-    public static function coerceParameter($paramDefinition, $value)
+    public static function coerceParameter(\stdClass $paramDefinition, $value)
     {
         switch ($paramDefinition->type) {
             case 'string':
@@ -35,16 +38,21 @@ class ParameterCoercer
                 }
                 switch ($paramDefinition->format) {
                     case 'date':
-                        $dateTime = \DateTime::createFromFormat('Y-m-d\TH:i:s\Z', "{$value}T00:00:00Z");
+                        $dateTime = \DateTimeImmutable::createFromFormat(self::DATE_TIME_ZULU, "{$value}T00:00:00Z");
                         if ($dateTime === false) {
                             return $value;
                         }
 
                         return $dateTime;
                     case 'date-time':
-                        $dateTime = \DateTime::createFromFormat(\DateTime::W3C, $value);
+                        $dateTime = \DateTimeImmutable::createFromFormat(self::DATE_TIME_ZULU, $value);
                         if ($dateTime === false) {
-                            return $value;
+                            $dateTime = \DateTimeImmutable::createFromFormat(\DateTime::W3C, $value);
+                            if ($dateTime === false) {
+                                return $value;
+                            }
+
+                            return $dateTime;
                         }
 
                         return $dateTime;
@@ -76,9 +84,7 @@ class ParameterCoercer
                 if (is_array($value)) {
                     return $value;
                 }
-                $format = isset($paramDefinition->collectionFormat)
-                    ? $paramDefinition->collectionFormat
-                    : 'csv';
+                $format = $paramDefinition->collectionFormat ?? 'csv';
 
                 switch ($format) {
                     case 'csv':

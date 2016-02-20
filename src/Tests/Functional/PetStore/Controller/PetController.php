@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -49,7 +50,7 @@ class PetController
      *
      * @return array
      */
-    public function getPetById($petId)
+    public function getPetById(int $petId)
     {
         return [
             'id'        => $petId,

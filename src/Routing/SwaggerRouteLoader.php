@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -44,7 +45,7 @@ class SwaggerRouteLoader extends Loader
      *
      * @return RouteCollection
      */
-    public function load($resource, $type = null)
+    public function load($resource, $type = null): RouteCollection
     {
         $resource = (string)$resource;
         if (in_array($resource, $this->loadedSpecs)) {
@@ -129,7 +130,7 @@ class SwaggerRouteLoader extends Loader
      *
      * @return bool
      */
-    public function supports($resource, $type = null)
+    public function supports($resource, $type = null): bool
     {
         return 'swagger' === $type;
     }
@@ -139,7 +140,7 @@ class SwaggerRouteLoader extends Loader
      *
      * @return string
      */
-    private function createRouteIdFromPath($path)
+    private function createRouteIdFromPath($path): string
     {
         return strtolower(trim(preg_replace('/\W+/', '.', $path), '.'));
     }

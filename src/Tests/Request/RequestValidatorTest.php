@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -22,7 +23,7 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function canValidateDate()
     {
-        $dateTime = new \DateTime();
+        $dateTime = new \DateTimeImmutable();
         $this->runTimeTest('date', '2015-12-12', $dateTime);
     }
 
@@ -33,7 +34,7 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
     public function canInvalidateDate()
     {
         $this->runTimeTest('date', '2016-01-01T00:00:00Z', '2016-01-01T00:00:00Z');
-        $dateTime = new \DateTime();
+        $dateTime = new \DateTimeImmutable();
         $this->runTimeTest('date', '2016-01-01T00:00:00Z', $dateTime);
     }
 
@@ -42,7 +43,7 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function canValidateDateTime()
     {
-        $dateTime = new \DateTime();
+        $dateTime = new \DateTimeImmutable();
         $this->runTimeTest('date-time', $dateTime->format(\DateTime::W3C), $dateTime);
         $this->runTimeTest('date-time', '2016-01-01T00:00:00Z', '2016-01-01T00:00:00Z');
     }
@@ -53,8 +54,8 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function canInvalidateDateTime()
     {
-        $this->runTimeTest('date-time', 'm-d-Y', new \DateTime());
-        $this->runTimeTest('date-time', '01-01-2014T00:00:00Z', new \DateTime());
+        $this->runTimeTest('date-time', 'm-d-Y', new \DateTimeImmutable());
+        $this->runTimeTest('date-time', '01-01-2014T00:00:00Z', new \DateTimeImmutable());
     }
 
     /**
@@ -123,9 +124,9 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param string           $format
-     * @param string           $rawDateTime
-     * @param \DateTime|string $dateTime
+     * @param string                    $format
+     * @param string                    $rawDateTime
+     * @param \DateTimeImmutable|string $dateTime
      *
      * @throws \KleijnWeb\SwaggerBundle\Exception\InvalidParametersException
      */

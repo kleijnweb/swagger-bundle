@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -19,7 +20,7 @@ class SerializationTypeResolver
     /**
      * @param string $resourceNamespace
      */
-    public function __construct($resourceNamespace = null)
+    public function __construct(string $resourceNamespace = null)
     {
         $this->resourceNamespace = $resourceNamespace;
     }
@@ -27,7 +28,7 @@ class SerializationTypeResolver
     /**
      * @param OperationObject $operationObject
      *
-     * @return null|string
+     * @return string
      */
     public function resolve(OperationObject $operationObject)
     {
@@ -39,7 +40,7 @@ class SerializationTypeResolver
             }
         }
 
-        return null;
+        return '';
     }
 
     /**
@@ -47,22 +48,22 @@ class SerializationTypeResolver
      *
      * @return string
      */
-    public function qualify($typeName)
+    public function qualify(string $typeName): string
     {
         return ltrim($this->resourceNamespace . '\\' . $typeName, '\\');
     }
 
     /**
-     * @param object $schema
+     * @param \stdClass $schema
      *
      * @return string
      */
-    public function resolveUsingSchema($schema)
+    public function resolveUsingSchema(\stdClass $schema): string
     {
-        $reference = isset($schema->{'$ref'}) ? $schema->{'$ref'} : (isset($schema->id) ? $schema->id : null);
+        $reference = $schema->{'$ref'} ?? $schema->id ?? null;
 
         if (!$reference) {
-            return null;
+            return '';
         }
 
         return $this->qualify(substr($reference, strrpos($reference, '/') + 1));

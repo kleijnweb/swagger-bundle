@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -37,11 +38,13 @@ class RefResolver
     private $yamlParser;
 
     /**
-     * @param object     $definition
-     * @param string     $uri
-     * @param YamlParser $yamlParser
+     * RefResolver constructor.
+     *
+     * @param \stdClass       $definition
+     * @param string          $uri
+     * @param YamlParser|null $yamlParser
      */
-    public function __construct($definition, $uri, YamlParser $yamlParser = null)
+    public function __construct(\stdClass $definition, string $uri, YamlParser $yamlParser = null)
     {
         $this->definition = $definition;
         $uriSegs = $this->parseUri($uri);
@@ -54,9 +57,9 @@ class RefResolver
     }
 
     /**
-     * @return object
+     * @return \stdClass
      */
-    public function getDefinition()
+    public function getDefinition(): \stdClass
     {
         return $this->definition;
     }
@@ -64,9 +67,9 @@ class RefResolver
     /**
      * Resolve all references
      *
-     * @return object
+     * @return \stdClass
      */
-    public function resolve()
+    public function resolve(): \stdClass
     {
         $this->resolveRecursively($this->definition);
 
@@ -76,9 +79,9 @@ class RefResolver
     /**
      * Revert to original state
      *
-     * @return object
+     * @return \stdClass
      */
-    public function unresolve()
+    public function unresolve(): \stdClass
     {
         $this->unresolveRecursively($this->definition);
 
@@ -86,14 +89,14 @@ class RefResolver
     }
 
     /**
-     * @param object|array $current
-     * @param object       $document
-     * @param string       $uri
+     * @param \stdClass|array $current
+     * @param \stdClass       $document
+     * @param string          $uri
      *
      * @throws InvalidReferenceException
      * @throws ResourceNotReadableException
      */
-    private function resolveRecursively(&$current, $document = null, $uri = null)
+    private function resolveRecursively(&$current, \stdClass $document = null, string $uri = null)
     {
         $document = $document ?: $this->definition;
         $uri = $uri ?: $this->uri;
@@ -130,8 +133,8 @@ class RefResolver
     }
 
     /**
-     * @param object|array $current
-     * @param object|array $parent
+     * @param \stdClass|array $current
+     * @param \stdClass|array $parent
      *
      * @return void
      */
@@ -148,14 +151,14 @@ class RefResolver
     }
 
     /**
-     * @param string $path
-     * @param object $document
-     * @param string $uri
+     * @param string    $path
+     * @param \stdClass $document
+     * @param string    $uri
      *
      * @return mixed
      * @throws InvalidReferenceException
      */
-    private function lookup($path, $document, $uri = null)
+    private function lookup(string $path, \stdClass $document, string $uri = null)
     {
         $target = $this->lookupRecursively(
             explode('/', trim($path, '/#')),
@@ -171,12 +174,12 @@ class RefResolver
     }
 
     /**
-     * @param array  $segments
-     * @param object $context
+     * @param array     $segments
+     * @param \stdClass $context
      *
      * @return mixed
      */
-    private function lookupRecursively(array $segments, $context)
+    private function lookupRecursively(array $segments, \stdClass $context)
     {
         $segment = str_replace(['~0', '~1'], ['~', '/'], array_shift($segments));
         if (property_exists($context, $segment)) {
@@ -193,10 +196,10 @@ class RefResolver
     /**
      * @param string $uri
      *
-     * @return object
+     * @return \stdClass
      * @throws ResourceNotReadableException
      */
-    private function loadExternal($uri)
+    private function loadExternal(string $uri): \stdClass
     {
         $exception = new ResourceNotReadableException("Failed reading '$uri'");
 
@@ -222,7 +225,7 @@ class RefResolver
      *
      * @return string
      */
-    private function normalizeUri(array $uriSegs)
+    private function normalizeUri(array $uriSegs): string
     {
         return
             $uriSegs['proto'] . $uriSegs['host']
@@ -236,7 +239,7 @@ class RefResolver
      *
      * @return array
      */
-    private function parseUri($uri)
+    private function parseUri(string $uri): array
     {
         $defaults = [
             'root'    => '',

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -21,7 +22,7 @@ class UserController
      *
      * @return array
      */
-    public function loginUser($username, $password)
+    public function loginUser(string $username, string $password)
     {
         return uniqid();
     }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -20,7 +21,7 @@ class ArraySerializer
      *
      * @return string
      */
-    public function serialize($data)
+    public function serialize($data): string
     {
         return json_encode($data);
     }
@@ -29,16 +30,10 @@ class ArraySerializer
      * @param mixed $data
      *
      * @return array
-     * @throws \UnexpectedValueException
+     * @throws \TypeError
      */
-    public function deserialize($data)
+    public function deserialize($data): array
     {
-        $array = json_decode($data, true);
-
-        if (!is_array($array)) {
-            throw new \UnexpectedValueException("Expected result to be an array");
-        }
-
-        return $array;
+        return json_decode($data, true);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -36,11 +37,11 @@ class ParameterRefBuilder
     private $basePath;
 
     /**
-     * Construct the wrapper
+     * ParameterRefBuilder constructor.
      *
-     * @param string      $basePath
-     * @param string|null $scheme
-     * @param string|null $host
+     * @param string $basePath
+     * @param null   $scheme
+     * @param null   $host
      */
     public function __construct($basePath = '/', $scheme = null, $host = null)
     {
@@ -55,7 +56,7 @@ class ParameterRefBuilder
      *
      * @return string
      */
-    public function buildSpecificationLink(Request $request, $parameterName)
+    public function buildSpecificationLink(Request $request, string $parameterName): string
     {
         return "{$this->buildDocumentLink($request)}#{$this->createParameterPointer($request, $parameterName)}";
     }
@@ -65,7 +66,7 @@ class ParameterRefBuilder
      *
      * @return string
      */
-    public function buildDocumentLink(Request $request)
+    public function buildDocumentLink(Request $request): string
     {
         /** @var SwaggerDocument $document */
         $document = $request->attributes->get('_swagger_document');
@@ -99,7 +100,7 @@ class ParameterRefBuilder
      *
      * @return string
      */
-    public function createParameterPointer(Request $request, $parameterName)
+    public function createParameterPointer(Request $request, string $parameterName): string
     {
         /** @var OperationObject $operation */
         $operation = $request->attributes->get('_swagger_operation');
@@ -113,7 +114,7 @@ class ParameterRefBuilder
      *
      * @return string
      */
-    public function createParameterSchemaPointer(Request $request, $parameterName)
+    public function createParameterSchemaPointer(Request $request, string $parameterName): string
     {
         /** @var OperationObject $operation */
         $operation = $request->attributes->get('_swagger_operation');

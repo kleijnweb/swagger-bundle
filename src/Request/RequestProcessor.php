@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -12,7 +13,6 @@ use KleijnWeb\SwaggerBundle\Document\OperationObject;
 use Symfony\Component\HttpFoundation\Request;
 use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
-use KleijnWeb\SwaggerBundle\Exception\UnsupportedContentTypeException;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -30,6 +30,8 @@ class RequestProcessor
     private $coercer;
 
     /**
+     * RequestProcessor constructor.
+     *
      * @param RequestValidator $validator
      * @param RequestCoercer   $coercer
      */
@@ -45,7 +47,6 @@ class RequestProcessor
      *
      * @throws InvalidParametersException
      * @throws MalformedContentException
-     * @throws UnsupportedContentTypeException
      */
     public function process(Request $request, OperationObject $operationObject)
     {

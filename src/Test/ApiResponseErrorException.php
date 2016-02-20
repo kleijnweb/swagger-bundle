@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -24,11 +25,11 @@ class ApiResponseErrorException extends \Exception
     private $json;
 
     /**
-     * @param string $json
-     * @param object $data
-     * @param int    $httpStatusCode
+     * @param string    $json
+     * @param \stdClass $data
+     * @param int       $httpStatusCode
      */
-    public function __construct($json, $data, $httpStatusCode)
+    public function __construct(string $json, \stdClass $data, int $httpStatusCode)
     {
         $this->message = "Returned $httpStatusCode";
         if ($data) {
@@ -47,15 +48,15 @@ class ApiResponseErrorException extends \Exception
     /**
      * @return string
      */
-    public function getJson()
+    public function getJson(): string
     {
         return $this->json;
     }
 
     /**
-     * @return object
+     * @return \stdClass
      */
-    public function getData()
+    public function getData():\stdClass
     {
         return $this->data;
     }

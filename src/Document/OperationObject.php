@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -34,11 +35,13 @@ class OperationObject
     private $method;
 
     /**
+     * OperationObject constructor.
+     *
      * @param SwaggerDocument $document
      * @param string          $path
      * @param string          $method
      */
-    public function __construct(SwaggerDocument $document, $path, $method)
+    public function __construct(SwaggerDocument $document, string $path, string $method)
     {
         $paths = $document->getPathDefinitions();
 
@@ -58,13 +61,17 @@ class OperationObject
     }
 
     /**
-     * @param object $definition
-     * @param string $path
-     * @param string $method
+     * @param \stdClass $definition
+     * @param string    $path
+     * @param string    $method
      *
-     * @return static
+     * @return OperationObject
      */
-    public static function createFromOperationDefinition($definition, $path = '/', $method = 'GET')
+    public static function createFromOperationDefinition(
+        \stdClass $definition,
+        string $path = '/',
+        string $method = 'GET'
+    ): OperationObject
     {
         $method = strtolower($method);
         $documentDefinition = (object)[
@@ -80,9 +87,9 @@ class OperationObject
     }
 
     /**
-     * @return object
+     * @return \stdClass
      */
-    public function getRequestSchema()
+    public function getRequestSchema():  \stdClass
     {
         return $this->definition->{'x-request-schema'};
     }
@@ -90,15 +97,15 @@ class OperationObject
     /**
      * @return bool
      */
-    public function hasParameters()
+    public function hasParameters(): bool
     {
         return property_exists($this->definition, 'parameters');
     }
 
     /**
-     * @return object
+     * @return array
      */
-    public function getParameters()
+    public function getParameters(): array
     {
         return $this->definition->parameters;
     }
@@ -106,7 +113,7 @@ class OperationObject
     /**
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
@@ -114,15 +121,15 @@ class OperationObject
     /**
      * @return string
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
 
     /**
-     * @return object
+     * @return \stdClass
      */
-    public function getDefinition()
+    public function getDefinition(): \stdClass
     {
         return $this->definition;
     }
@@ -132,7 +139,7 @@ class OperationObject
      *
      * @return string
      */
-    public function createParameterPointer($parameterName)
+    public function createParameterPointer(string $parameterName): string
     {
         foreach ($this->definition->parameters as $i => $paramDefinition) {
             if ($paramDefinition->name === $parameterName) {
@@ -153,7 +160,7 @@ class OperationObject
      *
      * @return string
      */
-    public function createParameterSchemaPointer($parameterName)
+    public function createParameterSchemaPointer(string $parameterName): string
     {
         foreach ($this->definition->{'x-request-schema'}->properties as $propertyName => $schema) {
             if ($propertyName === $parameterName) {
@@ -171,9 +178,9 @@ class OperationObject
     }
 
     /**
-     * @return object
+     * @return \stdClass
      */
-    private function assembleRequestSchema()
+    private function assembleRequestSchema(): \stdClass
     {
         if (!isset($this->definition->parameters)) {
             return new \stdClass;

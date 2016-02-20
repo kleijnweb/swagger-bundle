@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -13,6 +14,7 @@ use KleijnWeb\SwaggerBundle\Response\ResponseFactory;
 use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
 use KleijnWeb\SwaggerBundle\Serializer\SymfonySerializerFactory;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\Encoder\EncoderInterface;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -39,7 +41,7 @@ class ResponseFactorySymfonySerializerCompatibilityTest extends \PHPUnit_Framewo
         ");
 
         $jsonEncoderMock = $this
-            ->getMockBuilder('Symfony\Component\Serializer\Encoder\EncoderInterface')
+            ->getMockBuilder(EncoderInterface::class)
             ->getMockForAbstractClass();
         $jsonEncoderMock
             ->expects($this->once())

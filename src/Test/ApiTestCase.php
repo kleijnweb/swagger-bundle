@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -55,7 +56,7 @@ trait ApiTestCase
      * @throws \InvalidArgumentException
      * @throws \org\bovigo\vfs\vfsStreamException
      */
-    public static function initSchemaManager($swaggerPath)
+    public static function initSchemaManager(string $swaggerPath)
     {
         $validator = new Validator();
         $validator->check(
@@ -93,6 +94,24 @@ trait ApiTestCase
     }
 
     /**
+     * Creates a Client.
+     *
+     * @param array $options An array of options to pass to the createKernel class
+     * @param array $server  An array of server parameters
+     *
+     * @return Client A Client instance
+     */
+    protected static function createClient(array $options = [], array $server = [])
+    {
+        static::bootKernel($options);
+
+        $client = static::$kernel->getContainer()->get('swagger.test.client');
+        $client->setServerParameters($server);
+
+        return $client;
+    }
+
+    /**
      * @return array
      */
     protected function getDefaultServerVars()
@@ -120,10 +139,10 @@ trait ApiTestCase
      * @param string $path
      * @param array  $params
      *
-     * @return object
+     * @return \stdClass
      * @throws ApiResponseErrorException
      */
-    protected function get($path, array $params = [])
+    protected function get(string $path, array $params = [])
     {
         return $this->sendRequest($path, 'GET', $params);
     }
@@ -132,10 +151,10 @@ trait ApiTestCase
      * @param string $path
      * @param array  $params
      *
-     * @return object
+     * @return \stdClass
      * @throws ApiResponseErrorException
      */
-    protected function delete($path, array $params = [])
+    protected function delete(string $path, array $params = [])
     {
         return $this->sendRequest($path, 'DELETE', $params);
     }
@@ -145,10 +164,10 @@ trait ApiTestCase
      * @param array  $content
      * @param array  $params
      *
-     * @return object
+     * @return \stdClass
      * @throws ApiResponseErrorException
      */
-    protected function patch($path, array $content, array $params = [])
+    protected function patch(string $path, array $content, array $params = [])
     {
         return $this->sendRequest($path, 'PATCH', $params, $content);
     }
@@ -158,10 +177,10 @@ trait ApiTestCase
      * @param array  $content
      * @param array  $params
      *
-     * @return object
+     * @return \stdClass
      * @throws ApiResponseErrorException
      */
-    protected function post($path, array $content, array $params = [])
+    protected function post(string $path, array $content, array $params = [])
     {
         return $this->sendRequest($path, 'POST', $params, $content);
     }
@@ -171,10 +190,10 @@ trait ApiTestCase
      * @param array  $content
      * @param array  $params
      *
-     * @return object
+     * @return \stdClass
      * @throws ApiResponseErrorException
      */
-    protected function put($path, array $content, array $params = [])
+    protected function put(string $path, array $content, array $params = [])
     {
         return $this->sendRequest($path, 'PUT', $params, $content);
     }
@@ -185,10 +204,10 @@ trait ApiTestCase
      * @param array      $params
      * @param array|null $content
      *
-     * @return object
+     * @return \stdClass
      * @throws ApiResponseErrorException
      */
-    protected function sendRequest($path, $method, array $params = [], array $content = null)
+    protected function sendRequest(string $path, string $method, array $params = [], array $content = null)
     {
         $request = new ApiRequest($this->assembleUri($path, $params), $method);
         $request->setServer(array_merge(['CONTENT_TYPE' => 'application/json'], $this->getDefaultServerVars()));
@@ -206,7 +225,7 @@ trait ApiTestCase
      *
      * @return string
      */
-    private function assembleUri($path, array $params = [])
+    private function assembleUri(string $path, array $params = [])
     {
         $uri = $path;
         if (count($params)) {
@@ -220,10 +239,10 @@ trait ApiTestCase
      * @param string $fullPath
      * @param string $method
      *
-     * @return object|null
+     * @return \stdClass|null
      * @throws ApiResponseErrorException
      */
-    private function getJsonForLastRequest($fullPath, $method)
+    private function getJsonForLastRequest(string $fullPath, string $method)
     {
         $method = strtolower($method);
         $response = $this->client->getResponse();
@@ -248,7 +267,7 @@ trait ApiTestCase
             );
         }
 
-        if (substr($response->getStatusCode(), 0, 1) != '2') {
+        if (substr((string)$response->getStatusCode(), 0, 1) != '2') {
             if ($this->getValidateErrorResponse()) {
                 $this->validateResponse($response->getStatusCode(), $response, $method, $fullPath, $data);
             }
@@ -262,13 +281,13 @@ trait ApiTestCase
     }
 
     /**
-     * @param          $code
+     * @param int      $code
      * @param Response $response
      * @param string   $method
      * @param string   $fullPath
      * @param mixed    $data
      */
-    private function validateResponse($code, $response, $method, $fullPath, $data)
+    private function validateResponse(int $code, Response $response, string $method, string $fullPath, $data)
     {
         $request = $this->client->getRequest();
         if (!self::$schemaManager->hasPath(['paths', $request->get('_swagger_path'), $method, 'responses', $code])) {

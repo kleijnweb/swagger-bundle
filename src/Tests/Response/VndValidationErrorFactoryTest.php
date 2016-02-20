@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -32,7 +33,7 @@ class VndValidationErrorFactoryTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->refBuilder = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Document\ParameterRefBuilder')
+            ->getMockBuilder(ParameterRefBuilder::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->factory = new VndValidationErrorFactory($this->refBuilder);

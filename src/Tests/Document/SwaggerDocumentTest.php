@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -75,7 +76,7 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
     /**
      * @return SwaggerDocument
      */
-    public static function getPetStoreDocument()
+    public static function getPetStoreDocument(): SwaggerDocument
     {
         $repository = new DocumentRepository('src/Tests/Functional/PetStore');
 

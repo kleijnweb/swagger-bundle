@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -37,9 +38,9 @@ class RequestValidator
     /**
      * @param OperationObject $operationObject
      *
-     * @return $this
+     * @return RequestValidator
      */
-    public function setOperationObject(OperationObject $operationObject)
+    public function setOperationObject(OperationObject $operationObject): RequestValidator
     {
         $this->operationObject = $operationObject;
 
@@ -76,7 +77,7 @@ class RequestValidator
      * @return \stdClass
      * @throws UnsupportedException
      */
-    private function assembleParameterDataForValidation(Request $request)
+    private function assembleParameterDataForValidation(Request $request): \stdClass
     {
         /**
          * TODO Hack
@@ -104,11 +105,11 @@ class RequestValidator
             $parameters->$paramName = $request->attributes->get($paramName);
 
             /**
-             * If value already coerced into \DateTime object, get the raw value for validation instead
+             * If value already coerced into \DateTimeImmutable object, get the raw value for validation instead
              *
              * TODO Keep raw value of attributes around
              */
-            if ($parameters->$paramName instanceof \DateTime) {
+            if ($parameters->$paramName instanceof \DateTimeImmutable) {
                 if ($paramDefinition->in === 'query') {
                     $parameters->$paramName = $request->query->get($paramName);
                 } elseif ($paramDefinition->in === 'header') {

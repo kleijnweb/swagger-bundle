@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -88,7 +89,7 @@ class RefResolverTest extends \PHPUnit_Framework_TestCase
      *
      * @return RefResolver
      */
-    private function construct($path)
+    private function construct(string $path): RefResolver
     {
         $filePath = "src/Tests/Functional/PetStore/app/swagger/$path";
         $contents = file_get_contents($filePath);

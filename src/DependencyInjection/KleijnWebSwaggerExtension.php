@@ -50,15 +50,14 @@ class KleijnWebSwaggerExtension extends Extension
         $parameterRefBuilderDefinition->setArguments($arguments);
 
 
-        if ($container->hasParameter('test.client.class')) {
-            $container->setParameter('test.client.class', 'KleijnWeb\SwaggerBundle\Test\ApiTestClient');
-        }
+        // TODO: test client should not be enabled by default,
+        // but no longer access to the resources in other extensions in 3.0
     }
 
     /**
      * @return string
      */
-    public function getAlias()
+    public function getAlias(): string
     {
         return "swagger";
     }
