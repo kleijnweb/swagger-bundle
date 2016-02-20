@@ -21,6 +21,10 @@ use Symfony\Component\Yaml\Yaml;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
+ *
+ * @property bool   validateErrorResponse
+ * @property string env
+ * @property array  defaultServerVars
  */
 trait ApiTestCase
 {
@@ -177,7 +181,7 @@ trait ApiTestCase
 
     /**
      * @param string     $path
-     * @param array      $method
+     * @param string     $method
      * @param array      $params
      * @param array|null $content
      *
