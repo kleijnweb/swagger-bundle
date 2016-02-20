@@ -66,9 +66,8 @@ class ContentDecoder
     {
         if ($content = $request->getContent()) {
             $type = $this->typeResolver ? $this->typeResolver->resolve($operationObject) : null;
-
             try {
-                return $this->serializer->deserialize($content, $type, $request->getContentType());
+                return $this->serializer->deserialize($content, $type, 'json');
             } catch (\Throwable $e) {
                 throw new MalformedContentException("Unable to decode payload", 400, $e);
             }

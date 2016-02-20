@@ -13,6 +13,7 @@ use KleijnWeb\SwaggerBundle\Document\OperationObject;
 use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
 use KleijnWeb\SwaggerBundle\Serializer\ArraySerializer;
 use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
+use KleijnWeb\SwaggerBundle\Tests\Request\TestRequestFactory;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -45,7 +46,7 @@ class ContentDecoderTest extends \PHPUnit_Framework_TestCase
     public function canDecodeValidJson()
     {
         $content = '{ "foo": "bar" }';
-        $request = new Request([], [], [], [], [], [], $content);
+        $request = TestRequestFactory::create($content);
         $request->headers->set('Content-Type', 'application/json');
 
         $operationObject = OperationObject::createFromOperationDefinition((object)[]);
@@ -63,7 +64,7 @@ class ContentDecoderTest extends \PHPUnit_Framework_TestCase
     public function willThrowMalformedContentExceptionWhenDecodingFails()
     {
         $content = 'NOT VALID JSON';
-        $request = new Request([], [], [], [], [], [], $content);
+        $request = TestRequestFactory::create($content);
         $request->headers->set('Content-Type', 'application/json');
 
         $operationObject = OperationObject::createFromOperationDefinition((object)[]);

@@ -22,6 +22,10 @@ use Symfony\Component\Yaml\Yaml;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
+ *
+ * @property bool   validateErrorResponse
+ * @property string env
+ * @property array  defaultServerVars
  */
 trait ApiTestCase
 {
@@ -47,7 +51,7 @@ trait ApiTestCase
      *
      * @codeCoverageIgnore
      *
-     * @param $swaggerPath
+     * @param string $swaggerPath
      *
      * @throws \InvalidArgumentException
      * @throws \org\bovigo\vfs\vfsStreamException
@@ -84,7 +88,7 @@ trait ApiTestCase
      */
     protected function setUp()
     {
-        $this->client = static::createClient(['environment' => $this->env ?: 'test', 'debug' => true]);
+        $this->client = static::createClient(['environment' => $this->getEnv(), 'debug' => true]);
 
         parent::setUp();
     }
@@ -107,6 +111,29 @@ trait ApiTestCase
         return $client;
     }
 
+    /**
+     * @return array
+     */
+    protected function getDefaultServerVars()
+    {
+        return isset($this->defaultServerVars) ? $this->defaultServerVars : [];
+    }
+
+    /**
+     * @return array
+     */
+    protected function getEnv()
+    {
+        return isset($this->env) ? $this->env : 'test';
+    }
+
+    /**
+     * @return bool
+     */
+    protected function getValidateErrorResponse()
+    {
+        return isset($this->validateErrorResponse) ? $this->validateErrorResponse : false;
+    }
 
     /**
      * @param string $path
@@ -173,7 +200,7 @@ trait ApiTestCase
 
     /**
      * @param string     $path
-     * @param array      $method
+     * @param string     $method
      * @param array      $params
      * @param array|null $content
      *
@@ -183,8 +210,7 @@ trait ApiTestCase
     protected function sendRequest(string $path, string $method, array $params = [], array $content = null)
     {
         $request = new ApiRequest($this->assembleUri($path, $params), $method);
-        $defaults = $this->defaultServerVars ?? [];
-        $request->setServer(array_merge($defaults ?: [], ['CONTENT_TYPE' => 'application/json']));
+        $request->setServer(array_merge(['CONTENT_TYPE' => 'application/json'], $this->getDefaultServerVars()));
         if ($content !== null) {
             $request->setContent(json_encode($content));
         }
@@ -192,7 +218,6 @@ trait ApiTestCase
 
         return $this->getJsonForLastRequest($path, $method);
     }
-
 
     /**
      * @param string $path
@@ -203,7 +228,7 @@ trait ApiTestCase
     private function assembleUri(string $path, array $params = [])
     {
         $uri = $path;
-        if ($params) {
+        if (count($params)) {
             $uri = $path . '?' . http_build_query($params);
         }
 
@@ -243,7 +268,7 @@ trait ApiTestCase
         }
 
         if (substr((string)$response->getStatusCode(), 0, 1) != '2') {
-            if (!isset($this->validateErrorResponse) || $this->validateErrorResponse) {
+            if ($this->getValidateErrorResponse()) {
                 $this->validateResponse($response->getStatusCode(), $response, $method, $fullPath, $data);
             }
             // This throws an exception so that tests can catch it when it is expected
@@ -280,6 +305,17 @@ trait ApiTestCase
             $headers[str_replace(' ', '-', ucwords(str_replace('-', ' ', $key)))] = $values[0];
         }
         try {
+            try {
+                $this->assertResponseMediaTypeMatch(
+                    $response->headers->get('Content-Type'),
+                    self::$schemaManager,
+                    $fullPath,
+                    $method
+                );
+            } catch (\InvalidArgumentException $e) {
+                // Not required, so skip if not found
+            }
+
             $this->assertResponseHeadersMatch($headers, self::$schemaManager, $fullPath, $method, $code);
             $this->assertResponseBodyMatch($data, self::$schemaManager, $fullPath, $method, $code);
         } catch (\UnexpectedValueException $e) {
@@ -289,4 +325,13 @@ trait ApiTestCase
             }
         }
     }
+
+    /**
+     * @param mixed  $expected
+     * @param mixed  $actual
+     * @param string $message
+     *
+     * @return mixed
+     */
+    public abstract function assertSame($expected, $actual, $message = '');
 }

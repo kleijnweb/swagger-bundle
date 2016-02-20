@@ -14,6 +14,7 @@ use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
 use KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver;
 use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
 use KleijnWeb\SwaggerBundle\Serializer\SymfonySerializerFactory;
+use KleijnWeb\SwaggerBundle\Tests\Request\TestRequestFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 
@@ -77,7 +78,8 @@ class ContentDecoderSymfonySerializerCompatibilityTest extends \PHPUnit_Framewor
         $content = [
             'foo' => 'bar'
         ];
-        $request = new Request([], [], [], [], [], [], json_encode($content));
+
+        $request = TestRequestFactory::create(json_encode($content));
         $request->headers->set('Content-Type', 'application/json');
 
         $className = 'CanDeserializeObject';
@@ -122,7 +124,7 @@ class ContentDecoderSymfonySerializerCompatibilityTest extends \PHPUnit_Framewor
     public function willThrowMalformedContentExceptionWhenDecodingFails()
     {
         $content = 'lkjhlkj';
-        $request = new Request([], [], [], [], [], [], $content);
+        $request = TestRequestFactory::create($content);
         $request->headers->set('Content-Type', 'application/json');
 
         $this->jsonDecoderMock

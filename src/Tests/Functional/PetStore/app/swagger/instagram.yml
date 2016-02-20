@@ -240,6 +240,7 @@ schemes:
   - https
 produces:
   - application/json
+  - application/vnd.error+json
 consumes:
   - application/json
 tags:
