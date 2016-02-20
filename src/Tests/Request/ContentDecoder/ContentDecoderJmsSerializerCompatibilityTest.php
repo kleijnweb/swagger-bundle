@@ -91,4 +91,47 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
         $operationObject = OperationObject::createFromOperationDefinition((object)[]);
         $this->contentDecoder->decodeContent($request, $operationObject);
     }
+
+    /**
+     * @test
+     * @dataProvider contentTypeProvider
+     *
+     * @param string $contentType
+     */
+    public function willAlwaysDecodeJson($contentType)
+    {
+        $content = '{ "foo": "bar" }';
+        $request = new Request([], [], [], [], [], [], $content);
+        $request->headers->set('Content-Type', $contentType);
+
+        $operationDefinition = (object)[
+            'parameters' => [
+                (object)[
+                    "in"     => "body",
+                    "name"   => "body",
+                    "schema" => (object)[
+                        '$ref' => "#/definitions/JmsAnnotatedResourceStub"
+                    ]
+                ]
+            ]
+        ];
+
+        $operationObject = OperationObject::createFromOperationDefinition((object)$operationDefinition);
+
+        $actual = $this->contentDecoder->decodeContent($request, $operationObject);
+        $className = 'KleijnWeb\SwaggerBundle\Tests\Request\ContentDecoder\JmsAnnotatedResourceStub';
+        $expected = (new $className)->setFoo('bar');
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @return array
+     */
+    public static function contentTypeProvider()
+    {
+        return [
+            ['application/json'],
+            ['application/vnd.api+json']
+        ];
+    }
 }
