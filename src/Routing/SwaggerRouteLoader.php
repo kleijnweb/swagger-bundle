@@ -71,7 +71,7 @@ class SwaggerRouteLoader extends Loader
         $routes = new RouteCollection();
 
         $paths = $document->getPathDefinitions();
-        $router = null;
+        $router = 'swagger.controller';
         foreach ($paths as $path => $pathSpec) {
             if ($path === 'x-router') {
                 $router = $pathSpec;
@@ -168,7 +168,7 @@ class SwaggerRouteLoader extends Loader
         $operationSpec,
         $methodName,
         $resourceName,
-        $router = 'swagger.controller',
+        $router,
         $routerController = null
     ) {
         $operationName = $methodName;
