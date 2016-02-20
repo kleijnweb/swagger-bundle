@@ -42,16 +42,11 @@ trait ApiTestCase
     protected $client;
 
     /**
-     * @var array
-     */
-    protected $defaultServerVars = [];
-
-    /**
      * PHPUnit cannot add this to code coverage
      *
      * @codeCoverageIgnore
      *
-     * @param $swaggerPath
+     * @param string $swaggerPath
      *
      * @throws \InvalidArgumentException
      * @throws \org\bovigo\vfs\vfsStreamException
@@ -88,7 +83,7 @@ trait ApiTestCase
      */
     protected function setUp()
     {
-        $this->client = static::createClient(['environment' => $this->env ?: 'test', 'debug' => true]);
+        $this->client = static::createClient(['environment' => $this->getEnv(), 'debug' => true]);
 
         parent::setUp();
     }
@@ -98,7 +93,23 @@ trait ApiTestCase
      */
     protected function getDefaultServerVars()
     {
-        return $this->defaultServerVars;
+        return isset($this->defaultServerVars) ? $this->defaultServerVars : [];
+    }
+
+    /**
+     * @return array
+     */
+    protected function getEnv()
+    {
+        return isset($this->env) ? $this->env : 'test';
+    }
+
+    /**
+     * @return bool
+     */
+    protected function getValidateErrorResponse()
+    {
+        return isset($this->validateErrorResponse) ? $this->validateErrorResponse : false;
     }
 
     /**
@@ -234,7 +245,7 @@ trait ApiTestCase
         }
 
         if (substr($response->getStatusCode(), 0, 1) != '2') {
-            if (!isset($this->validateErrorResponse) || $this->validateErrorResponse) {
+            if ($this->getValidateErrorResponse()) {
                 $this->validateResponse($response->getStatusCode(), $response, $method, $fullPath, $data);
             }
             // This throws an exception so that tests can catch it when it is expected
@@ -291,4 +302,13 @@ trait ApiTestCase
             }
         }
     }
+
+    /**
+     * @param mixed  $expected
+     * @param mixed  $actual
+     * @param string $message
+     *
+     * @return mixed
+     */
+    public abstract function assertSame($expected, $actual, $message = '');
 }

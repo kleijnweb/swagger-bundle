@@ -14,6 +14,7 @@ use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
 use KleijnWeb\SwaggerBundle\Serializer\JmsSerializerFactory;
 use KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver;
 use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
+use KleijnWeb\SwaggerBundle\Tests\Request\TestRequestFactory;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -85,7 +86,7 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
     public function willThrowMalformedContentExceptionWhenDecodingFails()
     {
         $content = 'lkjhlkj';
-        $request = new Request([], [], [], [], [], [], $content);
+        $request = TestRequestFactory::create($content);
         $request->headers->set('Content-Type', 'application/json');
 
         $operationObject = OperationObject::createFromOperationDefinition((object)[]);
@@ -101,7 +102,7 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
     public function willAlwaysDecodeJson($contentType)
     {
         $content = '{ "foo": "bar" }';
-        $request = new Request([], [], [], [], [], [], $content);
+        $request = TestRequestFactory::create($content);
         $request->headers->set('Content-Type', $contentType);
 
         $operationDefinition = (object)[
