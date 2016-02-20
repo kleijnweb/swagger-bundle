@@ -43,6 +43,7 @@ paths:
       produces:
         - application/xml
         - application/json
+        - application/vnd.error+json
       parameters:
         -
           in: body
@@ -75,6 +76,7 @@ paths:
       produces:
         - application/xml
         - application/json
+        - application/vnd.error+json
       parameters:
         -
           in: body
@@ -105,6 +107,7 @@ paths:
       produces:
         - application/xml
         - application/json
+        - application/vnd.error+json
       parameters:
         -
           name: status
@@ -144,6 +147,7 @@ paths:
       produces:
         - application/xml
         - application/json
+        - application/vnd.error+json
       parameters:
         -
           name: tags
@@ -178,6 +182,7 @@ paths:
       produces:
         - application/xml
         - application/json
+        - application/vnd.error+json
       parameters:
         -
           name: petId
@@ -209,6 +214,7 @@ paths:
       produces:
         - application/xml
         - application/json
+        - application/vnd.error+json
       parameters:
         -
           name: petId
@@ -246,6 +252,7 @@ paths:
       produces:
         - application/xml
         - application/json
+        - application/vnd.error+json
       parameters:
         -
           name: api_key
@@ -278,6 +285,7 @@ paths:
         - multipart/form-data
       produces:
         - application/json
+        - application/vnd.error+json
       parameters:
         -
           name: petId
@@ -317,6 +325,7 @@ paths:
       operationId: getInventory
       produces:
         - application/json
+        - application/vnd.error+json
       parameters: []
       responses:
         200:
@@ -339,6 +348,7 @@ paths:
       produces:
         - application/xml
         - application/json
+        - application/vnd.error+json
       parameters:
         -
           in: body
@@ -364,6 +374,7 @@ paths:
       produces:
         - application/xml
         - application/json
+        - application/vnd.error+json
       parameters:
         -
           name: orderId
@@ -392,6 +403,7 @@ paths:
       produces:
         - application/xml
         - application/json
+        - application/vnd.error+json
       parameters:
         -
           name: orderId
@@ -415,6 +427,7 @@ paths:
       produces:
         - application/xml
         - application/json
+        - application/vnd.error+json
       parameters:
         -
           in: body
@@ -436,6 +449,7 @@ paths:
       produces:
         - application/xml
         - application/json
+        - application/vnd.error+json
       parameters:
         -
           in: body
@@ -459,6 +473,7 @@ paths:
       produces:
         - application/xml
         - application/json
+        - application/vnd.error+json
       parameters:
         -
           in: body
@@ -482,6 +497,7 @@ paths:
       produces:
         - application/xml
         - application/json
+        - application/vnd.error+json
       parameters:
         -
           name: username
@@ -521,6 +537,7 @@ paths:
       produces:
         - application/xml
         - application/json
+        - application/vnd.error+json
       parameters: []
       responses:
         default:
@@ -535,6 +552,7 @@ paths:
       produces:
         - application/xml
         - application/json
+        - application/vnd.error+json
       parameters:
         -
           name: username
@@ -560,6 +578,7 @@ paths:
       produces:
         - application/xml
         - application/json
+        - application/vnd.error+json
       parameters:
         -
           name: username
@@ -588,6 +607,7 @@ paths:
       produces:
         - application/xml
         - application/json
+        - application/vnd.error+json
       parameters:
         -
           name: username

@@ -271,6 +271,17 @@ trait ApiTestCase
             $headers[str_replace(' ', '-', ucwords(str_replace('-', ' ', $key)))] = $values[0];
         }
         try {
+            try {
+                $this->assertResponseMediaTypeMatch(
+                    $response->headers->get('Content-Type'),
+                    self::$schemaManager,
+                    $fullPath,
+                    $method
+                );
+            } catch (\InvalidArgumentException $e) {
+                // Not required, so skip if not found
+            }
+
             $this->assertResponseHeadersMatch($headers, self::$schemaManager, $fullPath, $method, $code);
             $this->assertResponseBodyMatch($data, self::$schemaManager, $fullPath, $method, $code);
         } catch (\UnexpectedValueException $e) {
