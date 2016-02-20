@@ -14,6 +14,7 @@ use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
 use KleijnWeb\SwaggerBundle\Serializer\JmsSerializerFactory;
 use KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver;
 use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
+use KleijnWeb\SwaggerBundle\Tests\Request\TestRequestFactory;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -85,10 +86,53 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
     public function willThrowMalformedContentExceptionWhenDecodingFails()
     {
         $content = 'lkjhlkj';
-        $request = new Request([], [], [], [], [], [], $content);
+        $request = TestRequestFactory::create($content);
         $request->headers->set('Content-Type', 'application/json');
 
         $operationObject = OperationObject::createFromOperationDefinition((object)[]);
         $this->contentDecoder->decodeContent($request, $operationObject);
+    }
+
+    /**
+     * @test
+     * @dataProvider contentTypeProvider
+     *
+     * @param string $contentType
+     */
+    public function willAlwaysDecodeJson($contentType)
+    {
+        $content = '{ "foo": "bar" }';
+        $request = TestRequestFactory::create($content);
+        $request->headers->set('Content-Type', $contentType);
+
+        $operationDefinition = (object)[
+            'parameters' => [
+                (object)[
+                    "in"     => "body",
+                    "name"   => "body",
+                    "schema" => (object)[
+                        '$ref' => "#/definitions/JmsAnnotatedResourceStub"
+                    ]
+                ]
+            ]
+        ];
+
+        $operationObject = OperationObject::createFromOperationDefinition((object)$operationDefinition);
+
+        $actual = $this->contentDecoder->decodeContent($request, $operationObject);
+        $className = 'KleijnWeb\SwaggerBundle\Tests\Request\ContentDecoder\JmsAnnotatedResourceStub';
+        $expected = (new $className)->setFoo('bar');
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @return array
+     */
+    public static function contentTypeProvider()
+    {
+        return [
+            ['application/json'],
+            ['application/vnd.api+json']
+        ];
     }
 }

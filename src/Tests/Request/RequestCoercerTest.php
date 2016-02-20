@@ -45,7 +45,7 @@ class RequestCoercerTest extends \PHPUnit_Framework_TestCase
     {
         $coercer = new RequestCoercer($this->contentDecoderMock);
         $content = '[1,2,3,4]';
-        $request = new Request([], [], [], [], [], [], $content);
+        $request = TestRequestFactory::create($content);
 
         $operationDefinition = (object)[
             'parameters' => [
@@ -71,7 +71,7 @@ class RequestCoercerTest extends \PHPUnit_Framework_TestCase
     public function willConstructDate()
     {
         $coercer = new RequestCoercer($this->contentDecoderMock);
-        $request = new Request(['foo' => "2015-01-01"], [], [], [], [], []);
+        $request = TestRequestFactory::create(null, ['foo' => "2015-01-01"]);
 
         $operationDefinition = (object)[
             'parameters' => [
