@@ -64,11 +64,33 @@ swagger:
 
 ## Controllers
 
-When a call is made that is satisfiable by SwaggerBundle, it uses Symfony Dependency Injection service keys to find the
-delegation target of the request. It will assume the first segment in the Swagger paths is a resource name,
-and looks for a service with the key `swagger.controller.%resource_name%`. The class method to be called by defaults corresponds
-to the HTTP method name, but may be overridden by including `operationId` in your spec. You can also completely override this default by 
-including an operationId referencing a DI key (using double colon notation, eg "my.controller.key:methodName"). 
+### Controller Resolution
+
+All controllers must be defined as services in the DI container.
+
+SwaggerBundle sees an `operation id` as composed from the following parts:
+
+```
+[router][controller]:[method]
+```
+
+The `router` segment defaults to `swagger.controller`, but _can_ be overwritten at the `Path Object` level using `x-router`:
+
+```yaml
+paths:
+  x-router: my.default.controller.namespace
+  /foo:
+    ...
+  /foo/{bar}:
+    ..
+```
+
+The `controller` segments defaults to the resource name as extracted from the path by convention. For example, for path `/foo/something` the default router + controller would be: `swagger.controller.foo`.
+
+Finally, the `method` segment defaults to the HTTP method name, but may be overridden using Swagger's `operationId`. It is possible to use only the method name here, but note the Swagger spec requires `operationId` to be unique.
+You can also use a fully quantified operation id using double colon notation, eg "my.controller.namespace.myresource:methodName". Combining `x-router` and a quantified `operationId` currently ignores the former.
+
+### Controller Conventions
 
 Controller methods that expect content can either get the content from the `Request` object, or add a parameter named identical to the parameter with `in: body` set.
 Any of these will work (assuming the `in: body` parameter is named `body` in your spec):
