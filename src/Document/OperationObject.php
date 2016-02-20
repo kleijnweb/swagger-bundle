@@ -96,11 +96,11 @@ class OperationObject
     }
 
     /**
-     * @return object
+     * @return array
      */
     public function getParameters()
     {
-        return $this->definition->parameters;
+        return $this->hasParameters() ? $this->definition->parameters : [];
     }
 
     /**
