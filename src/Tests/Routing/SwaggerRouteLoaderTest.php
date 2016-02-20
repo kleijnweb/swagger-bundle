@@ -40,6 +40,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
         $this->documentMock = $this
             ->getMockBuilder('KleijnWeb\SwaggerBundle\Document\SwaggerDocument')
             ->disableOriginalConstructor()
+            ->setMethods(['getPathDefinitions'])
             ->getMock();
 
         $this->repositoryMock = $this
@@ -90,7 +91,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
         ];
 
         $this->documentMock
-            ->expects($this->exactly(2))
+            ->expects($this->any())
             ->method('getPathDefinitions')
             ->willReturn($pathDefinitions);
 
@@ -120,7 +121,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
     public function willReturnRouteCollection()
     {
         $this->documentMock
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('getPathDefinitions')
             ->willReturn([]);
 
@@ -139,7 +140,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
         ];
 
         $this->documentMock
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('getPathDefinitions')
             ->willReturn($pathDefinitions);
 
@@ -160,7 +161,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
         ];
 
         $this->documentMock
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('getPathDefinitions')
             ->willReturn($pathDefinitions);
 
@@ -172,11 +173,11 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function canUseDiKeyAsOperationId()
+    public function canUseOperationIdAsControllerKey()
     {
         $expected = 'my.controller.key:methodName';
         $pathDefinitions = (object)[
-            '/a' => [
+            '/a' => (object)[
                 'get'  => (object)[],
                 'post' => (object)['operationId' => $expected]
             ],
@@ -190,7 +191,90 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
 
-        $actual = $routes->get('swagger.path.a.my.controller.key:methodName');
+        $actual = $routes->get('swagger.path.a.methodName');
+        $this->assertNotNull($actual);
+        $this->assertSame($expected, $actual->getDefault('_controller'));
+    }
+
+    /**
+     * @test
+     */
+    public function canUseXRouterControllerForDiKeyInOperation()
+    {
+        $diKey = 'my.x_router.controller';
+        $expected = "$diKey:post";
+        $pathDefinitions = (object)[
+            '/a' => (object)[
+                'get'  => (object)[],
+                'post' => (object)['x-router-controller' => $diKey]
+            ],
+            '/b' => (object)['get' => (object)[]],
+        ];
+
+        $this->documentMock
+            ->expects($this->any())
+            ->method('getPathDefinitions')
+            ->willReturn($pathDefinitions);
+
+        $routes = $this->loader->load(self::DOCUMENT_PATH);
+
+        $actual = $routes->get('swagger.path.a.post');
+        $this->assertNotNull($actual);
+        $this->assertSame($expected, $actual->getDefault('_controller'));
+    }
+
+    /**
+     * @test
+     */
+    public function canUseXRouterControllerForDiKeyInPath()
+    {
+        $diKey = 'my.x_router.controller';
+        $expected = "$diKey:post";
+        $pathDefinitions = (object)[
+            '/a' => (object)[
+                'x-router-controller' => $diKey,
+                'get'                 => (object)[],
+                'post'                => (object)[]
+            ],
+            '/b' => (object)['get' => (object)[]],
+        ];
+
+        $this->documentMock
+            ->expects($this->any())
+            ->method('getPathDefinitions')
+            ->willReturn($pathDefinitions);
+
+        $routes = $this->loader->load(self::DOCUMENT_PATH);
+
+        $actual = $routes->get('swagger.path.a.post');
+        $this->assertNotNull($actual);
+        $this->assertSame($expected, $actual->getDefault('_controller'));
+    }
+
+    /**
+     * @test
+     */
+    public function canUseXRouterForDiKeyInPath()
+    {
+        $router = 'my.x_router';
+        $expected = "$router.a:post";
+        $pathDefinitions = (object)[
+            'x-router' => $router,
+            '/a'       => (object)[
+                'get'  => (object)[],
+                'post' => (object)[]
+            ],
+            '/b'       => (object)['get' => (object)[]],
+        ];
+
+        $this->documentMock
+            ->expects($this->any())
+            ->method('getPathDefinitions')
+            ->willReturn($pathDefinitions);
+
+        $routes = $this->loader->load(self::DOCUMENT_PATH);
+
+        $actual = $routes->get('swagger.path.a.post');
         $this->assertNotNull($actual);
         $this->assertSame($expected, $actual->getDefault('_controller'));
     }
@@ -207,7 +291,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
         ];
 
         $this->documentMock
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('getPathDefinitions')
             ->willReturn($pathDefinitions);
 
@@ -232,7 +316,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
         ];
 
         $this->documentMock
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('getPathDefinitions')
             ->willReturn($pathDefinitions);
 
@@ -263,15 +347,9 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
         ];
 
         $this->documentMock
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('getPathDefinitions')
             ->willReturn($pathDefinitions);
-
-        $this->documentMock
-            ->expects($this->once())
-            ->method('getOperationDefinition')
-            ->with('/a', 'get')
-            ->willReturn($pathDefinitions->{'/a'}->get);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
         $actual = $routes->get('swagger.path.a.get');
@@ -299,15 +377,9 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
         ];
 
         $this->documentMock
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('getPathDefinitions')
             ->willReturn($pathDefinitions);
-
-        $this->documentMock
-            ->expects($this->once())
-            ->method('getOperationDefinition')
-            ->with('/a', 'get')
-            ->willReturn($pathDefinitions->{'/a'}->get);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
         $actual = $routes->get('swagger.path.a.get');
@@ -336,15 +408,9 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
         ];
 
         $this->documentMock
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('getPathDefinitions')
             ->willReturn($pathDefinitions);
-
-        $this->documentMock
-            ->expects($this->once())
-            ->method('getOperationDefinition')
-            ->with('/a', 'get')
-            ->willReturn($pathDefinitions->{'/a'}->get);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
         $actual = $routes->get('swagger.path.a.get');
