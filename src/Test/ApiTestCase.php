@@ -42,6 +42,11 @@ trait ApiTestCase
     protected $client;
 
     /**
+     * @var array
+     */
+    protected $defaultServerVars = [];
+
+    /**
      * PHPUnit cannot add this to code coverage
      *
      * @codeCoverageIgnore
@@ -88,6 +93,13 @@ trait ApiTestCase
         parent::setUp();
     }
 
+    /**
+     * @return array
+     */
+    protected function getDefaultServerVars()
+    {
+        return $this->defaultServerVars;
+    }
 
     /**
      * @param string $path
@@ -164,8 +176,7 @@ trait ApiTestCase
     protected function sendRequest($path, $method, array $params = [], array $content = null)
     {
         $request = new ApiRequest($this->assembleUri($path, $params), $method);
-        $defaults = isset($this->defaultServerVars) ? $this->defaultServerVars : [];
-        $request->setServer(array_merge($defaults ?: [], ['CONTENT_TYPE' => 'application/json']));
+        $request->setServer(array_merge(['CONTENT_TYPE' => 'application/json'], $this->getDefaultServerVars()));
         if ($content !== null) {
             $request->setContent(json_encode($content));
         }
@@ -173,7 +184,6 @@ trait ApiTestCase
 
         return $this->getJsonForLastRequest($path, $method);
     }
-
 
     /**
      * @param string $path
