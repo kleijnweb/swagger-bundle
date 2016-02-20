@@ -209,7 +209,7 @@ trait ApiTestCase
     private function assembleUri($path, array $params = [])
     {
         $uri = $path;
-        if ($params) {
+        if (count($params)) {
             $uri = $path . '?' . http_build_query($params);
         }
 
