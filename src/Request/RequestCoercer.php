@@ -47,27 +47,30 @@ class RequestCoercer
             'path'   => 'attributes',
             'header' => 'headers'
         ];
-        foreach ($operationObject->getDefinition()->parameters as $paramDefinition) {
-            $paramName = $paramDefinition->name;
 
-            if ($paramDefinition->in === 'body') {
-                if ($content !== null) {
-                    $request->attributes->set($paramName, $content);
+        if(isset($operationObject->getDefinition()->parameters)) {
+            foreach ($operationObject->getDefinition()->parameters as $paramDefinition) {
+                $paramName = $paramDefinition->name;
+
+                if ($paramDefinition->in === 'body') {
+                    if ($content !== null) {
+                        $request->attributes->set($paramName, $content);
+                    }
+
+                    continue;
                 }
-
-                continue;
+                $paramBagName = $paramBagMapping[$paramDefinition->in];
+                if (!$request->$paramBagName->has($paramName)) {
+                    continue;
+                }
+                $request->attributes->set(
+                    $paramName,
+                    ParameterCoercer::coerceParameter(
+                        $paramDefinition,
+                        $request->$paramBagName->get($paramName)
+                    )
+                );
             }
-            $paramBagName = $paramBagMapping[$paramDefinition->in];
-            if (!$request->$paramBagName->has($paramName)) {
-                continue;
-            }
-            $request->attributes->set(
-                $paramName,
-                ParameterCoercer::coerceParameter(
-                    $paramDefinition,
-                    $request->$paramBagName->get($paramName)
-                )
-            );
         }
     }
 }
