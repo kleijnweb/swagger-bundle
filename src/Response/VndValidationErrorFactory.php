@@ -43,8 +43,9 @@ class VndValidationErrorFactory
      */
     public function create(Request $request, InvalidParametersException $exception, $logRef = null)
     {
+        $documentLink = $this->refBuilder->buildDocumentLink($request);
         $error = new VndError(self::DEFAULT_MESSAGE, $logRef);
-        $error->addLink('about', $this->refBuilder->buildDocumentLink($request), ['title' => 'Api Specification']);
+        $error->addLink('about', $documentLink, ['title' => 'Api Specification']);
         $error->setUri($request->getUri());
 
         foreach ($exception->getValidationErrors() as $errorSpec) {
@@ -52,12 +53,18 @@ class VndValidationErrorFactory
             if (!$errorSpec['property']) {
                 $errorSpec['property'] = preg_replace('/the property (.*) is required/', '\\1', $errorSpec['message']);
             }
+            $data                   = ['message' => $errorSpec['message']];
             $normalizedPropertyName = preg_replace('/\[\d+\]/', '', $errorSpec['property']);
-            $data = [
-                'message' => $errorSpec['message'],
-                'path'    => $this->refBuilder->createParameterSchemaPointer($request, $normalizedPropertyName)
-            ];
-            $parameterDefinitionUri = $this->refBuilder->buildSpecificationLink($request, $normalizedPropertyName);
+
+            try {
+                $path         = $this->refBuilder->createParameterSchemaPointer($request, $normalizedPropertyName);
+                $data['path'] = $path;
+                $parameterDefinitionUri = $this->refBuilder->buildSpecificationLink($request, $normalizedPropertyName);
+
+            } catch (\InvalidArgumentException $e) {
+                $parameterDefinitionUri = "$documentLink";
+
+            }
 
             $validationError = new Hal($parameterDefinitionUri, $data);
             $error->addResource(
