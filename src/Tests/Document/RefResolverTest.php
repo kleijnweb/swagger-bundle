@@ -26,7 +26,7 @@ class RefResolverTest extends \PHPUnit_Framework_TestCase
         $schemas = $resolver->getDefinition()->definitions;
         $propertySchema = $schemas->Pet->properties->category;
         $this->assertObjectNotHasAttribute('$ref', $propertySchema);
-        $this->assertObjectHasAttribute('id', $propertySchema);
+        $this->assertObjectHasAttribute('x-ref-id', $propertySchema);
         $this->assertSame('object', $propertySchema->type);
     }
 
