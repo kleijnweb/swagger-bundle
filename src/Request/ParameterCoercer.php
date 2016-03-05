@@ -72,6 +72,15 @@ class ParameterCoercer
                 }
 
                 return (float)$value;
+            case 'object':
+                if (!is_array($value)) {
+                    return $value == '' ? null : $value;
+                }
+                if (count($value) && is_numeric(key($value))) {
+                    return $value;
+                }
+
+                return (object)$value;
             case 'array':
                 if (is_array($value)) {
                     return $value;
