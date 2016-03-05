@@ -59,7 +59,9 @@ class SerializationTypeResolver
      */
     public function resolveUsingSchema($schema)
     {
-        $reference = isset($schema->{'$ref'}) ? $schema->{'$ref'} : (isset($schema->id) ? $schema->id : null);
+        $reference = isset($schema->{'$ref'})
+            ? $schema->{'$ref'}
+            : (isset($schema->{'x-ref-id'}) ? $schema->{'x-ref-id'} : null);
 
         if (!$reference) {
             return null;

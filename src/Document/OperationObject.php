@@ -50,10 +50,10 @@ class OperationObject
             throw new \InvalidArgumentException("Method '$method' not supported for path '$path'");
         }
 
-        $this->document = $document;
-        $this->path = $path;
-        $this->method = $method;
-        $this->definition = $paths->$path->$method;
+        $this->document                         = $document;
+        $this->path                             = $path;
+        $this->method                           = $method;
+        $this->definition                       = $paths->$path->$method;
         $this->definition->{'x-request-schema'} = $this->assembleRequestSchema();
     }
 
@@ -66,7 +66,7 @@ class OperationObject
      */
     public static function createFromOperationDefinition($definition, $path = '/', $method = 'GET')
     {
-        $method = strtolower($method);
+        $method             = strtolower($method);
         $documentDefinition = (object)[
             'paths' => (object)[
                 $path => (object)[
@@ -74,7 +74,7 @@ class OperationObject
                 ]
             ]
         ];
-        $document = new SwaggerDocument('', $documentDefinition);
+        $document           = new SwaggerDocument('', $documentDefinition);
 
         return new static($document, $path, $method);
     }
@@ -155,19 +155,48 @@ class OperationObject
      */
     public function createParameterSchemaPointer($parameterName)
     {
-        foreach ($this->definition->{'x-request-schema'}->properties as $propertyName => $schema) {
-            if ($propertyName === $parameterName) {
-                return '/' . implode('/', [
+        $segments = explode('.', $parameterName);
+
+        $pointer = '/'
+            . implode(
+                '/',
+                [
                     'paths',
                     str_replace(['~', '/'], ['~0', '~1'], $this->getPath()),
                     $this->getMethod(),
                     'x-request-schema',
-                    'properties',
-                    $propertyName
-                ]);
+                    'properties'
+                ]
+            );
+
+
+        return self::resolvePointerRecursively(
+            $pointer,
+            $segments,
+            $this->definition->{'x-request-schema'}->properties
+        );
+    }
+
+    /**
+     * @param string $pointer
+     * @param array  $segments
+     * @param object $context
+     *
+     * @return mixed
+     */
+    public static function resolvePointerRecursively($pointer, array $segments, $context)
+    {
+        $segment = str_replace(['~0', '~1'], ['~', '/'], array_shift($segments));
+        if (property_exists($context, $segment)) {
+            $pointer .= '/' . $segment;
+            if (!count($segments)) {
+                return $pointer;
             }
+
+            return self::resolvePointerRecursively($pointer, $segments, $context->$segment);
         }
-        throw new \InvalidArgumentException("Parameter '$parameterName' not in document");
+
+        throw new \InvalidArgumentException("Segment '$segment' not found in context '$pointer'");
     }
 
     /**
@@ -178,23 +207,25 @@ class OperationObject
         if (!isset($this->definition->parameters)) {
             return new \stdClass;
         }
-        $schema = new \stdClass;
-        $schema->type = 'object';
-        $schema->required = [];
+        $schema             = new \stdClass;
+        $schema->type       = 'object';
+        $schema->required   = [];
         $schema->properties = new \stdClass;
 
         foreach ($this->definition->parameters as $paramDefinition) {
-            if (isset($paramDefinition->required) && $paramDefinition->required) {
+            $isRequired = isset($paramDefinition->required) && $paramDefinition->required;
+            if ($isRequired) {
                 $schema->required[] = $paramDefinition->name;
             }
             if ($paramDefinition->in === 'body') {
-                $schema->properties->{$paramDefinition->name} = property_exists($paramDefinition, 'schema')
+                $schema->properties->{$paramDefinition->name}
+                    = $bodySchema = property_exists($paramDefinition, 'schema')
                     ? $paramDefinition->schema
                     : (object)['type' => 'object'];
                 continue;
             }
 
-            $type = property_exists($paramDefinition, 'type') ? $paramDefinition->type : 'string';
+            $type               = property_exists($paramDefinition, 'type') ? $paramDefinition->type : 'string';
             $propertyDefinition = $schema->properties->{$paramDefinition->name} = (object)['type' => $type];
             if (property_exists($paramDefinition, 'format')) {
                 $propertyDefinition->format = $paramDefinition->format;

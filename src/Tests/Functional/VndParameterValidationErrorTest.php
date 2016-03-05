@@ -71,6 +71,27 @@ class VndParameterValidationErrorTest extends WebTestCase
     /**
      * @test
      */
+    public function parameterValidationErrorWillContainSpecificationPointerForBodyParameter()
+    {
+        $this->markTestIncomplete('Not working with JSON-Schema version');
+
+        $url = 'http://petstore.swagger.io/swagger/petstore.yml';
+        try {
+            $this->post('/v2/store/order', []);
+        } catch (ApiResponseErrorException $e) {
+            $error = Hal::fromJson($e->getJson(), 10);
+            $resource = $error->getFirstResource('errors');
+            $specLink = $url . '#/paths/~1pet~1findByStatus/get/parameters/0/body/properties/quantity';
+            $this->assertSame($specLink, $resource->getUri());
+
+            return;
+        }
+        $this->fail("Expected exception");
+    }
+
+    /**
+     * @test
+     */
     public function parameterValidationErrorWillContainSchemaPointer()
     {
         try {

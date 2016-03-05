@@ -69,17 +69,23 @@ trait ApiTestCase
             );
         }
 
+        $repository          = new DocumentRepository(dirname($swaggerPath));
+        self::$document      = $repository->get(basename($swaggerPath));
+
         vfsStreamWrapper::register();
         vfsStreamWrapper::setRoot(new vfsStreamDirectory('root'));
 
         file_put_contents(
             vfsStream::url('root') . '/swagger.json',
-            json_encode(Yaml::parse(file_get_contents($swaggerPath)))
+            json_encode(self::$document->getDefinition())
+        );
+
+        file_put_contents(
+            '/tmp/swagger.json',
+            json_encode(self::$document->getDefinition(), JSON_PRETTY_PRINT)
         );
 
         self::$schemaManager = new SchemaManager(vfsStream::url('root') . '/swagger.json');
-        $repository = new DocumentRepository(dirname($swaggerPath));
-        self::$document = $repository->get(basename($swaggerPath));
     }
 
     /**
@@ -225,10 +231,10 @@ trait ApiTestCase
      */
     private function getJsonForLastRequest($fullPath, $method)
     {
-        $method = strtolower($method);
+        $method   = strtolower($method);
         $response = $this->client->getResponse();
-        $json = $response->getContent();
-        $data = json_decode($json);
+        $json     = $response->getContent();
+        $data     = json_decode($json);
 
         if ($response->getStatusCode() !== 204) {
             static $errors = [
@@ -239,7 +245,7 @@ trait ApiTestCase
                 JSON_ERROR_SYNTAX         => 'Syntax error',
                 JSON_ERROR_UTF8           => 'Malformed UTF-8 characters, possibly incorrectly encoded'
             ];
-            $error = json_last_error();
+            $error            = json_last_error();
             $jsonErrorMessage = isset($errors[$error]) ? $errors[$error] : 'Unknown error';
             $this->assertSame(
                 JSON_ERROR_NONE,

@@ -100,15 +100,14 @@ class RefResolver
 
         if (is_array($current)) {
             foreach ($current as &$value) {
-                if ($value !== null && !is_scalar($value)) {
-                    $this->resolveRecursively($value, $document, $uri);
-                }
+                $this->resolveRecursively($value, $document, $uri);
             }
         } elseif (is_object($current)) {
             if (property_exists($current, '$ref')) {
                 $uri = $current->{'$ref'};
                 if ('#' === $uri[0]) {
                     $current = $this->lookup($uri, $document);
+                    $this->resolveRecursively($current, $document, $uri);
                 } else {
                     $uriSegs = $this->parseUri($uri);
                     $normalizedUri = $this->normalizeUri($uriSegs);
@@ -117,7 +116,6 @@ class RefResolver
                     $this->resolveRecursively($current, $externalDocument, $normalizedUri);
                 }
                 if (is_object($current)) {
-                    $current->id = $uri;
                     $current->{'x-ref-id'} = $uri;
                 }
 
