@@ -225,14 +225,23 @@ class OperationObject
                 continue;
             }
 
-            $type               = property_exists($paramDefinition, 'type') ? $paramDefinition->type : 'string';
-            $propertyDefinition = $schema->properties->{$paramDefinition->name} = (object)['type' => $type];
-            if (property_exists($paramDefinition, 'format')) {
-                $propertyDefinition->format = $paramDefinition->format;
+            $propertyDefinition = clone $paramDefinition;
+
+            // Remove non-JSON-Schema properties
+            $swaggerPropertyNames = [
+                'name',
+                'in',
+                'description',
+                'required',
+                'allowEmptyValue'
+            ];
+            foreach ($swaggerPropertyNames as $propertyName) {
+                if (property_exists($propertyDefinition, $propertyName)) {
+                    unset($propertyDefinition->$propertyName);
+                }
             }
-            if (property_exists($paramDefinition, 'items')) {
-                $propertyDefinition->items = $paramDefinition->items;
-            }
+
+            $schema->properties->{$paramDefinition->name} = $propertyDefinition;
         }
 
         return $schema;
