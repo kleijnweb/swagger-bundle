@@ -91,34 +91,36 @@ class RequestValidator
 
         $parameters = new \stdClass;
 
-        foreach ($this->operationObject->getDefinition()->parameters as $paramDefinition) {
-            $paramName = $paramDefinition->name;
+        if(isset($this->operationObject->getDefinition()->parameters)) {
+            foreach ($this->operationObject->getDefinition()->parameters as $paramDefinition) {
+                $paramName = $paramDefinition->name;
 
-            if (!$request->attributes->has($paramName)) {
-                continue;
-            }
-            if ($paramDefinition->in === 'body' && $content !== null) {
-                $parameters->$paramName = $content;
-                continue;
-            }
-            $parameters->$paramName = $request->attributes->get($paramName);
+                if (!$request->attributes->has($paramName)) {
+                    continue;
+                }
+                if ($paramDefinition->in === 'body' && $content !== null) {
+                    $parameters->$paramName = $content;
+                    continue;
+                }
+                $parameters->$paramName = $request->attributes->get($paramName);
 
-            /**
-             * If value already coerced into \DateTime object, get the raw value for validation instead
-             *
-             * TODO Keep raw value of attributes around
-             */
-            if ($parameters->$paramName instanceof \DateTime) {
-                if ($paramDefinition->in === 'query') {
-                    $parameters->$paramName = $request->query->get($paramName);
-                } elseif ($paramDefinition->in === 'header') {
-                    $parameters->$paramName = $request->headers->get($paramName);
-                } elseif ($paramDefinition->in === 'path') {
-                    if ($paramDefinition->format === 'date') {
-                        $parameters->$paramName = $parameters->$paramName->format('Y-m-d');
-                    }
-                    if ($paramDefinition->format === 'date-time') {
-                        $parameters->$paramName = $parameters->$paramName->format(\DateTime::W3C);
+                /**
+                 * If value already coerced into \DateTime object, get the raw value for validation instead
+                 *
+                 * TODO Keep raw value of attributes around
+                 */
+                if ($parameters->$paramName instanceof \DateTime) {
+                    if ($paramDefinition->in === 'query') {
+                        $parameters->$paramName = $request->query->get($paramName);
+                    } elseif ($paramDefinition->in === 'header') {
+                        $parameters->$paramName = $request->headers->get($paramName);
+                    } elseif ($paramDefinition->in === 'path') {
+                        if ($paramDefinition->format === 'date') {
+                            $parameters->$paramName = $parameters->$paramName->format('Y-m-d');
+                        }
+                        if ($paramDefinition->format === 'date-time') {
+                            $parameters->$paramName = $parameters->$paramName->format(\DateTime::W3C);
+                        }
                     }
                 }
             }

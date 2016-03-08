@@ -94,4 +94,21 @@ class RequestCoercerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $request->attributes->get('foo'));
     }
+
+    /**
+     * @test
+     */
+    public function willNotFailWithNoParameters()
+    {
+        $coercer = new RequestCoercer($this->contentDecoderMock);
+        $content = '[1,2,3,4]';
+        $request = TestRequestFactory::create($content);
+
+        $operationDefinition = (object)[];
+
+        $operationObject = OperationObject::createFromOperationDefinition((object)$operationDefinition);
+        $coercer->coerceRequest($request, $operationObject);
+
+        $this->assertEmpty($request->attributes);
+    }
 }
