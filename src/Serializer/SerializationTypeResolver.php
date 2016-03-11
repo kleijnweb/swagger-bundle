@@ -12,16 +12,19 @@ use KleijnWeb\SwaggerBundle\Document\OperationObject;
 class SerializationTypeResolver
 {
     /**
-     * @var string
+     * @var array
      */
-    private $resourceNamespace;
+    private $resourceNamespaces = array();
 
     /**
-     * @param string $resourceNamespace
+     * @param mixed $resourceNamespaces
      */
-    public function __construct($resourceNamespace = null)
+    public function __construct($resourceNamespaces = null)
     {
-        $this->resourceNamespace = $resourceNamespace;
+        if(!is_array($resourceNamespaces)) {
+            $resourceNamespaces = [$resourceNamespaces];
+        }
+        $this->resourceNamespaces = $resourceNamespaces;
     }
 
     /**
@@ -47,9 +50,9 @@ class SerializationTypeResolver
      *
      * @return string
      */
-    public function qualify($typeName)
+    protected function qualify($resourceNamespace, $typeName)
     {
-        return ltrim($this->resourceNamespace . '\\' . $typeName, '\\');
+        return ltrim($resourceNamespace . '\\' . $typeName, '\\');
     }
 
     /**
@@ -61,12 +64,20 @@ class SerializationTypeResolver
     {
         $reference = isset($schema->{'$ref'})
             ? $schema->{'$ref'}
-            : (isset($schema->{'x-ref-id'}) ? $schema->{'x-ref-id'} : null);
+            : (isset($schema->{'x-ref-id'}) ? $schema->{'x-ref-id'} : null)
+        ;
 
-        if (!$reference) {
-            return null;
+        if ($reference) {
+            $reference = substr($reference, strrpos($reference, '/') + 1);
+
+            foreach ($this->resourceNamespaces as $resourceNamespace) {
+                $resourceFullNamespace = $this->qualify($resourceNamespace, $reference);
+                if (class_exists($resourceFullNamespace)) {
+                    return $resourceFullNamespace;
+                }
+            }
         }
 
-        return $this->qualify(substr($reference, strrpos($reference, '/') + 1));
+        return null;
     }
 }

@@ -256,17 +256,17 @@ or JMS\Serializer to the SerializerAdapter, which can be done by configuration:
 swagger:
     serializer: 
         type: symfony
-        namespace: My\Bundle\Resource\Namespace # Required for 'symfony' and 'jms' serializers
+        namespace: [My\Bundle\Resource\Namespace, My\SecondBundle\Resource\Namespace] # Required for 'symfony' and 'jms' serializers
 ```
 
 Replace `symfony` with `jms` to use the JMS Serializer. 
 
 __NOTE:__ You do not need to install `JMSSerializerBundle`. Just `composer require jms/serializer` (or `composer require symfony/serializer`).
 
-The `namespace` value is used to configure `@swagger.serializer.type_resolver` (`SerializationTypeResolver`).
+The `namespace` values are used to configure `@swagger.serializer.type_resolver` (`SerializationTypeResolver`).
 
 `SerializationTypeResolver` will use the last segment of the `$ref` (or `id`) of the schema for the `in: body` parameter.
-  Eg `#/definitions/Pet` will resolve to `My\Bundle\Resource\Namespace\Pet`. Currently `SerializationTypeResolver` supports only a single namespace.
+  Eg `#/definitions/Pet` will try resolve to `My\Bundle\Resource\Namespace\Pet` then try `My\SecondBundle\Resource\Namespace\Pet`.
   
 This will only work for operations where the `in: body` parameter is defined, for example:
 
