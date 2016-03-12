@@ -57,9 +57,16 @@ trait ApiTestCase
      */
     public static function initSchemaManager($swaggerPath)
     {
+        $swaggerContents = file_get_contents($swaggerPath);
+        $swaggerJson = json_decode(
+            preg_match('/\.(yaml|yml)$/', $swaggerPath)
+                ? json_encode(Yaml::parse($swaggerContents))
+                : $swaggerContents
+        );
+
         $validator = new Validator();
         $validator->check(
-            json_decode(json_encode(Yaml::parse(file_get_contents($swaggerPath)))),
+            $swaggerJson,
             json_decode(file_get_contents(__DIR__ . '/../../assets/swagger-schema.json'))
         );
 
@@ -69,8 +76,8 @@ trait ApiTestCase
             );
         }
 
-        $repository          = new DocumentRepository(dirname($swaggerPath));
-        self::$document      = $repository->get(basename($swaggerPath));
+        $repository     = new DocumentRepository(dirname($swaggerPath));
+        self::$document = $repository->get(basename($swaggerPath));
 
         vfsStreamWrapper::register();
         vfsStreamWrapper::setRoot(new vfsStreamDirectory('root'));
