@@ -44,10 +44,6 @@ class RefResolver
     public function __construct($definition, $uri, Loader $loader = null)
     {
         $this->definition = $definition;
-        $uriSegs          = $this->parseUri($uri);
-        if (!$uriSegs['scheme']) {
-            //$uri = realpath($uri);
-        }
         $this->uri       = $uri;
         $this->directory = dirname($this->uri);
         $this->loader    = $loader ?: new Loader();
