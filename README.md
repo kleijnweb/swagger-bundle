@@ -27,6 +27,7 @@ We say your OpenAPI definition *is* your config, and strive towards 'minimal add
 ## Documentation Topics
 
  - [Installation and configuration](docs/config.md)
+ - [Routing](docs/routing.md)
  - [Controllers](docs/controllers.md)
  - [Errors and validation](docs/errors.md)
  - [Serialization](docs/serialization.md)
