@@ -9,7 +9,7 @@ Invert your workflow (contract first) using Swagger ([Open API](https://openapis
 Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig.
 
 ## Important Notes
- * SwaggerBundle only supports json in- and output, and only YAML Swagger definitions
+ * SwaggerBundle only supports json in- and output
  * This bundle is currently actively maintained.
  * Go to the [release page](https://github.com/kleijnweb/swagger-bundle/releases) to find details about the latest release.
 
@@ -18,6 +18,7 @@ A minimal example is also [available](https://github.com/kleijnweb/symfony-swagg
 
 ## This bundle will..
 
+ * Handle both JSON and YAML swagger specs transparently.
  * Configure routing based on your Swagger documents(s), accounting for things like type, enums and pattern matches. 
  * Validate body and parameters based on your Swagger documents(s).
  * Coerce query and path parameters to their defined types when possible.
@@ -31,7 +32,6 @@ A minimal example is also [available](https://github.com/kleijnweb/symfony-swagg
  * Handle Form posts.
  * Generate your API documentation. Use your Swagger documents, plenty of options.
  * Mix well with GUI bundles. The bundle is biased towards lightweight API-only apps.
- * Work with JSON Swagger documents.
  * Do content negotiation or support XML.
 
 # Usage
