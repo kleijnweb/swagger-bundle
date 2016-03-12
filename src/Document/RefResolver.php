@@ -34,23 +34,23 @@ class RefResolver
     /**
      * @var YamlParser
      */
-    private $yamlParser;
+    private $loader;
 
     /**
-     * @param object     $definition
-     * @param string     $uri
-     * @param YamlParser $yamlParser
+     * @param object $definition
+     * @param string $uri
+     * @param Loader $loader
      */
-    public function __construct($definition, $uri, YamlParser $yamlParser = null)
+    public function __construct($definition, $uri, Loader $loader = null)
     {
         $this->definition = $definition;
-        $uriSegs = $this->parseUri($uri);
-        if (!$uriSegs['proto']) {
-            $uri = realpath($uri);
+        $uriSegs          = $this->parseUri($uri);
+        if (!$uriSegs['scheme']) {
+            //$uri = realpath($uri);
         }
-        $this->uri = $uri;
+        $this->uri       = $uri;
         $this->directory = dirname($this->uri);
-        $this->yamlParser = $yamlParser ?: new YamlParser();
+        $this->loader    = $loader ?: new Loader();
     }
 
     /**
@@ -96,7 +96,7 @@ class RefResolver
     private function resolveRecursively(&$current, $document = null, $uri = null)
     {
         $document = $document ?: $this->definition;
-        $uri = $uri ?: $this->uri;
+        $uri      = $uri ?: $this->uri;
 
         if (is_array($current)) {
             foreach ($current as &$value) {
@@ -109,10 +109,10 @@ class RefResolver
                     $current = $this->lookup($uri, $document);
                     $this->resolveRecursively($current, $document, $uri);
                 } else {
-                    $uriSegs = $this->parseUri($uri);
-                    $normalizedUri = $this->normalizeUri($uriSegs);
+                    $uriSegs          = $this->parseUri($uri);
+                    $normalizedUri    = $this->normalizeFileUri($uriSegs);
                     $externalDocument = $this->loadExternal($normalizedUri);
-                    $current = $this->lookup($uriSegs['segment'], $externalDocument, $normalizedUri);
+                    $current          = $this->lookup($uriSegs['fragment'], $externalDocument, $normalizedUri);
                     $this->resolveRecursively($current, $externalDocument, $normalizedUri);
                 }
                 if (is_object($current)) {
@@ -189,44 +189,37 @@ class RefResolver
     }
 
     /**
-     * @param string $uri
+     * @param string $fileUrl
      *
      * @return object
-     * @throws ResourceNotReadableException
      */
-    private function loadExternal($uri)
+    private function loadExternal($fileUrl)
     {
-        $exception = new ResourceNotReadableException("Failed reading '$uri'");
-
-        set_error_handler(function () use ($exception) {
-            throw $exception;
-        });
-        $response = file_get_contents($uri);
-        restore_error_handler();
-
-        if (false === $response) {
-            throw $exception;
-        }
-        if (preg_match('/\b(yml|yaml)\b/', $uri)) {
-            return $this->yamlParser->parse($response);
-        }
-
-        return json_decode($response);
+        return $this->loader->load($fileUrl);
     }
-
 
     /**
      * @param array $uriSegs
      *
      * @return string
      */
-    private function normalizeUri(array $uriSegs)
+    private function normalizeFileUri(array $uriSegs)
     {
-        return
-            $uriSegs['proto'] . $uriSegs['host']
-            . rtrim($uriSegs['root'], '/') . '/'
-            . (!$uriSegs['root'] ? ltrim("$this->directory/", '/') : '')
-            . $uriSegs['path'];
+        $path  = $uriSegs['path'];
+        $auth  = !$uriSegs['user'] ? '' : "{$uriSegs['user']}:{$uriSegs['pass']}@";
+        $query = !$uriSegs['query'] ? '' : "?{$uriSegs['query']}";
+        $port  = !$uriSegs['port'] ? '' : ":{$uriSegs['port']}";
+        $host  = !$uriSegs['host'] ? '' : "{$uriSegs['scheme']}://$auth{$uriSegs['host']}{$port}";
+
+        if (substr($path, 0, 1) !== '/') {
+            $path = "$this->directory/$path";
+            if (substr($this->directory, 0, 1) === '/') {
+                //Assume working directory is web root
+                $path = ltrim($path, '/');
+            }
+        }
+
+        return "{$host}{$path}{$query}";
     }
 
     /**
@@ -237,22 +230,23 @@ class RefResolver
     private function parseUri($uri)
     {
         $defaults = [
-            'root'    => '',
-            'proto'   => '',
-            'host'    => '',
-            'path'    => '',
-            'segment' => ''
+            'scheme'   => '',
+            'host'     => '',
+            'port'     => '',
+            'user'     => '',
+            'pass'     => '',
+            'path'     => '',
+            'query'    => '',
+            'fragment' => ''
         ];
-        $pattern = '@'
-            . '(?P<proto>[a-z]+\://)?'
-            . '(?P<host>[0-9a-z\.\@\:]+\.[a-z]+)?'
-            . '(?P<root>/)?'
-            . '(?P<path>[^#]*)'
-            . '(?P<segment>#.*)?'
-            . '@';
 
-        preg_match($pattern, $uri, $matches);
+        if (0 === strpos($uri, 'file://')) {
+            // parse_url botches this up
+            preg_match('@file://(?P<path>[^#]*)(?P<fragment>#.*)?@', $uri, $matches);
 
-        return array_merge($defaults, array_intersect_key($matches, $defaults));
+            return array_merge($defaults, array_intersect_key($matches, $defaults));
+        }
+
+        return array_merge($defaults, array_intersect_key(parse_url($uri), $defaults));
     }
 }

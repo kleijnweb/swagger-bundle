@@ -32,15 +32,22 @@ class DocumentRepository
     private $cache;
 
     /**
+     * @var Loader
+     */
+    private $loader;
+
+    /**
      * Initializes a new Repository.
      *
      * @param string $basePath
      * @param Cache  $cache
+     * @param Loader $loader
      */
-    public function __construct($basePath = null, Cache $cache = null)
+    public function __construct($basePath = null, Cache $cache = null, Loader $loader = null)
     {
         $this->basePath = $basePath;
         $this->cache = $cache;
+        $this->loader = $loader ?: new Loader();
     }
 
     /**
@@ -64,27 +71,22 @@ class DocumentRepository
     }
 
     /**
-     * @param string $documentPath
+     * @param string $uri
      *
      * @return SwaggerDocument
      * @throws ResourceNotReadableException
      */
-    private function load($documentPath)
+    private function load($uri)
     {
-        if ($this->cache && $document = $this->cache->fetch($documentPath)) {
+        if ($this->cache && $document = $this->cache->fetch($uri)) {
             return $document;
         }
 
-        if (!is_readable($documentPath)) {
-            throw new ResourceNotReadableException("Document '$documentPath' is not readable");
-        }
-
-        $parser = new  YamlParser();
-        $resolver = new RefResolver($parser->parse((string)file_get_contents($documentPath)), $documentPath);
-        $document = new SwaggerDocument($documentPath, $resolver->resolve());
+        $resolver = new RefResolver($this->loader->load($uri), $uri);
+        $document = new SwaggerDocument($uri, $resolver->resolve());
 
         if ($this->cache) {
-            $this->cache->save($documentPath, $document);
+            $this->cache->save($uri, $document);
         }
 
         return $document;
