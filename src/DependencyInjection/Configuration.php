@@ -41,7 +41,6 @@ class Configuration implements ConfigurationInterface
                             ->end()
                             ->prototype('scalar')
                             ->end()
-                            ->defaultNull()
                         ->end()
                     ->end()
                 ->end()
