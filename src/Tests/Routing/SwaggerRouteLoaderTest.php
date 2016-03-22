@@ -199,6 +199,30 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function canUseXRouterMethodToOverrideMethod()
+    {
+        $pathDefinitions = (object)[
+            '/a'       => (object)[
+                'get'  => (object)[],
+                'post' => (object)['x-router-controller-method' => 'myMethodName']
+            ],
+            '/b'       => (object)['get' => (object)[]],
+        ];
+
+        $this->documentMock
+            ->expects($this->any())
+            ->method('getPathDefinitions')
+            ->willReturn($pathDefinitions);
+
+        $routes = $this->loader->load(self::DOCUMENT_PATH);
+
+        $actual = $routes->get('swagger.path.a.myMethodName');
+        $this->assertNotNull($actual);
+    }
+
+    /**
+     * @test
+     */
     public function canUseXRouterControllerForDiKeyInOperation()
     {
         $diKey = 'my.x_router.controller';

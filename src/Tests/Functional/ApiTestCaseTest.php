@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Functional;
 
+use KleijnWeb\SwaggerBundle\Test\ApiResponseErrorException;
 use KleijnWeb\SwaggerBundle\Test\ApiTestCase;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -37,5 +38,16 @@ class ApiTestCaseTest extends WebTestCase
     public function notFoundApiCallThrowsException()
     {
         $this->get('/foo');
+    }
+
+    /**
+     * @test
+     * @expectedException \KleijnWeb\SwaggerBundle\Test\ApiResponseErrorException
+     * @expectedExceptionCode 405
+     */
+    public function methodNotSupportedReturnsMethodNotAllowed()
+    {
+        $this->patch('/v2/pet/findByStatus', []);
+
     }
 }
