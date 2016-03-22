@@ -1,0 +1,166 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Data api",
+    "version": "1.0.0"
+  },
+  "basePath": "/data/v1",
+  "paths": {
+    "/entity/{type}": {
+      "get": {
+        "operationId": "find",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "lastModified",
+            "required": true,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Found resources",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "data",
+            "required": true,
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The created resource",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/entity/{type}/findByCriteria": {
+      "post": {
+        "operationId": "findByCriteria",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "criteria",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Criteria"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Found resources",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/entity/{type}/{id}": {
+      "put": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "data",
+            "required": true,
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The modified resource",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Empty response",
+            "schema": {
+              "type": null
+            }
+          }
+        }
+      },
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested resource",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Criteria": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/FieldCriteria"
+      }
+    },
+    "FieldCriteria": {
+      "properties": {
+        "fieldName": {
+          "type": "string"
+        },
+        "operator": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

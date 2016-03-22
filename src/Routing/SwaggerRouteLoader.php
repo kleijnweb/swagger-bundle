@@ -186,6 +186,10 @@ class SwaggerRouteLoader extends Loader
             $diKey = $routerController;
         }
 
+        if (property_exists($operationSpec, 'x-router-controller-method')) {
+            $operationName = $operationSpec->{'x-router-controller-method'};
+        }
+
         return "$diKey:$operationName";
     }
 

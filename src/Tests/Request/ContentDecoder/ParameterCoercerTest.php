@@ -16,7 +16,7 @@ use KleijnWeb\SwaggerBundle\Request\ParameterCoercer;
 class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @dataProvider primitiveConversionProvider
+     * @dataProvider conversionProvider
      * @test
      *
      * @param string $type
@@ -24,7 +24,7 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
      * @param mixed  $expected
      * @param string $format
      */
-    public function willInterpretPrimitivesAsExpected($type, $value, $expected, $format = null)
+    public function willInterpretValuesAsExpected($type, $value, $expected, $format = null)
     {
         $spec = ['type' => $type, 'name' => $value];
         if ($type === 'array') {
@@ -36,17 +36,21 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
 
         $actual = ParameterCoercer::coerceParameter((object)$spec, $value);
 
-        $this->assertEquals($expected, $actual);
+        if (is_object($expected)) {
+            $this->assertEquals($expected, $actual);
+            return;
+        }
+        $this->assertSame($expected, $actual);
     }
 
     /**
-     * @dataProvider malformedPrimitiveConversionProvider
+     * @dataProvider malformedConversionProvider
      * @test
      *
      * @param string $type
      * @param mixed  $value
      */
-    public function willNotChangeUninterpretablePrimitives($type, $value)
+    public function willNotChangeUninterpretableValues($type, $value)
     {
         $actual = ParameterCoercer::coerceParameter((object)['type' => $type, 'name' => $value], $value);
         $this->assertSame($value, $actual);
@@ -86,10 +90,13 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
     /**
      * @return array
      */
-    public static function primitiveConversionProvider()
+    public static function conversionProvider()
     {
-        $now = new \DateTime();
-        $midnight = new \DateTime('midnight today');
+        $now       = new \DateTime();
+        $midnight  = new \DateTime('midnight today');
+        $object    = new \stdClass;
+        $object->a = 'b';
+        $object->c = 'd';
 
         return [
             ['boolean', '0', false],
@@ -123,14 +130,16 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
             ['array', "a\t b\tc ", ['a', ' b', 'c '], 'tsv'],
             ['array', 'a', ['a'], 'pipes'],
             ['array', 'a|b|c', ['a', 'b', 'c'], 'pipes'],
-            ['array', 'a| b|c ', ['a', ' b', 'c '], 'pipes']
+            ['array', 'a| b|c ', ['a', ' b', 'c '], 'pipes'],
+            ['object', ['a' => 'b', 'c' => 'd'], $object],
+            ['object', '', null]
         ];
     }
 
     /**
      * @return array
      */
-    public static function malformedPrimitiveConversionProvider()
+    public static function malformedConversionProvider()
     {
         return [
             ['boolean', 'a'],
@@ -143,7 +152,9 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
             ['number', 'b'],
             ['number', 'FALSE'],
             ['null', '0'],
-            ['null', 'FALSE']
+            ['null', 'FALSE'],
+            ['object', ['a', 'c']],
+            ['object', 'FALSE']
         ];
     }
 

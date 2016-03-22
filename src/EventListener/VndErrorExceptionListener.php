@@ -16,6 +16,7 @@ use Psr\Log\LogLevel;
 use Ramsey\VndError\VndError;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
@@ -40,7 +41,7 @@ class VndErrorExceptionListener
      */
     public function __construct(VndValidationErrorFactory $errorFactory, LoggerInterface $logger)
     {
-        $this->logger = $logger;
+        $this->logger                 = $logger;
         $this->validationErrorFactory = $errorFactory;
     }
 
@@ -67,45 +68,48 @@ class VndErrorExceptionListener
 
         try {
             $exception = $event->getException();
-            $request = $event->getRequest();
-            $code = $exception->getCode();
+            $request   = $event->getRequest();
+            $code      = $exception->getCode();
 
             if ($exception instanceof InvalidParametersException) {
-                $severity = LogLevel::NOTICE;
+                $severity   = LogLevel::NOTICE;
                 $statusCode = Response::HTTP_BAD_REQUEST;
-                $vndError = $this->validationErrorFactory->create($request, $exception, $logRef);
+                $vndError   = $this->validationErrorFactory->create($request, $exception, $logRef);
             } else {
                 if ($exception instanceof NotFoundHttpException) {
                     $statusCode = Response::HTTP_NOT_FOUND;
-                    $severity = LogLevel::INFO;
+                    $severity   = LogLevel::INFO;
                 } else {
-                    if ($exception instanceof AuthenticationException) {
+                    if ($exception instanceof MethodNotAllowedHttpException) {
+                        $statusCode = Response::HTTP_METHOD_NOT_ALLOWED;
+                        $severity   = LogLevel::WARNING;
+                    } elseif ($exception instanceof AuthenticationException) {
                         $statusCode = Response::HTTP_UNAUTHORIZED;
-                        $severity = LogLevel::WARNING;
+                        $severity   = LogLevel::WARNING;
                     } else {
                         $is3Digits = strlen($code) === 3;
-                        $class = (int)substr($code, 0, 1);
+                        $class     = (int)substr($code, 0, 1);
                         if (!$is3Digits) {
                             $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
-                            $severity = LogLevel::CRITICAL;
+                            $severity   = LogLevel::CRITICAL;
                         } else {
                             switch ($class) {
                                 case 4:
-                                    $severity = LogLevel::NOTICE;
+                                    $severity   = LogLevel::NOTICE;
                                     $statusCode = Response::HTTP_BAD_REQUEST;
                                     break;
                                 case 5:
                                     $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
-                                    $severity = LogLevel::ERROR;
+                                    $severity   = LogLevel::ERROR;
                                     break;
                                 default:
                                     $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
-                                    $severity = LogLevel::CRITICAL;
+                                    $severity   = LogLevel::CRITICAL;
                             }
                         }
                     }
                 }
-                $message = Response::$statusTexts[$statusCode];
+                $message  = Response::$statusTexts[$statusCode];
                 $vndError = new VndError($message, $logRef);
                 $vndError->addLink('help', $request->get('_definition'), ['title' => 'Error Information']);
                 $vndError->addLink('about', $request->getUri(), ['title' => 'Error Information']);
@@ -120,7 +124,7 @@ class VndErrorExceptionListener
             throw $e;
         } catch (\Exception $e) {
             // A simpler response where less can go wrong
-            $message = "Error Handling Failure";
+            $message  = "Error Handling Failure";
             $vndError = new VndError($message, $logRef);
             $this->logger->log(LogLevel::CRITICAL, "$message [logref $logRef]: $e");
             $event->setResponse(new VndErrorResponse($vndError, Response::HTTP_INTERNAL_SERVER_ERROR));
