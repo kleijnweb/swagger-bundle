@@ -134,19 +134,19 @@ class RefResolverTest extends \PHPUnit_Framework_TestCase
         return [
             [
                 'foo',
-                'somedir/entities.json',
+                '/somedir/entities.json',
                 'entities.json#/definitions/SomeType',
                 (object)['definitions' => (object)['SomeType' => 'foo']]
             ],
             [
                 'bar',
-                'somedir/entities.yaml',
+                '/somedir/entities.yaml',
                 'entities.yaml#/definitions/SomeType',
                 (object)['definitions' => (object)['SomeType' => 'bar']]
             ],
             [
                 'mary',
-                'somedir/entities/had/a/little.yaml',
+                '/somedir/entities/had/a/little.yaml',
                 'entities/had/a/little.yaml#/Lamb',
                 (object)['Lamb' => 'mary']
             ],
@@ -158,7 +158,7 @@ class RefResolverTest extends \PHPUnit_Framework_TestCase
             ],
             [
                 'local',
-                'somedir/local.yml',
+                '/somedir/local.yml',
                 'file://local.yml#/definitions/SomeType',
                 (object)['definitions' => (object)['SomeType' => 'local']]
             ]

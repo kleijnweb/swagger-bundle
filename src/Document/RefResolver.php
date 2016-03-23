@@ -44,9 +44,9 @@ class RefResolver
     public function __construct($definition, $uri, Loader $loader = null)
     {
         $this->definition = $definition;
-        $this->uri       = $uri;
-        $this->directory = dirname($this->uri);
-        $this->loader    = $loader ?: new Loader();
+        $this->uri        = $uri;
+        $this->directory  = dirname($this->uri);
+        $this->loader     = $loader ?: new Loader();
     }
 
     /**
@@ -209,10 +209,6 @@ class RefResolver
 
         if (substr($path, 0, 1) !== '/') {
             $path = "$this->directory/$path";
-            if (substr($this->directory, 0, 1) === '/') {
-                //Assume working directory is web root
-                $path = ltrim($path, '/');
-            }
         }
 
         return "{$host}{$path}{$query}";
