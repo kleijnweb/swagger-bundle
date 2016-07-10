@@ -100,7 +100,7 @@ trait ApiTestCase
      */
     protected function setUp()
     {
-        $this->client = static::createClient(['environment' => $this->getEnv(), 'debug' => true]);
+        $this->client = new ApiTestClient(static::createClient(['environment' => $this->getEnv(), 'debug' => true]));
 
         parent::setUp();
     }

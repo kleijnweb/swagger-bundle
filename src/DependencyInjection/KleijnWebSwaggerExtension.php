@@ -48,11 +48,6 @@ class KleijnWebSwaggerExtension extends Extension
         $publicDocsConfig = $config['document']['public'];
         $arguments = [$publicDocsConfig['base_url'], $publicDocsConfig['scheme'], $publicDocsConfig['host']];
         $parameterRefBuilderDefinition->setArguments($arguments);
-
-
-        if ($container->hasParameter('test.client.class')) {
-            $container->setParameter('test.client.class', 'KleijnWeb\SwaggerBundle\Test\ApiTestClient');
-        }
     }
 
     /**
