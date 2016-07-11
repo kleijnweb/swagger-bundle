@@ -40,12 +40,7 @@ class Loader
     public function load($uri)
     {
         $exception = new ResourceNotReadableException("Failed reading '$uri'");
-
-        set_error_handler(function () use ($exception) {
-            throw $exception;
-        });
         $response = file_get_contents($uri);
-        restore_error_handler();
 
         if (false === $response) {
             throw $exception;
