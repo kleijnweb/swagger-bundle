@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Document;
 
+use KleijnWeb\SwaggerBundle\Document\Exception\ResourceNotReadableException;
 use KleijnWeb\SwaggerBundle\Document\Loader;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamWrapper;
@@ -19,12 +20,17 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
-     * @expectedException \KleijnWeb\SwaggerBundle\Document\Exception\ResourceNotReadableException
      */
     public function willFailWhenFileDoesNotExist()
     {
-        $loader = new Loader();
-        $loader->load('does/not/exist.json');
+        try {
+            $loader = new Loader();
+            $loader->load('does/not/exist.json');
+        } catch (ResourceNotReadableException $e) {
+            return;
+        }
+        $this->fail("Expected ResourceNotReadableException");
+
     }
 
     /**
