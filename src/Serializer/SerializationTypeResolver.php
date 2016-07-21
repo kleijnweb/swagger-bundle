@@ -67,7 +67,7 @@ class SerializationTypeResolver
             : (isset($schema->{'x-ref-id'}) ? $schema->{'x-ref-id'} : null)
         ;
 
-        $arrayItems = $schema->{'items'};
+        $arrayItems = isset($schema->{'items'}) ? $schema->{'items'} : null;
 
         if ($reference === null && $arrayItems !== null) {
             $reference = (isset($arrayItems->{'x-ref-id'}) ? $arrayItems->{'x-ref-id'} : null);
