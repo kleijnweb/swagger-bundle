@@ -79,11 +79,7 @@ class SerializationTypeResolver
             foreach ($this->resourceNamespaces as $resourceNamespace) {
                 $resourceFullNamespace = $this->qualify($resourceNamespace, $reference);
                 if (class_exists($resourceFullNamespace)) {
-                    if ($arrayItems !== null) {
-                        return 'array<' . $resourceFullNamespace . '>';
-                    }
-
-                    return $resourceFullNamespace;
+                    return ($arrayItems !== null) ? 'array<' . $resourceFullNamespace . '>' : $resourceFullNamespace;
                 }
             }
         }
