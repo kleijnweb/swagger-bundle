@@ -24,10 +24,9 @@ class SwaggerDocument
     private $operations;
 
     /**
-     * @param string    $pathFileName
      * @param \stdClass $definition
      */
-    public function __construct(string $pathFileName, \stdClass $definition)
+    public function __construct(\stdClass $definition)
     {
         $this->definition = $definition;
     }

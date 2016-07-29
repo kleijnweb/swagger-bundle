@@ -74,7 +74,7 @@ class OperationObject
             ]
         ];
 
-        return new static(new SwaggerDocument('', $documentDefinition), $path, $method);
+        return new static(new SwaggerDocument($documentDefinition), $path, $method);
     }
 
     /**

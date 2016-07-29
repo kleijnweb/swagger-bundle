@@ -83,7 +83,7 @@ class DocumentRepository
         }
 
         $resolver = new RefResolver($this->loader->load($uri), $uri);
-        $document = new SwaggerDocument($uri, $resolver->resolve());
+        $document = new SwaggerDocument($resolver->resolve());
 
         if ($this->cache) {
             $this->cache->save($uri, $document);
