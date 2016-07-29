@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -19,14 +19,14 @@ class ParameterCoercer
     /**
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      *
-     * @param object $paramDefinition
-     * @param mixed  $value
+     * @param \stdClass $paramDefinition
+     * @param mixed     $value
      *
      * @return mixed
      * @throws MalformedContentException
      * @throws UnsupportedException
      */
-    public static function coerceParameter($paramDefinition, $value)
+    public static function coerceParameter(\stdClass $paramDefinition, $value)
     {
         switch ($paramDefinition->type) {
             case 'string':

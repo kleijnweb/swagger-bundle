@@ -14,11 +14,6 @@ namespace KleijnWeb\SwaggerBundle\Document;
 class OperationObject
 {
     /**
-     * @var SwaggerDocument
-     */
-    private $document;
-
-    /**
      * @var object
      */
     private $definition;
@@ -50,7 +45,6 @@ class OperationObject
             throw new \InvalidArgumentException("Method '$method' not supported for path '$path'");
         }
 
-        $this->document                         = $document;
         $this->path                             = $path;
         $this->method                           = $method;
         $this->definition                       = $paths->$path->$method;
@@ -80,9 +74,7 @@ class OperationObject
             ]
         ];
 
-        $document = new SwaggerDocument('', $documentDefinition);
-
-        return new static($document, $path, $method);
+        return new static(new SwaggerDocument('', $documentDefinition), $path, $method);
     }
 
     /**
@@ -183,13 +175,13 @@ class OperationObject
     }
 
     /**
-     * @param string $pointer
-     * @param array  $segments
-     * @param object $context
+     * @param string    $pointer
+     * @param array     $segments
+     * @param \stdClass $context
      *
      * @return mixed
      */
-    public static function resolvePointerRecursively(string $pointer, array $segments, $context)
+    public static function resolvePointerRecursively(string $pointer, array $segments, \stdClass $context)
     {
         $segment = str_replace(['~0', '~1'], ['~', '/'], array_shift($segments));
         if (property_exists($context, $segment)) {
@@ -224,7 +216,7 @@ class OperationObject
             }
             if ($paramDefinition->in === 'body') {
                 $schema->properties->{$paramDefinition->name}
-                    = $bodySchema = property_exists($paramDefinition, 'schema')
+                    = property_exists($paramDefinition, 'schema')
                     ? $paramDefinition->schema
                     : (object)['type' => 'object'];
                 continue;

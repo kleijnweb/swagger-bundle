@@ -57,11 +57,11 @@ class SerializationTypeResolver
     }
 
     /**
-     * @param object $schema
+     * @param \stdClass $schema
      *
      * @return string
      */
-    public function resolveUsingSchema($schema): string
+    public function resolveUsingSchema(\stdClass $schema): string
     {
         $reference = isset($schema->{'$ref'})
             ? $schema->{'$ref'}

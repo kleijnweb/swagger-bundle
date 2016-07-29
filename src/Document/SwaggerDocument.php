@@ -14,11 +14,6 @@ namespace KleijnWeb\SwaggerBundle\Document;
 class SwaggerDocument
 {
     /**
-     * @var string
-     */
-    private $uri;
-
-    /**
      * @var object
      */
     private $definition;
@@ -34,7 +29,6 @@ class SwaggerDocument
      */
     public function __construct(string $pathFileName, \stdClass $definition)
     {
-        $this->uri        = $pathFileName;
         $this->definition = $definition;
     }
 
