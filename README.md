@@ -8,6 +8,8 @@ Invert your workflow (contract first) using Swagger ([Open API](https://openapis
 
 Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig.
 
+**HEADS UP:** _You are looking at the main (4.0) development line, which is PHP 7 only. SwaggerBundle 3.x works with PHP 5.4+._
+
 ## Contract First
 
 SwaggerBundle is built around the idea of "contract first". Other "Swagger Bundles" see an OpenAPI definition as documentation, that you generate using config and annotations.
