@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -25,9 +25,9 @@ class SymfonySerializerFactory
      *
      * @return Serializer
      */
-    public static function factory($encoder = null)
+    public static function factory($encoder = null): Serializer
     {
-        $encoders = [$encoder ?: new JsonEncoder()];
+        $encoders    = [$encoder ?: new JsonEncoder()];
         $normalizers = [new GetSetMethodNormalizer()];
 
         return new Serializer($normalizers, $encoders);

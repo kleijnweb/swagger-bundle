@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -35,7 +35,7 @@ class VndValidationErrorFactoryTest extends \PHPUnit_Framework_TestCase
             ->getMockBuilder('KleijnWeb\SwaggerBundle\Document\ParameterRefBuilder')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->factory = new VndValidationErrorFactory($this->refBuilder);
+        $this->factory    = new VndValidationErrorFactory($this->refBuilder);
     }
 
     /**
@@ -44,12 +44,12 @@ class VndValidationErrorFactoryTest extends \PHPUnit_Framework_TestCase
     public function createdErrorCanHaveLogRef()
     {
         $vndError = $this->factory->create(
-            $this->createSimpleRequest(),
+            new Request(),
             new InvalidParametersException('Yikes', []),
-            123456789
+            '123456789'
         );
         $this->assertInstanceOf('Ramsey\VndError\VndError', $vndError);
-        $this->assertSame(123456789, $vndError->getLogref());
+        $this->assertSame('123456789', $vndError->getLogref());
     }
 
     /**
@@ -59,7 +59,7 @@ class VndValidationErrorFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertNull(
             $this->factory->create(
-                $this->createSimpleRequest(),
+                new Request(),
                 new InvalidParametersException('Yikes', [])
             )->getLogref()
         );
@@ -70,14 +70,14 @@ class VndValidationErrorFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function resultIncludesErrorMessagesCreatedByJsonSchema()
     {
-        $value = (object)[
+        $value     = (object)[
             'foo' => (object)[
                 'blah' => 'one'
             ],
             'bar' => (object)[]
         ];
         $validator = new Validator();
-        $schema = (object)[
+        $schema    = (object)[
             'type'       => 'object',
             'required'   => ['foo', 'bar'],
             'properties' => (object)[
@@ -113,7 +113,7 @@ class VndValidationErrorFactoryTest extends \PHPUnit_Framework_TestCase
             ->willReturnOnConsecutiveCalls('http://1.net/1', 'http://2.net/2');
 
         $vndError = $this->factory->create(
-            $this->createSimpleRequest(),
+            new Request(),
             $exception
         );
 
@@ -128,13 +128,5 @@ class VndValidationErrorFactoryTest extends \PHPUnit_Framework_TestCase
             $data = $resources[$i]->getData();
             $this->assertContains($spec['message'], $data['message']);
         }
-    }
-
-    /**
-     * @return Request
-     */
-    private function createSimpleRequest()
-    {
-        return new Request;
     }
 }

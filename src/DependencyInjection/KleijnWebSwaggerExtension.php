@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -45,15 +45,19 @@ class KleijnWebSwaggerExtension extends Extension
         }
 
         $parameterRefBuilderDefinition = $container->getDefinition('swagger.document.parameter_ref_builder');
-        $publicDocsConfig = $config['document']['public'];
-        $arguments = [$publicDocsConfig['base_url'], $publicDocsConfig['scheme'], $publicDocsConfig['host']];
+        $publicDocsConfig              = $config['document']['public'];
+        $arguments                     = [
+            $publicDocsConfig['base_url'],
+            $publicDocsConfig['scheme'],
+            $publicDocsConfig['host']
+        ];
         $parameterRefBuilderDefinition->setArguments($arguments);
     }
 
     /**
      * @return string
      */
-    public function getAlias()
+    public function getAlias(): string
     {
         return "swagger";
     }

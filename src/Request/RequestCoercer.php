@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -48,7 +48,7 @@ class RequestCoercer
             'header' => 'headers'
         ];
 
-        if(isset($operationObject->getDefinition()->parameters)) {
+        if (isset($operationObject->getDefinition()->parameters)) {
             foreach ($operationObject->getDefinition()->parameters as $paramDefinition) {
                 $paramName = $paramDefinition->name;
 

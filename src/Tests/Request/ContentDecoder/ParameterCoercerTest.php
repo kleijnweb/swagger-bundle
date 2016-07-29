@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -38,6 +38,7 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
 
         if (is_object($expected)) {
             $this->assertEquals($expected, $actual);
+
             return;
         }
         $this->assertSame($expected, $actual);

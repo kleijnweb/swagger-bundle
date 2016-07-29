@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -44,9 +44,9 @@ class ContentDecoder
     /**
      * @param SerializationTypeResolver $typeResolver
      *
-     * @return $this
+     * @return ContentDecoder
      */
-    public function setTypeResolver(SerializationTypeResolver $typeResolver = null)
+    public function setTypeResolver(SerializationTypeResolver $typeResolver = null): ContentDecoder
     {
         $this->typeResolver = $typeResolver;
 
@@ -57,14 +57,14 @@ class ContentDecoder
      * @param Request         $request
      * @param OperationObject $operationObject
      *
-     * @return mixed|null
+     * @return mixed
      * @throws MalformedContentException
      * @throws UnsupportedContentTypeException
      */
     public function decodeContent(Request $request, OperationObject $operationObject)
     {
         if ($content = $request->getContent()) {
-            $type = $this->typeResolver ? $this->typeResolver->resolve($operationObject) : null;
+            $type = $this->typeResolver ? $this->typeResolver->resolve($operationObject) : '';
             try {
                 return $this->serializer->deserialize($content, $type, 'json');
             } catch (\Exception $e) {

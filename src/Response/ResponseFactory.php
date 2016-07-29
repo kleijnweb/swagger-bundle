@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -34,7 +34,7 @@ class ResponseFactory
      */
     public function __construct(DocumentRepository $documentRepository, SerializerAdapter $serializer)
     {
-        $this->serializer = $serializer;
+        $this->serializer         = $serializer;
         $this->documentRepository = $documentRepository;
     }
 
@@ -67,7 +67,7 @@ class ResponseFactory
                 $request->getMethod()
             );
 
-        $responseCode = 200;
+        $responseCode   = 200;
         $understands204 = false;
         foreach (array_keys((array)$operationDefinition->responses) as $statusCode) {
             if ($statusCode == 204) {

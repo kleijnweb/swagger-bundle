@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -22,10 +22,10 @@ class ParameterRefBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function willDefaultToRequestUri()
     {
-        $builder = $this->construct();
+        $builder    = new ParameterRefBuilder('/');
         $repository = new DocumentRepository('src/Tests/Functional/PetStore/app');
-        $document = $repository->get('swagger/petstore.yml');
-        $request = Request::create(
+        $document   = $repository->get('swagger/petstore.yml');
+        $request    = Request::create(
             '/pet/100',
             'POST'
         );
@@ -37,18 +37,5 @@ class ParameterRefBuilderTest extends \PHPUnit_Framework_TestCase
         $actual = $builder->buildSpecificationLink($request, 'name');
 
         $this->assertStringStartsWith('http://petstore.swagger.io/swagger/petstore.yml', $actual);
-    }
-
-    /**
-     * @param string|null $scheme
-     * @param string|null $host
-     *
-     * @return ParameterRefBuilder
-     */
-    private function construct($scheme = null, $host = null)
-    {
-        $builder = new ParameterRefBuilder('/', $scheme, $host);
-
-        return $builder;
     }
 }

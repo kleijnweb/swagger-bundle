@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -37,14 +37,14 @@ class VndValidationErrorFactory
     /**
      * @param Request                    $request
      * @param InvalidParametersException $exception
-     * @param string|null                $logRef
+     * @param string                     $logRef
      *
      * @return VndError
      */
-    public function create(Request $request, InvalidParametersException $exception, $logRef = null)
+    public function create(Request $request, InvalidParametersException $exception, string $logRef = null)
     {
         $documentLink = $this->refBuilder->buildDocumentLink($request);
-        $error = new VndError(self::DEFAULT_MESSAGE, $logRef);
+        $error        = new VndError(self::DEFAULT_MESSAGE, $logRef);
         $error->addLink('about', $documentLink, ['title' => 'Api Specification']);
         $error->setUri($request->getUri());
 
@@ -57,8 +57,12 @@ class VndValidationErrorFactory
             $normalizedPropertyName = preg_replace('/\[\d+\]/', '', $errorSpec['property']);
 
             try {
-                $path         = $this->refBuilder->createParameterSchemaPointer($request, $normalizedPropertyName);
-                $data['path'] = $path;
+                $path = $this->refBuilder->createParameterSchemaPointer(
+                    $request,
+                    $normalizedPropertyName
+                );
+
+                $data['path']           = $path;
                 $parameterDefinitionUri = $this->refBuilder->buildSpecificationLink($request, $normalizedPropertyName);
 
             } catch (\InvalidArgumentException $e) {

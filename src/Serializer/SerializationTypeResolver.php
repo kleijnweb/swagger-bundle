@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -14,14 +14,14 @@ class SerializationTypeResolver
     /**
      * @var array
      */
-    private $resourceNamespaces = array();
+    private $resourceNamespaces = [];
 
     /**
-     * @param mixed $resourceNamespaces
+     * @param string|array $resourceNamespaces
      */
     public function __construct($resourceNamespaces = null)
     {
-        if(!is_array($resourceNamespaces)) {
+        if (!is_array($resourceNamespaces)) {
             $resourceNamespaces = [$resourceNamespaces];
         }
         $this->resourceNamespaces = $resourceNamespaces;
@@ -30,9 +30,9 @@ class SerializationTypeResolver
     /**
      * @param OperationObject $operationObject
      *
-     * @return null|string
+     * @return string
      */
-    public function resolve(OperationObject $operationObject)
+    public function resolve(OperationObject $operationObject): string
     {
         if ($operationObject->hasParameters()) {
             foreach ($operationObject->getParameters() as $parameterDefinition) {
@@ -42,15 +42,16 @@ class SerializationTypeResolver
             }
         }
 
-        return null;
+        return '';
     }
 
     /**
+     * @param string $resourceNamespace
      * @param string $typeName
      *
      * @return string
      */
-    protected function qualify($resourceNamespace, $typeName)
+    protected function qualify(string $resourceNamespace, string $typeName): string
     {
         return ltrim($resourceNamespace . '\\' . $typeName, '\\');
     }
@@ -60,12 +61,11 @@ class SerializationTypeResolver
      *
      * @return string
      */
-    public function resolveUsingSchema($schema)
+    public function resolveUsingSchema($schema): string
     {
         $reference = isset($schema->{'$ref'})
             ? $schema->{'$ref'}
-            : (isset($schema->{'x-ref-id'}) ? $schema->{'x-ref-id'} : null)
-        ;
+            : (isset($schema->{'x-ref-id'}) ? $schema->{'x-ref-id'} : null);
 
         if ($reference) {
             $reference = substr($reference, strrpos($reference, '/') + 1);
@@ -78,6 +78,6 @@ class SerializationTypeResolver
             }
         }
 
-        return null;
+        return '';
     }
 }

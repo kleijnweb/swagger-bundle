@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -58,7 +58,7 @@ class VndParameterValidationErrorTest extends WebTestCase
         try {
             $this->get('/v2/pet/findByStatus', ['status' => 'bogus']);
         } catch (ApiResponseErrorException $e) {
-            $error = Hal::fromJson($e->getJson(), 10);
+            $error    = Hal::fromJson($e->getJson(), 10);
             $resource = $error->getFirstResource('errors');
             $specLink = 'http://petstore.swagger.io/swagger/petstore.yml#/paths/~1pet~1findByStatus/get/parameters/0';
             $this->assertSame($specLink, $resource->getUri());
@@ -79,7 +79,7 @@ class VndParameterValidationErrorTest extends WebTestCase
         try {
             $this->post('/v2/store/order', []);
         } catch (ApiResponseErrorException $e) {
-            $error = Hal::fromJson($e->getJson(), 10);
+            $error    = Hal::fromJson($e->getJson(), 10);
             $resource = $error->getFirstResource('errors');
             $specLink = $url . '#/paths/~1pet~1findByStatus/get/parameters/0/body/properties/quantity';
             $this->assertSame($specLink, $resource->getUri());
@@ -97,9 +97,9 @@ class VndParameterValidationErrorTest extends WebTestCase
         try {
             $this->get('/v2/pet/findByStatus', ['status' => 'bogus']);
         } catch (ApiResponseErrorException $e) {
-            $error = Hal::fromJson($e->getJson(), 10);
+            $error    = Hal::fromJson($e->getJson(), 10);
             $resource = $error->getFirstResource('errors');
-            $data = $resource->getData();
+            $data     = $resource->getData();
             $this->assertSame('/paths/~1pet~1findByStatus/get/x-request-schema/properties/status', $data['path']);
 
             return;
@@ -115,7 +115,7 @@ class VndParameterValidationErrorTest extends WebTestCase
         try {
             $this->get('/v2/user/login');
         } catch (ApiResponseErrorException $e) {
-            $error = Hal::fromJson($e->getJson(), 10);
+            $error     = Hal::fromJson($e->getJson(), 10);
             $resources = $error->getResources();
             $this->assertArrayHasKey('errors', $resources);
             /**

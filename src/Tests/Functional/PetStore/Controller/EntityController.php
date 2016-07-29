@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -76,7 +76,7 @@ class EntityController
      */
     public function put($type, $id, $data)
     {
-        $data['id'] = $id;
+        $data['id']   = $id;
         $data['type'] = $type;
 
         return $data;
@@ -90,7 +90,7 @@ class EntityController
      */
     public function post($type, $data)
     {
-        $data['id'] = rand();
+        $data['id']   = rand();
         $data['type'] = $type;
 
         return $data;

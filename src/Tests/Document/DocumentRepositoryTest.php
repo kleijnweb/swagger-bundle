@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -66,8 +66,9 @@ class DocumentRepositoryTest extends \PHPUnit_Framework_TestCase
      */
     public function willCache()
     {
-        $path = 'src/Tests/Functional/PetStore/app/swagger/petstore.yml';
+        $path  = 'src/Tests/Functional/PetStore/app/swagger/petstore.yml';
         $cache = $this->getMockBuilder('Doctrine\Common\Cache\ArrayCache')->disableOriginalConstructor()->getMock();
+
         $repository = new DocumentRepository(null, $cache);
         $cache->expects($this->exactly(1))->method('fetch')->with($path);
         $cache->expects($this->exactly(1))->method('save')->with($path, $this->isType('object'));
@@ -81,7 +82,9 @@ class DocumentRepositoryTest extends \PHPUnit_Framework_TestCase
     public function canUsePathPrefix()
     {
         $this->repository = new DocumentRepository('src/Tests/Functional/PetStore');
+
         $document = $this->repository->get('app/swagger/petstore.yml');
+
         $this->assertInstanceOf('KleijnWeb\SwaggerBundle\Document\SwaggerDocument', $document);
     }
 }

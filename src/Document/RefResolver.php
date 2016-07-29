@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -37,11 +37,11 @@ class RefResolver
     private $loader;
 
     /**
-     * @param object $definition
-     * @param string $uri
-     * @param Loader $loader
+     * @param \stdClass $definition
+     * @param string    $uri
+     * @param Loader    $loader
      */
-    public function __construct($definition, $uri, Loader $loader = null)
+    public function __construct(\stdClass $definition, $uri, Loader $loader = null)
     {
         $this->definition = $definition;
         $this->uri        = $uri;
@@ -50,9 +50,9 @@ class RefResolver
     }
 
     /**
-     * @return object
+     * @return \stdClass
      */
-    public function getDefinition()
+    public function getDefinition(): \stdClass
     {
         return $this->definition;
     }
@@ -60,7 +60,7 @@ class RefResolver
     /**
      * Resolve all references
      *
-     * @return object
+     * @return mixed The whole definition can be a reference to a scalar value
      */
     public function resolve()
     {
@@ -72,9 +72,9 @@ class RefResolver
     /**
      * Revert to original state
      *
-     * @return object
+     * @return \stdClass
      */
-    public function unresolve()
+    public function unresolve(): \stdClass
     {
         $this->unresolveRecursively($this->definition);
 
@@ -83,13 +83,13 @@ class RefResolver
 
     /**
      * @param object|array $current
-     * @param object       $document
+     * @param \stdClass    $document
      * @param string       $uri
      *
      * @throws InvalidReferenceException
      * @throws ResourceNotReadableException
      */
-    private function resolveRecursively(&$current, $document = null, $uri = null)
+    private function resolveRecursively(&$current, \stdClass $document = null, string $uri = null)
     {
         $document = $document ?: $this->definition;
         $uri      = $uri ?: $this->uri;
@@ -142,14 +142,14 @@ class RefResolver
     }
 
     /**
-     * @param string $path
-     * @param object $document
-     * @param string $uri
+     * @param string    $path
+     * @param \stdClass $document
+     * @param string    $uri
      *
      * @return mixed
      * @throws InvalidReferenceException
      */
-    private function lookup($path, $document, $uri = null)
+    private function lookup($path, \stdClass $document, string $uri = null)
     {
         $target = $this->lookupRecursively(
             explode('/', trim($path, '/#')),
@@ -165,12 +165,12 @@ class RefResolver
     }
 
     /**
-     * @param array  $segments
-     * @param object $context
+     * @param array     $segments
+     * @param \stdClass $context
      *
      * @return mixed
      */
-    private function lookupRecursively(array $segments, $context)
+    private function lookupRecursively(array $segments, \stdClass $context)
     {
         $segment = str_replace(['~0', '~1'], ['~', '/'], array_shift($segments));
         if (property_exists($context, $segment)) {
@@ -187,9 +187,9 @@ class RefResolver
     /**
      * @param string $fileUrl
      *
-     * @return object
+     * @return \stdClass
      */
-    private function loadExternal($fileUrl)
+    private function loadExternal(string $fileUrl): \stdClass
     {
         return $this->loader->load($fileUrl);
     }
@@ -199,7 +199,7 @@ class RefResolver
      *
      * @return string
      */
-    private function normalizeFileUri(array $uriSegs)
+    private function normalizeFileUri(array $uriSegs): string
     {
         $path  = $uriSegs['path'];
         $auth  = !$uriSegs['user'] ? '' : "{$uriSegs['user']}:{$uriSegs['pass']}@";
@@ -219,7 +219,7 @@ class RefResolver
      *
      * @return array
      */
-    private function parseUri($uri)
+    private function parseUri(string $uri): array
     {
         $defaults = [
             'scheme'   => '',

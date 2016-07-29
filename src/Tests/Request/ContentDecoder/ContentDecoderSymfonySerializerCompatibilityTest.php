@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -15,12 +15,15 @@ use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
 use KleijnWeb\SwaggerBundle\Serializer\SymfonySerializerFactory;
 use KleijnWeb\SwaggerBundle\Tests\Request\TestRequestFactory;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\Encoder\DecoderInterface;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
 class ContentDecoderSymfonySerializerCompatibilityTest extends \PHPUnit_Framework_TestCase
 {
+    const FAUX_CLASS_NAME = 'ContentDecoderSymfonySerializerCompatibilityTestFauxClass';
+
     /**
      * @var ContentDecoder
      */
@@ -42,7 +45,7 @@ class ContentDecoderSymfonySerializerCompatibilityTest extends \PHPUnit_Framewor
     protected function setUp()
     {
         $this->jsonDecoderMock = $this
-            ->getMockBuilder('Symfony\Component\Serializer\Encoder\DecoderInterface')
+            ->getMockBuilder(DecoderInterface::class)
             ->getMockForAbstractClass();
         $this->jsonDecoderMock
             ->expects($this->any())
@@ -61,10 +64,18 @@ class ContentDecoderSymfonySerializerCompatibilityTest extends \PHPUnit_Framewor
             ->willReturn(true);
 
         $this->serializer = new SerializerAdapter(SymfonySerializerFactory::factory($this->jsonDecoderMock));
-        $this->contentDecoder = new ContentDecoder(
-            $this->serializer,
-            new SerializationTypeResolver()
-        );
+
+        $typeResolver = $this
+            ->getMockBuilder(SerializationTypeResolver::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $typeResolver
+            ->expects($this->any())
+            ->method('resolve')
+            ->willReturn(self::FAUX_CLASS_NAME);
+
+        $this->contentDecoder = new ContentDecoder($this->serializer, $typeResolver);
     }
 
     /**
@@ -80,11 +91,7 @@ class ContentDecoderSymfonySerializerCompatibilityTest extends \PHPUnit_Framewor
         $request = TestRequestFactory::create(json_encode($content));
         $request->headers->set('Content-Type', 'application/json');
 
-        $className = 'CanDeserializeObject';
-        $number = 0;
-        while (class_exists($className)) {
-            $className .= ++$number;
-        }
+        $className = self::FAUX_CLASS_NAME;
 
         eval("
             class $className {

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -59,7 +59,7 @@ class SwaggerRouteLoader extends Loader
      *
      * @return RouteCollection
      */
-    public function load($resource, $type = null)
+    public function load($resource, $type = null): RouteCollection
     {
         $resource = (string)$resource;
         if (in_array($resource, $this->loadedSpecs)) {
@@ -70,7 +70,7 @@ class SwaggerRouteLoader extends Loader
 
         $routes = new RouteCollection();
 
-        $paths = $document->getPathDefinitions();
+        $paths  = $document->getPathDefinitions();
         $router = 'swagger.controller';
         foreach ($paths as $path => $pathSpec) {
             if ($path === 'x-router') {
@@ -79,8 +79,8 @@ class SwaggerRouteLoader extends Loader
             }
         }
         foreach ($paths as $path => $methods) {
-            $relativePath = ltrim($path, '/');
-            $resourceName = strpos($relativePath, '/')
+            $relativePath     = ltrim($path, '/');
+            $resourceName     = strpos($relativePath, '/')
                 ? substr($relativePath, 0, strpos($relativePath, '/'))
                 : $relativePath;
             $routerController = null;
@@ -98,7 +98,7 @@ class SwaggerRouteLoader extends Loader
                     $router,
                     $routerController
                 );
-                $defaults = [
+                $defaults      = [
                     '_controller'   => $controllerKey,
                     '_definition'   => $resource,
                     '_swagger_path' => $path
@@ -122,7 +122,7 @@ class SwaggerRouteLoader extends Loader
      *
      * @return array
      */
-    private function resolveRequirements(SwaggerDocument $document, $path, $methodName)
+    private function resolveRequirements(SwaggerDocument $document, $path, $methodName): array
     {
         $operationObject = $document->getOperationObject($path, $methodName);
 
@@ -156,38 +156,39 @@ class SwaggerRouteLoader extends Loader
     }
 
     /**
-     * @param        $operationSpec
-     * @param        $methodName
-     * @param        $resourceName
-     * @param string $router
-     * @param null   $routerController
+     * @param \stdClass   $operationDefinition
+     * @param string      $methodName
+     * @param string      $resourceName
+     * @param string      $router
+     * @param string|null $routerController
      *
      * @return string
      */
     private function resolveControllerKey(
-        $operationSpec,
-        $methodName,
-        $resourceName,
-        $router,
-        $routerController = null
-    ) {
+        \stdClass $operationDefinition,
+        string $methodName,
+        string $resourceName,
+        string $router,
+        string $routerController = null
+    ): string
+    {
         $operationName = $methodName;
-        $diKey = "$router.$resourceName";
-        if (isset($operationSpec->operationId)) {
-            if (false !== strpos($operationSpec->operationId, ':')) {
-                return $operationSpec->operationId;
+        $diKey         = "$router.$resourceName";
+        if (isset($operationDefinition->operationId)) {
+            if (false !== strpos($operationDefinition->operationId, ':')) {
+                return $operationDefinition->operationId;
             }
-            $operationName = $operationSpec->operationId;
+            $operationName = $operationDefinition->operationId;
         }
 
-        if (property_exists($operationSpec, 'x-router-controller')) {
-            $diKey = $operationSpec->{'x-router-controller'};
+        if (property_exists($operationDefinition, 'x-router-controller')) {
+            $diKey = $operationDefinition->{'x-router-controller'};
         } elseif ($routerController) {
             $diKey = $routerController;
         }
 
-        if (property_exists($operationSpec, 'x-router-controller-method')) {
-            $operationName = $operationSpec->{'x-router-controller-method'};
+        if (property_exists($operationDefinition, 'x-router-controller-method')) {
+            $operationName = $operationDefinition->{'x-router-controller-method'};
         }
 
         return "$diKey:$operationName";
@@ -201,12 +202,12 @@ class SwaggerRouteLoader extends Loader
      *
      * @return string
      */
-    private function createRouteId($resource, $path, $controllerKey)
+    private function createRouteId($resource, $path, $controllerKey): string
     {
         list(, $operationName) = explode(':', $controllerKey);
-        $fileName = pathinfo($resource, PATHINFO_FILENAME);
+        $fileName       = pathinfo($resource, PATHINFO_FILENAME);
         $normalizedPath = strtolower(trim(preg_replace('/\W+/', '.', $path), '.'));
-        $routeName = "swagger.{$fileName}.$normalizedPath.$operationName";
+        $routeName      = "swagger.{$fileName}.$normalizedPath.$operationName";
 
         return $routeName;
     }

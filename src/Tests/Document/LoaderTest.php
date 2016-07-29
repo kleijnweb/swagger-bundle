@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -96,7 +96,7 @@ YAML;
      * @throws \KleijnWeb\SwaggerBundle\Document\Exception\ResourceNotReadableException
      * @throws \org\bovigo\vfs\vfsStreamException
      */
-    private function loadContentViaVfs($path, $content)
+    private function loadContentViaVfs($path, $content): \stdClass
     {
         $rootDirName = 'willProperlyResolveExternalReferences';
         vfsStreamWrapper::register();

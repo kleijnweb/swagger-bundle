@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -26,8 +26,8 @@ class ResponseFactoryJmsSerializerCompatibilityTest extends \PHPUnit_Framework_T
     public function willCreateJsonResponseFromObject()
     {
         $serializer = new SerializerAdapter(JmsSerializerFactory::factory());
-        $factory = new ResponseFactory(new DocumentRepository(), $serializer);
-        $request = new Request();
+        $factory    = new ResponseFactory(new DocumentRepository(), $serializer);
+        $request    = new Request();
         $request->attributes->set('_definition', 'src/Tests/Functional/PetStore/app/swagger/composite.yml');
         $request->attributes->set('_swagger_path', '/pet/{id}');
         $response = $factory->createResponse($request, (new JmsAnnotatedResourceStub())->setFoo('bar'));

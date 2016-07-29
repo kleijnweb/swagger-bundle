@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -36,7 +36,7 @@ class RequestProcessor
     public function __construct(RequestValidator $validator, RequestCoercer $coercer)
     {
         $this->validator = $validator;
-        $this->coercer = $coercer;
+        $this->coercer   = $coercer;
     }
 
     /**

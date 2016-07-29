@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -22,7 +22,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('swagger');
+        $rootNode    = $treeBuilder->root('swagger');
 
         $rootNode
             ->children()
@@ -37,7 +37,9 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('namespace')
                             ->beforeNormalization()
                                 ->ifString()
-                                ->then(function ($v) { return [$v]; })
+                                ->then(function ($v) {
+                                    return [$v];
+                                })
                             ->end()
                             ->prototype('scalar')
                             ->end()

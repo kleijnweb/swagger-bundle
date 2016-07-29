@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -22,9 +22,9 @@ class ViewListenerTest extends \PHPUnit_Framework_TestCase
      */
     public function willSetResponseFromFactoryOnEvent()
     {
-        $request = new Request();
+        $request  = new Request();
         $response = new Response();
-        $result = [uniqid()];
+        $result   = [uniqid()];
 
         $eventMock = $this
             ->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent')

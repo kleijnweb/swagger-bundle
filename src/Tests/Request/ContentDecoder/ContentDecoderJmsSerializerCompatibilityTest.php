@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -38,10 +38,18 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
     protected function setUp()
     {
         $this->serializer = new SerializerAdapter(JmsSerializerFactory::factory());
-        $this->contentDecoder = new ContentDecoder(
-            $this->serializer,
-            new SerializationTypeResolver('KleijnWeb\SwaggerBundle\Tests\Request\ContentDecoder')
-        );
+
+        $typeResolver = $this
+            ->getMockBuilder(SerializationTypeResolver::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $typeResolver
+            ->expects($this->any())
+            ->method('resolve')
+            ->willReturn(JmsAnnotatedResourceStub::class);
+
+        $this->contentDecoder = new ContentDecoder($this->serializer, $typeResolver);
     }
 
     /**
@@ -54,7 +62,6 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
         ];
         $request = new Request([], [], [], [], [], [], json_encode($content));
         $request->headers->set('Content-Type', 'application/json');
-
 
         $operationDefinition = (object)[
             'parameters' => [
@@ -72,8 +79,7 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
 
         $actual = $this->contentDecoder->decodeContent($request, $operationObject);
 
-        $className = 'KleijnWeb\SwaggerBundle\Tests\Request\ContentDecoder\JmsAnnotatedResourceStub';
-        $expected = (new $className)->setFoo('bar');
+        $expected = (new JmsAnnotatedResourceStub)->setFoo('bar');
 
         $this->assertEquals($expected, $actual);
     }
@@ -119,9 +125,8 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
 
         $operationObject = OperationObject::createFromOperationDefinition((object)$operationDefinition);
 
-        $actual = $this->contentDecoder->decodeContent($request, $operationObject);
-        $className = 'KleijnWeb\SwaggerBundle\Tests\Request\ContentDecoder\JmsAnnotatedResourceStub';
-        $expected = (new $className)->setFoo('bar');
+        $actual   = $this->contentDecoder->decodeContent($request, $operationObject);
+        $expected = (new JmsAnnotatedResourceStub)->setFoo('bar');
         $this->assertEquals($expected, $actual);
     }
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -53,8 +53,8 @@ class ResponseFactoryTest extends \PHPUnit_Framework_TestCase
     private function createResponse($data, $path, $method)
     {
         $serializer = new SerializerAdapter(new ArraySerializer());
-        $factory = new ResponseFactory(new DocumentRepository(), $serializer);
-        $request = new Request();
+        $factory    = new ResponseFactory(new DocumentRepository(), $serializer);
+        $request    = new Request();
         $request->server->set('REQUEST_METHOD', $method);
         $request->attributes->set('_definition', 'src/Tests/Functional/PetStore/app/swagger/composite.yml');
         $request->attributes->set('_swagger_path', $path);

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -39,7 +39,7 @@ class ViewListener
      */
     public function onKernelView(GetResponseForControllerResultEvent $event)
     {
-        $result = $event->getControllerResult();
+        $result   = $event->getControllerResult();
         $response = $this->responseFactory->createResponse(
             $event->getRequest(),
             $result

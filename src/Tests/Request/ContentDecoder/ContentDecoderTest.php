@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -35,7 +35,7 @@ class ContentDecoderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->serializer = new SerializerAdapter(new ArraySerializer());
+        $this->serializer     = new SerializerAdapter(new ArraySerializer());
         $this->contentDecoder = new ContentDecoder($this->serializer);
     }
 
@@ -50,7 +50,7 @@ class ContentDecoderTest extends \PHPUnit_Framework_TestCase
 
         $operationObject = OperationObject::createFromOperationDefinition((object)[]);
 
-        $actual = $this->contentDecoder->decodeContent($request, $operationObject);
+        $actual   = $this->contentDecoder->decodeContent($request, $operationObject);
         $expected = ['foo' => 'bar'];
         $this->assertSame($expected, $actual);
     }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -35,7 +35,7 @@ class YamlParser
      *
      * @return mixed
      */
-    public function parse($string)
+    public function parse(string $string)
     {
         // Hashmap support is broken, so disable it and attempt fix afterwards
         $data = $this->parser->parse($string, true, false, false);
@@ -54,8 +54,8 @@ class YamlParser
     {
         if (is_array($data)) {
             $shouldBeObject = false;
-            $object = new \stdClass();
-            $index = 0;
+            $object         = new \stdClass();
+            $index          = 0;
             foreach ($data as $key => &$value) {
                 $object->$key = $this->fixHashMaps($value);
                 if ($index++ !== $key) {

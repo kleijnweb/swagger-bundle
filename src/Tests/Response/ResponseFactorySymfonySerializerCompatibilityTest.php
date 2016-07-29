@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -26,7 +26,7 @@ class ResponseFactorySymfonySerializerCompatibilityTest extends \PHPUnit_Framewo
     public function willCreateJsonResponseFromObject()
     {
         $className = 'CreateJsonResponseFromObject';
-        $number = 0;
+        $number    = 0;
         while (class_exists($className)) {
             $className .= ++$number;
         }
@@ -59,8 +59,8 @@ class ResponseFactorySymfonySerializerCompatibilityTest extends \PHPUnit_Framewo
             ->willReturn(true);
 
         $serializer = new SerializerAdapter(SymfonySerializerFactory::factory($jsonEncoderMock));
-        $factory = new ResponseFactory(new DocumentRepository(), $serializer);
-        $request = new Request();
+        $factory    = new ResponseFactory(new DocumentRepository(), $serializer);
+        $request    = new Request();
         $request->attributes->set('_definition', 'src/Tests/Functional/PetStore/app/swagger/composite.yml');
         $request->attributes->set('_swagger_path', '/pet/{id}');
         $response = $factory->createResponse($request, (new $className)->setFoo('bar'));

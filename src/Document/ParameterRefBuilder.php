@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -42,10 +42,10 @@ class ParameterRefBuilder
      * @param string|null $scheme
      * @param string|null $host
      */
-    public function __construct($basePath = '/', $scheme = null, $host = null)
+    public function __construct(string $basePath = '/', string $scheme = null, string $host = null)
     {
-        $this->scheme = $scheme;
-        $this->host = $host;
+        $this->scheme   = $scheme;
+        $this->host     = $host;
         $this->basePath = $basePath;
     }
 
@@ -55,7 +55,7 @@ class ParameterRefBuilder
      *
      * @return string
      */
-    public function buildSpecificationLink(Request $request, $parameterName)
+    public function buildSpecificationLink(Request $request, string $parameterName): string
     {
         return "{$this->buildDocumentLink($request)}#{$this->createParameterPointer($request, $parameterName)}";
     }
@@ -73,9 +73,10 @@ class ParameterRefBuilder
         $filePath = $request->attributes->get('_definition');
 
         $definition = $document->getDefinition();
-        $basePath = $this->basePath;
-        $host = $this->host ?: property_exists($definition, 'host') ? $definition->host : $request->getHost();
-        $scheme = $this->scheme;
+        $basePath   = $this->basePath;
+        $host       = $this->host ?: property_exists($definition, 'host') ? $definition->host : $request->getHost();
+        $scheme     = $this->scheme;
+
         if (!$scheme) {
             $scheme = $request->getScheme();
             if (property_exists($definition, 'schemes')) {
@@ -99,7 +100,7 @@ class ParameterRefBuilder
      *
      * @return string
      */
-    public function createParameterPointer(Request $request, $parameterName)
+    public function createParameterPointer(Request $request, string $parameterName): string
     {
         /** @var OperationObject $operation */
         $operation = $request->attributes->get('_swagger_operation');
@@ -113,7 +114,7 @@ class ParameterRefBuilder
      *
      * @return string
      */
-    public function createParameterSchemaPointer(Request $request, $parameterName)
+    public function createParameterSchemaPointer(Request $request, string $parameterName): string
     {
         /** @var OperationObject $operation */
         $operation = $request->attributes->get('_swagger_operation');

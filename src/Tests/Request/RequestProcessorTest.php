@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -72,7 +72,6 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->getMockBuilder('KleijnWeb\SwaggerBundle\Request\RequestValidator')
             ->disableOriginalConstructor()
             ->getMock();
-
 
         /** @var RequestCoercer $contentDecoderMock */
         $coercerMock = $this

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -34,7 +34,7 @@ class RequestListener
     public function __construct(DocumentRepository $schemaRepository, RequestProcessor $processor)
     {
         $this->documentRepository = $schemaRepository;
-        $this->processor = $processor;
+        $this->processor          = $processor;
     }
 
     /**

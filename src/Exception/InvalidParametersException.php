@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -24,7 +24,7 @@ class InvalidParametersException extends \Exception
      * @param array      $validationErrors
      * @param \Exception $previous
      */
-    public function __construct($message, array $validationErrors, $code = 400, $previous = null)
+    public function __construct($message, array $validationErrors, int $code = 400, \Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
 
@@ -34,7 +34,7 @@ class InvalidParametersException extends \Exception
     /**
      * @return array
      */
-    public function getValidationErrors()
+    public function getValidationErrors(): array
     {
         return $this->validationErrors;
     }

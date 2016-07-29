@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -133,7 +133,6 @@ class ApiTestClient extends Client
     {
         return $this->subject->getScript($request);
     }
-
 
     /**
      * Sets whether to automatically follow redirects or not.

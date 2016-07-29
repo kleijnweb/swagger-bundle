@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -38,7 +38,7 @@ class OperationObject
      * @param string          $path
      * @param string          $method
      */
-    public function __construct(SwaggerDocument $document, $path, $method)
+    public function __construct(SwaggerDocument $document, string $path, string $method)
     {
         $paths = $document->getPathDefinitions();
 
@@ -58,15 +58,20 @@ class OperationObject
     }
 
     /**
-     * @param object $definition
-     * @param string $path
-     * @param string $method
+     * @param \stdClass $definition
+     * @param string    $path
+     * @param string    $method
      *
      * @return static
      */
-    public static function createFromOperationDefinition($definition, $path = '/', $method = 'GET')
-    {
-        $method             = strtolower($method);
+    public static function createFromOperationDefinition(
+        \stdClass $definition,
+        string $path = '/',
+        string $method = 'GET'
+    ) {
+
+        $method = strtolower($method);
+
         $documentDefinition = (object)[
             'paths' => (object)[
                 $path => (object)[
@@ -74,7 +79,8 @@ class OperationObject
                 ]
             ]
         ];
-        $document           = new SwaggerDocument('', $documentDefinition);
+
+        $document = new SwaggerDocument('', $documentDefinition);
 
         return new static($document, $path, $method);
     }
@@ -90,7 +96,7 @@ class OperationObject
     /**
      * @return bool
      */
-    public function hasParameters()
+    public function hasParameters(): bool
     {
         return property_exists($this->definition, 'parameters');
     }
@@ -98,7 +104,7 @@ class OperationObject
     /**
      * @return array
      */
-    public function getParameters()
+    public function getParameters(): array
     {
         return $this->hasParameters() ? $this->definition->parameters : [];
     }
@@ -106,7 +112,7 @@ class OperationObject
     /**
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
@@ -114,15 +120,15 @@ class OperationObject
     /**
      * @return string
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
 
     /**
-     * @return object
+     * @return \stdClass
      */
-    public function getDefinition()
+    public function getDefinition(): \stdClass
     {
         return $this->definition;
     }
@@ -132,7 +138,7 @@ class OperationObject
      *
      * @return string
      */
-    public function createParameterPointer($parameterName)
+    public function createParameterPointer(string $parameterName): string
     {
         foreach ($this->definition->parameters as $i => $paramDefinition) {
             if ($paramDefinition->name === $parameterName) {
@@ -153,7 +159,7 @@ class OperationObject
      *
      * @return string
      */
-    public function createParameterSchemaPointer($parameterName)
+    public function createParameterSchemaPointer(string $parameterName): string
     {
         $segments = explode('.', $parameterName);
 
@@ -169,7 +175,6 @@ class OperationObject
                 ]
             );
 
-
         return self::resolvePointerRecursively(
             $pointer,
             $segments,
@@ -184,7 +189,7 @@ class OperationObject
      *
      * @return mixed
      */
-    public static function resolvePointerRecursively($pointer, array $segments, $context)
+    public static function resolvePointerRecursively(string $pointer, array $segments, $context)
     {
         $segment = str_replace(['~0', '~1'], ['~', '/'], array_shift($segments));
         if (property_exists($context, $segment)) {
@@ -200,9 +205,9 @@ class OperationObject
     }
 
     /**
-     * @return object
+     * @return \stdClass
      */
-    private function assembleRequestSchema()
+    private function assembleRequestSchema(): \stdClass
     {
         if (!isset($this->definition->parameters)) {
             return new \stdClass;

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -91,7 +91,7 @@ class RequestValidator
 
         $parameters = new \stdClass;
 
-        if(isset($this->operationObject->getDefinition()->parameters)) {
+        if (isset($this->operationObject->getDefinition()->parameters)) {
             foreach ($this->operationObject->getDefinition()->parameters as $paramDefinition) {
                 $paramName = $paramDefinition->name;
 

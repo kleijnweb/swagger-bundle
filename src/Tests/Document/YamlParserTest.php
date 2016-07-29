@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -24,7 +24,7 @@ class YamlParserTest extends \PHPUnit_Framework_TestCase
      */
     public function canParseNumericMap()
     {
-        $yaml = <<<YAML
+        $yaml   = <<<YAML
 map:
   1: one
   2: two

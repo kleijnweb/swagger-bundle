@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Model\Resources;
 
 use JMS\Serializer\Annotation\Type;

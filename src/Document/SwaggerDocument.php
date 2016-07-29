@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -29,27 +29,27 @@ class SwaggerDocument
     private $operations;
 
     /**
-     * @param string $pathFileName
-     * @param object $definition
+     * @param string    $pathFileName
+     * @param \stdClass $definition
      */
-    public function __construct($pathFileName, $definition)
+    public function __construct(string $pathFileName, \stdClass $definition)
     {
-        $this->uri = $pathFileName;
+        $this->uri        = $pathFileName;
         $this->definition = $definition;
     }
 
     /**
-     * @return object
+     * @return \stdClass
      */
-    public function getDefinition()
+    public function getDefinition(): \stdClass
     {
         return $this->definition;
     }
 
     /**
-     * @return object
+     * @return \stdClass
      */
-    public function getPathDefinitions()
+    public function getPathDefinitions(): \stdClass
     {
         return $this->definition->paths;
     }
@@ -60,7 +60,7 @@ class SwaggerDocument
      *
      * @return OperationObject
      */
-    public function getOperationObject($path, $method)
+    public function getOperationObject(string $path, string $method): OperationObject
     {
         $key = "$path::$method";
 
@@ -77,9 +77,9 @@ class SwaggerDocument
      * @param string $path
      * @param string $method
      *
-     * @return object
+     * @return \stdClass
      */
-    public function getOperationDefinition($path, $method)
+    public function getOperationDefinition(string $path, string $method): \stdClass
     {
         return $this->getOperationObject($path, $method)->getDefinition();
     }

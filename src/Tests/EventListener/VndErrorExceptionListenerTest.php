@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -69,12 +69,12 @@ class VndErrorExceptionListenerTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['getException', 'getRequest'])
             ->getMock();
 
-        $this->exception = new \Exception("Mary had a little lamb");
-        $reflection = new \ReflectionClass($this->exception);
-        $codeProperty = $reflection->getProperty('code');
+        $this->exception    = new \Exception("Mary had a little lamb");
+        $reflection         = new \ReflectionClass($this->exception);
+        $codeProperty       = $reflection->getProperty('code');
         $this->codeProperty = $codeProperty;
         $this->codeProperty->setAccessible(true);
-        $attributes = [
+        $attributes    = [
             '_definition' => '/foo/bar'
         ];
         $this->request = new Request($query = [], $request = [], $attributes);
@@ -94,7 +94,7 @@ class VndErrorExceptionListenerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->logger = $this->getMockForAbstractClass('Psr\Log\LoggerInterface');
+        $this->logger            = $this->getMockForAbstractClass('Psr\Log\LoggerInterface');
         $this->exceptionListener = new VndErrorExceptionListener($this->validationErrorFactory, $this->logger);
     }
 

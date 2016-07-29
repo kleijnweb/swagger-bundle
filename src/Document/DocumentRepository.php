@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -43,11 +43,11 @@ class DocumentRepository
      * @param Cache  $cache
      * @param Loader $loader
      */
-    public function __construct($basePath = null, Cache $cache = null, Loader $loader = null)
+    public function __construct(string $basePath = null, Cache $cache = null, Loader $loader = null)
     {
         $this->basePath = $basePath;
-        $this->cache = $cache;
-        $this->loader = $loader ?: new Loader();
+        $this->cache    = $cache;
+        $this->loader   = $loader ?: new Loader();
     }
 
     /**
@@ -55,7 +55,7 @@ class DocumentRepository
      *
      * @return SwaggerDocument
      */
-    public function get($documentPath)
+    public function get(string $documentPath): SwaggerDocument
     {
         if ($this->basePath) {
             $documentPath = "$this->basePath/$documentPath";
@@ -76,7 +76,7 @@ class DocumentRepository
      * @return SwaggerDocument
      * @throws ResourceNotReadableException
      */
-    private function load($uri)
+    private function load(string $uri): SwaggerDocument
     {
         if ($this->cache && $document = $this->cache->fetch($uri)) {
             return $document;

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -99,13 +99,13 @@ class RefResolverTest extends \PHPUnit_Framework_TestCase
      * @dataProvider externalReferenceProvider
      * @test
      *
-     * @param mixed           $expected
-     * @param string          $fileUrl
-     * @param string          $uri
-     * @param array|\stdClass $content
+     * @param mixed     $expected
+     * @param string    $fileUrl
+     * @param string    $uri
+     * @param \stdClass $content
      *
      */
-    public function willProperlyResolveExternalReferences($expected, $fileUrl, $uri, $content)
+    public function willProperlyResolveExternalReferences($expected, string $fileUrl, string $uri, \stdClass $content)
     {
         $mockLoader = $this
             ->getMockBuilder('KleijnWeb\SwaggerBundle\Document\Loader')
@@ -170,7 +170,7 @@ class RefResolverTest extends \PHPUnit_Framework_TestCase
      *
      * @return RefResolver
      */
-    private function construct($path)
+    private function construct($path): RefResolver
     {
         $filePath = "src/Tests/Functional/PetStore/app/swagger/$path";
         $contents = file_get_contents($filePath);

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -73,7 +73,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
         $this->documentMock
             ->expects($this->any())
             ->method('getPathDefinitions')
-            ->willReturn([]);
+            ->willReturn((object)[]);
 
         $this->loader->load(self::DOCUMENT_PATH);
         $this->loader->load(self::DOCUMENT_PATH . '2');
@@ -109,7 +109,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
         $this->documentMock
             ->expects($this->any())
             ->method('getPathDefinitions')
-            ->willReturn([]);
+            ->willReturn((object)[]);
 
         $this->loader->load(self::DOCUMENT_PATH);
         $this->loader->load(self::DOCUMENT_PATH);
@@ -123,7 +123,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
         $this->documentMock
             ->expects($this->any())
             ->method('getPathDefinitions')
-            ->willReturn([]);
+            ->willReturn((object)[]);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
         $this->assertInstanceOf('Symfony\Component\Routing\RouteCollection', $routes);
@@ -176,6 +176,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
     public function canUseOperationIdAsControllerKey()
     {
         $expected = 'my.controller.key:methodName';
+
         $pathDefinitions = (object)[
             '/a' => (object)[
                 'get'  => (object)[],
@@ -202,11 +203,11 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
     public function canUseXRouterMethodToOverrideMethod()
     {
         $pathDefinitions = (object)[
-            '/a'       => (object)[
+            '/a' => (object)[
                 'get'  => (object)[],
                 'post' => (object)['x-router-controller-method' => 'myMethodName']
             ],
-            '/b'       => (object)['get' => (object)[]],
+            '/b' => (object)['get' => (object)[]],
         ];
 
         $this->documentMock
@@ -225,8 +226,8 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function canUseXRouterControllerForDiKeyInOperation()
     {
-        $diKey = 'my.x_router.controller';
-        $expected = "$diKey:post";
+        $diKey           = 'my.x_router.controller';
+        $expected        = "$diKey:post";
         $pathDefinitions = (object)[
             '/a' => (object)[
                 'get'  => (object)[],
@@ -252,8 +253,8 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function canUseXRouterControllerForDiKeyInPath()
     {
-        $diKey = 'my.x_router.controller';
-        $expected = "$diKey:post";
+        $diKey           = 'my.x_router.controller';
+        $expected        = "$diKey:post";
         $pathDefinitions = (object)[
             '/a' => (object)[
                 'x-router-controller' => $diKey,
@@ -280,8 +281,8 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function canUseXRouterForDiKeyInPath()
     {
-        $router = 'my.x_router';
-        $expected = "$router.a:post";
+        $router          = 'my.x_router';
+        $expected        = "$router.a:post";
         $pathDefinitions = (object)[
             'x-router' => $router,
             '/a'       => (object)[
@@ -363,7 +364,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
         $pathDefinitions = (object)[
             '/a' => (object)[
                 'get' => (object)[
-                    'parameters' => (object)[
+                    'parameters' => [
                         (object)['name' => 'foo', 'in' => 'path', 'type' => 'integer']
                     ]
                 ]
@@ -389,11 +390,11 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function willAddRequirementsForStringPatternParams()
     {
-        $expected = '\d{2}hello';
+        $expected        = '\d{2}hello';
         $pathDefinitions = (object)[
             '/a' => (object)[
                 'get' => (object)[
-                    'parameters' => (object)[
+                    'parameters' => [
                         (object)['name' => 'aString', 'in' => 'path', 'type' => 'string', 'pattern' => $expected]
                     ]
                 ]
@@ -419,12 +420,12 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function willAddRequirementsForStringEnumParams()
     {
-        $enum = ['a', 'b', 'c'];
-        $expected = '(a|b|c)';
+        $enum            = ['a', 'b', 'c'];
+        $expected        = '(a|b|c)';
         $pathDefinitions = (object)[
             '/a' => (object)[
                 'get' => (object)[
-                    'parameters' => (object)[
+                    'parameters' => [
                         (object)['name' => 'aString', 'in' => 'path', 'type' => 'string', 'enum' => $enum]
                     ]
                 ]

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -52,7 +52,6 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
     {
         self::getPetStoreDocument()->getOperationDefinition('/store/inventory', 'GET');
     }
-
 
     /**
      * @expectedException \InvalidArgumentException
