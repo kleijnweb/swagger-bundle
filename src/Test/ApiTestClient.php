@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -14,9 +14,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
 use Symfony\Component\DomCrawler\Link;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\HttpKernel\Profiler\Profile as HttpProfile;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>

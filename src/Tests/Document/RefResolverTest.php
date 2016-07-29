@@ -8,7 +8,6 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Document;
 
-use KleijnWeb\SwaggerBundle\Document\Loader;
 use KleijnWeb\SwaggerBundle\Document\RefResolver;
 use KleijnWeb\SwaggerBundle\Document\YamlParser;
 

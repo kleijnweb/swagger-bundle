@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -10,8 +10,8 @@ namespace KleijnWeb\SwaggerBundle\Tests\Request;
 
 use KleijnWeb\SwaggerBundle\Document\OperationObject;
 use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
-use KleijnWeb\SwaggerBundle\Request\RequestCoercer;
 use KleijnWeb\SwaggerBundle\Request\ParameterCoercer;
+use KleijnWeb\SwaggerBundle\Request\RequestCoercer;
 use Symfony\Component\HttpFoundation\Request;
 
 /**

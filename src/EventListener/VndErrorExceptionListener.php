@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -9,8 +9,8 @@
 namespace KleijnWeb\SwaggerBundle\EventListener;
 
 use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
-use KleijnWeb\SwaggerBundle\Response\VndValidationErrorFactory;
 use KleijnWeb\SwaggerBundle\Response\VndErrorResponse;
+use KleijnWeb\SwaggerBundle\Response\VndValidationErrorFactory;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Ramsey\VndError\VndError;

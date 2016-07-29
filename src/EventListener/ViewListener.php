@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -8,9 +8,9 @@
 
 namespace KleijnWeb\SwaggerBundle\EventListener;
 
-use KleijnWeb\SwaggerBundle\Response\ResponseFactory;
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
 use KleijnWeb\SwaggerBundle\Exception\UnsupportedContentTypeException;
+use KleijnWeb\SwaggerBundle\Response\ResponseFactory;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 
 /**

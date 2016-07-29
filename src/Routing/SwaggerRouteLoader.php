@@ -9,7 +9,6 @@
 namespace KleijnWeb\SwaggerBundle\Routing;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
-use KleijnWeb\SwaggerBundle\Document\OperationObject;
 use KleijnWeb\SwaggerBundle\Document\SwaggerDocument;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\Route;

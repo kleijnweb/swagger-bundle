@@ -14,7 +14,6 @@ use KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver;
 use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
 use KleijnWeb\SwaggerBundle\Serializer\SymfonySerializerFactory;
 use KleijnWeb\SwaggerBundle\Tests\Request\TestRequestFactory;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 
 /**

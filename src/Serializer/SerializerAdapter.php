@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -9,8 +9,8 @@
 namespace KleijnWeb\SwaggerBundle\Serializer;
 
 use JMS\Serializer\SerializationContext;
-use Symfony\Component\Serializer\SerializerInterface as SymfonySerializer;
 use JMS\Serializer\SerializerInterface as JmsSerializer;
+use Symfony\Component\Serializer\SerializerInterface as SymfonySerializer;
 
 /**
  * Adapter for transparent use of ArraySerializer, Symfony\Component\Serializer or JMS\Serializer

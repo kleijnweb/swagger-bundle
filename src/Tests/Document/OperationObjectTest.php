@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -10,7 +10,6 @@ namespace KleijnWeb\SwaggerBundle\Tests\Document;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\Document\OperationObject;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>

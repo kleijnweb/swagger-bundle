@@ -9,9 +9,9 @@
 namespace KleijnWeb\SwaggerBundle\Serializer;
 
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 /**
  * Creates a Symfony Serializer with defaults

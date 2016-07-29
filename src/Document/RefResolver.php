@@ -8,8 +8,8 @@
 
 namespace KleijnWeb\SwaggerBundle\Document;
 
-use KleijnWeb\SwaggerBundle\Document\Exception\ResourceNotReadableException;
 use KleijnWeb\SwaggerBundle\Document\Exception\InvalidReferenceException;
+use KleijnWeb\SwaggerBundle\Document\Exception\ResourceNotReadableException;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>

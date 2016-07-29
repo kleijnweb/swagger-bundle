@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -8,11 +8,11 @@
 
 namespace KleijnWeb\SwaggerBundle\Request;
 
+use JsonSchema\Validator;
 use KleijnWeb\SwaggerBundle\Document\OperationObject;
+use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
 use KleijnWeb\SwaggerBundle\Exception\UnsupportedException;
 use Symfony\Component\HttpFoundation\Request;
-use JsonSchema\Validator;
-use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>

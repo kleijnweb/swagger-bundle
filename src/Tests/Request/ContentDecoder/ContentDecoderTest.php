@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -13,7 +13,6 @@ use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
 use KleijnWeb\SwaggerBundle\Serializer\ArraySerializer;
 use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
 use KleijnWeb\SwaggerBundle\Tests\Request\TestRequestFactory;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>

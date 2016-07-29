@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -9,9 +9,9 @@
 namespace KleijnWeb\SwaggerBundle\Request;
 
 use KleijnWeb\SwaggerBundle\Document\OperationObject;
+use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
 use KleijnWeb\SwaggerBundle\Exception\UnsupportedException;
 use Symfony\Component\HttpFoundation\Request;
-use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>

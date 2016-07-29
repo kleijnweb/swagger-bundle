@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -7,8 +7,6 @@
  */
 
 namespace KleijnWeb\SwaggerBundle\Tests\Request\ContentDecoder;
-
-use JMS\Serializer\Annotation\Type;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
