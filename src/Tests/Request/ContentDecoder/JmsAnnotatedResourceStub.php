@@ -8,8 +8,6 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Request\ContentDecoder;
 
-use JMS\Serializer\Annotation\Type;
-
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */

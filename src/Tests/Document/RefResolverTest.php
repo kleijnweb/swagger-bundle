@@ -8,8 +8,8 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Document;
 
-use KleijnWeb\SwaggerBundle\Document\RefResolver;
 use KleijnWeb\SwaggerBundle\Document\Parser\YamlParser;
+use KleijnWeb\SwaggerBundle\Document\RefResolver;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>

@@ -102,6 +102,7 @@ class SwaggerSerializer implements Serializer
                     return $item;
             }
         };
+
         return $import(
             json_decode($data, true),
             $this->definitions->{$this->serializationTypeResolver->reverseLookup($type)}

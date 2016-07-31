@@ -8,7 +8,6 @@
 
 namespace KleijnWeb\SwaggerBundle\Serialize\Serializer;
 
-use JMS\Serializer\SerializerInterface as JmsSerializer;
 use KleijnWeb\SwaggerBundle\Serialize\Serializer;
 use Symfony\Component\Serializer\SerializerInterface as SymfonySerializer;
 

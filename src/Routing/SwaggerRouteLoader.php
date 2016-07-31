@@ -169,8 +169,8 @@ class SwaggerRouteLoader extends Loader
         string $resourceName,
         string $router,
         string $routerController = null
-    ): string
-    {
+    ): string {
+
         $operationName = $methodName;
         $diKey         = "$router.$resourceName";
         if (isset($operationDefinition->operationId)) {

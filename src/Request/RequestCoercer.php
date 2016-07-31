@@ -32,7 +32,7 @@ class RequestCoercer
     }
 
     /**
-     * @param Request         $request
+     * @param Request   $request
      * @param Operation $operationObject
      *
      * @throws MalformedContentException

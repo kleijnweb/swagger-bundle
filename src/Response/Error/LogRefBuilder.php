@@ -23,11 +23,3 @@ interface LogRefBuilder
      */
     public function create(Request $request, \Exception $exception): string;
 }
-
- class CustomLogRefBuilder implements LogRefBuilder
- {
-     public function create(Request $request, \Exception $exception): string
-     {
-         return uniqid("{$request->headers->get('x-request-id')}_{$exception->getCode()}_");
-     }
- }

@@ -31,29 +31,17 @@ class ContentDecoder
     private $typeResolver;
 
     /**
-     * @param Serializer         $serializer
+     * @param Serializer                $serializer
      * @param SerializationTypeResolver $typeResolver
      */
     public function __construct(Serializer $serializer, SerializationTypeResolver $typeResolver = null)
     {
-        $this->serializer = $serializer;
+        $this->serializer   = $serializer;
         $this->typeResolver = $typeResolver;
     }
 
     /**
-     * @param SerializationTypeResolver $typeResolver
-     *
-     * @return ContentDecoder
-     */
-    public function setTypeResolver(SerializationTypeResolver $typeResolver = null): ContentDecoder
-    {
-        $this->typeResolver = $typeResolver;
-
-        return $this;
-    }
-
-    /**
-     * @param Request         $request
+     * @param Request   $request
      * @param Operation $operationObject
      *
      * @return mixed
@@ -65,6 +53,7 @@ class ContentDecoder
         if ($content = $request->getContent()) {
             try {
                 $type = $this->typeResolver ? $this->typeResolver->resolveOperationBodyType($operationObject) : '';
+
                 return $this->serializer->deserialize($content, $type);
             } catch (\Exception $e) {
                 throw new MalformedContentException("Unable to decode payload", 400, $e);

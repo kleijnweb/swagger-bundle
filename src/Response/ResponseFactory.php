@@ -30,7 +30,7 @@ class ResponseFactory
 
     /**
      * @param DocumentRepository $documentRepository
-     * @param Serializer  $serializer
+     * @param Serializer         $serializer
      */
     public function __construct(DocumentRepository $documentRepository, Serializer $serializer)
     {

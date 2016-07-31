@@ -40,7 +40,7 @@ class RequestProcessor
     }
 
     /**
-     * @param Request         $request
+     * @param Request   $request
      * @param Operation $operationObject
      *
      * @throws InvalidParametersException

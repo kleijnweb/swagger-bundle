@@ -21,7 +21,7 @@ interface Serializer
     public function serialize($data): string;
 
     /**
-     * @param mixed       $data
+     * @param mixed  $data
      * @param string $type
      *
      * @return mixed

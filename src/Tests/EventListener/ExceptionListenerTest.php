@@ -8,8 +8,8 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\EventListener;
 
-use KleijnWeb\SwaggerBundle\Response\Error\LogRefBuilder;
 use KleijnWeb\SwaggerBundle\EventListener\ExceptionListener;
+use KleijnWeb\SwaggerBundle\Response\Error\LogRefBuilder;
 use KleijnWeb\SwaggerBundle\Response\ErrorResponseFactory;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;

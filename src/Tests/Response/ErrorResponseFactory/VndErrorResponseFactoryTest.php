@@ -8,8 +8,6 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Response\ErrorResponseFactory;
 
-use JsonSchema\Validator;
-use KleijnWeb\SwaggerBundle\Document\ParameterRefBuilder;
 use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
 use KleijnWeb\SwaggerBundle\Response\Error\HttpError;
 use KleijnWeb\SwaggerBundle\Response\Error\LogRefBuilder;
@@ -120,7 +118,7 @@ class VndErrorResponseFactoryTest extends \PHPUnit_Framework_TestCase
     public function willCreateValidationErrorResponse()
     {
         $exception = new InvalidParametersException('Oh noes', []);
-        $request = new Request();
+        $request   = new Request();
 
         $this->errorFactoryMock
             ->expects($this->once())
