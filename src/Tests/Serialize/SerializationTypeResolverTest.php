@@ -44,4 +44,13 @@ class SerializationTypeResolverTest extends \PHPUnit_Framework_TestCase
         $this->resolver->resolveUsingTypeName('Foo');
         $this->assertSame('Foo', $this->resolver->reverseLookup(Stubs\Namespace2\Foo::class));
     }
+
+    /**
+     * @test
+     * @expectedException \InvalidArgumentException
+     */
+    public function reverseLookupWillFailIfNotPreviouslyResolved()
+    {
+        $this->assertSame('Foo', $this->resolver->reverseLookup(Stubs\Namespace2\Foo::class));
+    }
 }
