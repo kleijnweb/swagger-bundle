@@ -8,7 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Functional;
 
-use KleijnWeb\SwaggerBundle\Response\VndValidationErrorFactory;
+use KleijnWeb\SwaggerBundle\Response\ErrorResponseFactory\VndError\VndValidationErrorFactory;
 use KleijnWeb\SwaggerBundle\Test\ApiResponseErrorException;
 use KleijnWeb\SwaggerBundle\Test\ApiTestCase;
 use Nocarrier\Hal;
@@ -22,11 +22,11 @@ class VndParameterValidationErrorTest extends WebTestCase
     use ApiTestCase;
 
     /**
-     * Use config_basic.yml
+     * Use config_vnderror.yml
      *
      * @var bool
      */
-    protected $env = 'basic';
+    protected $env = 'vnderror';
 
     public static function setUpBeforeClass()
     {
@@ -61,27 +61,6 @@ class VndParameterValidationErrorTest extends WebTestCase
             $error    = Hal::fromJson($e->getJson(), 10);
             $resource = $error->getFirstResource('errors');
             $specLink = 'http://petstore.swagger.io/swagger/petstore.yml#/paths/~1pet~1findByStatus/get/parameters/0';
-            $this->assertSame($specLink, $resource->getUri());
-
-            return;
-        }
-        $this->fail("Expected exception");
-    }
-
-    /**
-     * @test
-     */
-    public function parameterValidationErrorWillContainSpecificationPointerForBodyParameter()
-    {
-        $this->markTestIncomplete('Not working with JSON-Schema version');
-
-        $url = 'http://petstore.swagger.io/swagger/petstore.yml';
-        try {
-            $this->post('/v2/store/order', []);
-        } catch (ApiResponseErrorException $e) {
-            $error    = Hal::fromJson($e->getJson(), 10);
-            $resource = $error->getFirstResource('errors');
-            $specLink = $url . '#/paths/~1pet~1findByStatus/get/parameters/0/body/properties/quantity';
             $this->assertSame($specLink, $resource->getUri());
 
             return;

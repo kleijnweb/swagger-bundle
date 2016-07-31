@@ -9,7 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\Response;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
-use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
+use KleijnWeb\SwaggerBundle\Serialize\Serializer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 class ResponseFactory
 {
     /**
-     * @var SerializerAdapter
+     * @var Serializer
      */
     private $serializer;
 
@@ -30,9 +30,9 @@ class ResponseFactory
 
     /**
      * @param DocumentRepository $documentRepository
-     * @param SerializerAdapter  $serializer
+     * @param Serializer  $serializer
      */
-    public function __construct(DocumentRepository $documentRepository, SerializerAdapter $serializer)
+    public function __construct(DocumentRepository $documentRepository, Serializer $serializer)
     {
         $this->serializer         = $serializer;
         $this->documentRepository = $documentRepository;
@@ -56,7 +56,7 @@ class ResponseFactory
         }
 
         if ($data !== null) {
-            $data = $this->serializer->serialize($data, 'json');
+            $data = $this->serializer->serialize($data);
         }
 
         $swaggerDocument = $this->documentRepository->get($request->get('_definition'));

@@ -53,9 +53,9 @@ class DocumentRepository
     /**
      * @param string $documentPath
      *
-     * @return SwaggerDocument
+     * @return Specification
      */
-    public function get(string $documentPath): SwaggerDocument
+    public function get(string $documentPath): Specification
     {
         if ($this->basePath) {
             $documentPath = "$this->basePath/$documentPath";
@@ -73,17 +73,17 @@ class DocumentRepository
     /**
      * @param string $uri
      *
-     * @return SwaggerDocument
+     * @return Specification
      * @throws ResourceNotReadableException
      */
-    private function load(string $uri): SwaggerDocument
+    private function load(string $uri): Specification
     {
         if ($this->cache && $document = $this->cache->fetch($uri)) {
             return $document;
         }
 
         $resolver = new RefResolver($this->loader->load($uri), $uri);
-        $document = new SwaggerDocument($resolver->resolve());
+        $document = new Specification($resolver->resolve());
 
         if ($this->cache) {
             $this->cache->save($uri, $document);

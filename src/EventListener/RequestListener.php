@@ -53,9 +53,9 @@ class RequestListener
             throw new \LogicException("Request does not contain reference to Swagger path");
         }
         $swaggerDocument = $this->documentRepository->get($request->get('_definition'));
-        $request->attributes->set('_swagger_document', $swaggerDocument);
+        $request->attributes->set('_oa_spec', $swaggerDocument);
 
-        $operation = $swaggerDocument->getOperationObject($request->get('_swagger_path'), $request->getMethod());
+        $operation = $swaggerDocument->getOperation($request->get('_swagger_path'), $request->getMethod());
         $request->attributes->set('_swagger_operation', $operation);
 
         $this->processor->process($request, $operation);

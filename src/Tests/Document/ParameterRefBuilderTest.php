@@ -31,8 +31,8 @@ class ParameterRefBuilderTest extends \PHPUnit_Framework_TestCase
         );
         $request->attributes->set('_definition', 'swagger/petstore.yml');
         $request->attributes->set('_swagger_path', '/pet/{petId}');
-        $request->attributes->set('_swagger_document', $document);
-        $request->attributes->set('_swagger_operation', $document->getOperationObject('/pet/{petId}', 'POST'));
+        $request->attributes->set('_oa_spec', $document);
+        $request->attributes->set('_swagger_operation', $document->getOperation('/pet/{petId}', 'POST'));
 
         $actual = $builder->buildSpecificationLink($request, 'name');
 

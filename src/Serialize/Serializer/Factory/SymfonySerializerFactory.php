@@ -5,8 +5,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-namespace KleijnWeb\SwaggerBundle\Serializer;
+namespace KleijnWeb\SwaggerBundle\Serialize\Serializer\Factory;
 
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;

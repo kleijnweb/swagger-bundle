@@ -8,9 +8,13 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\EventListener;
 
-use KleijnWeb\SwaggerBundle\Document\OperationObject;
+use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
+use KleijnWeb\SwaggerBundle\Document\Specification;
+use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
 use KleijnWeb\SwaggerBundle\EventListener\RequestListener;
+use KleijnWeb\SwaggerBundle\Request\RequestProcessor;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -38,7 +42,7 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $transformerMock;
+    private $processor;
 
     /**
      * @var RequestListener
@@ -51,6 +55,11 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
     private $eventMock;
 
     /**
+     * @var GetResponseForExceptionEvent
+     */
+    private $event;
+
+    /**
      * Create mocks
      */
     protected function setUp()
@@ -61,27 +70,31 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
             ['_definition' => self::DOCUMENT_PATH, '_swagger_path' => self::SWAGGER_PATH]
         );
 
-        $this->documentMock = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Document\SwaggerDocument')
+        $this->eventMock = $this->event = $this
+            ->getMockBuilder(GetResponseForExceptionEvent::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->eventMock = $this
-            ->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent')
+        /** @var Specification $document */
+        $this->documentMock = $document = $this
+            ->getMockBuilder(Specification::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->repositoryMock = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Document\DocumentRepository')
+        /** @var DocumentRepository $repository */
+        $this->repositoryMock = $repository = $this
+            ->getMockBuilder(DocumentRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->transformerMock = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Request\RequestProcessor')
+
+        /** @var RequestProcessor $processor */
+        $this->processor = $processor = $this
+            ->getMockBuilder(RequestProcessor::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->listener = new RequestListener($this->repositoryMock, $this->transformerMock);
+        $this->listener = new RequestListener($repository, $processor);
     }
 
     /**
@@ -96,8 +109,8 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
 
         $this->documentMock
             ->expects($this->once())
-            ->method('getOperationObject')
-            ->willReturn(OperationObject::createFromOperationDefinition((object)[]));
+            ->method('getOperation')
+            ->willReturn(Operation::createFromOperationDefinition((object)[]));
 
         $this->repositoryMock
             ->expects($this->once())
@@ -110,12 +123,12 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
             ->method('getRequest')
             ->willReturn($this->request);
 
-        $this->transformerMock
+        $this->processor
             ->expects($this->once())
             ->method('process')
             ->with($this->request);
 
-        $this->listener->onKernelRequest($this->eventMock);
+        $this->listener->onKernelRequest($this->event);
     }
 
     /**
@@ -130,13 +143,13 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
 
         $this->documentMock
             ->expects($this->never())
-            ->method('getOperationObject');
+            ->method('getOperation');
 
-        $this->transformerMock
+        $this->processor
             ->expects($this->never())
             ->method('process');
 
-        $this->listener->onKernelRequest($this->eventMock);
+        $this->listener->onKernelRequest($this->event);
     }
 
     /**
@@ -156,7 +169,7 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
             ->method('getRequest')
             ->willReturn($wrongRequest);
 
-        $this->listener->onKernelRequest($this->eventMock);
+        $this->listener->onKernelRequest($this->event);
     }
 
     /**
@@ -181,7 +194,7 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
             ->method('getRequest')
             ->willReturn($wrongRequest);
 
-        $this->listener->onKernelRequest($this->eventMock);
+        $this->listener->onKernelRequest($this->event);
     }
 
     /**
@@ -196,9 +209,9 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
 
         $this->documentMock
             ->expects($this->once())
-            ->method('getOperationObject')
+            ->method('getOperation')
             ->with(self::SWAGGER_PATH)
-            ->willReturn(OperationObject::createFromOperationDefinition((object)[]));
+            ->willReturn(Operation::createFromOperationDefinition((object)[]));
 
         $this->repositoryMock
             ->expects($this->once())
@@ -211,11 +224,11 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
             ->method('getRequest')
             ->willReturn($this->request);
 
-        $this->transformerMock
+        $this->processor
             ->expects($this->once())
             ->method('process')
             ->with($this->request);
 
-        $this->listener->onKernelRequest($this->eventMock);
+        $this->listener->onKernelRequest($this->event);
     }
 }

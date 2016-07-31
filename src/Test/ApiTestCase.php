@@ -12,7 +12,7 @@ use FR3D\SwaggerAssertions\PhpUnit\AssertsTrait;
 use FR3D\SwaggerAssertions\SchemaManager;
 use JsonSchema\Validator;
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
-use KleijnWeb\SwaggerBundle\Document\SwaggerDocument;
+use KleijnWeb\SwaggerBundle\Document\Specification;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use org\bovigo\vfs\vfsStreamWrapper;
@@ -36,7 +36,7 @@ trait ApiTestCase
     protected static $schemaManager;
 
     /**
-     * @var SwaggerDocument
+     * @var Specification
      */
     protected static $document;
 

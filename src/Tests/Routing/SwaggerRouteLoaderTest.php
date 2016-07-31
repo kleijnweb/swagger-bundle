@@ -8,7 +8,10 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Routing;
 
+use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
+use KleijnWeb\SwaggerBundle\Document\Specification;
 use KleijnWeb\SwaggerBundle\Routing\SwaggerRouteLoader;
+use Symfony\Component\Routing\Route;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -38,13 +41,14 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->documentMock = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Document\SwaggerDocument')
+            ->getMockBuilder(Specification::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getPathDefinitions'])
+            ->setMethods(['getPaths'])
             ->getMock();
 
-        $this->repositoryMock = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Document\DocumentRepository')
+        /** @var DocumentRepository $repository */
+        $this->repositoryMock = $repository = $this
+            ->getMockBuilder(DocumentRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -53,7 +57,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
             ->method('get')
             ->willReturn($this->documentMock);
 
-        $this->loader = new SwaggerRouteLoader($this->repositoryMock);
+        $this->loader = new SwaggerRouteLoader($repository);
     }
 
     /**
@@ -72,7 +76,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $this->documentMock
             ->expects($this->any())
-            ->method('getPathDefinitions')
+            ->method('getPaths')
             ->willReturn((object)[]);
 
         $this->loader->load(self::DOCUMENT_PATH);
@@ -92,7 +96,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
 
         $this->documentMock
             ->expects($this->any())
-            ->method('getPathDefinitions')
+            ->method('getPaths')
             ->willReturn($pathDefinitions);
 
         $routes1 = $this->loader->load(self::DOCUMENT_PATH);
@@ -108,7 +112,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $this->documentMock
             ->expects($this->any())
-            ->method('getPathDefinitions')
+            ->method('getPaths')
             ->willReturn((object)[]);
 
         $this->loader->load(self::DOCUMENT_PATH);
@@ -122,7 +126,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $this->documentMock
             ->expects($this->any())
-            ->method('getPathDefinitions')
+            ->method('getPaths')
             ->willReturn((object)[]);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
@@ -141,7 +145,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
 
         $this->documentMock
             ->expects($this->any())
-            ->method('getPathDefinitions')
+            ->method('getPaths')
             ->willReturn($pathDefinitions);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
@@ -162,7 +166,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
 
         $this->documentMock
             ->expects($this->any())
-            ->method('getPathDefinitions')
+            ->method('getPaths')
             ->willReturn($pathDefinitions);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
@@ -187,7 +191,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
 
         $this->documentMock
             ->expects($this->any())
-            ->method('getPathDefinitions')
+            ->method('getPaths')
             ->willReturn($pathDefinitions);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
@@ -212,7 +216,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
 
         $this->documentMock
             ->expects($this->any())
-            ->method('getPathDefinitions')
+            ->method('getPaths')
             ->willReturn($pathDefinitions);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
@@ -238,7 +242,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
 
         $this->documentMock
             ->expects($this->any())
-            ->method('getPathDefinitions')
+            ->method('getPaths')
             ->willReturn($pathDefinitions);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
@@ -266,7 +270,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
 
         $this->documentMock
             ->expects($this->any())
-            ->method('getPathDefinitions')
+            ->method('getPaths')
             ->willReturn($pathDefinitions);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
@@ -294,7 +298,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
 
         $this->documentMock
             ->expects($this->any())
-            ->method('getPathDefinitions')
+            ->method('getPaths')
             ->willReturn($pathDefinitions);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
@@ -317,7 +321,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
 
         $this->documentMock
             ->expects($this->any())
-            ->method('getPathDefinitions')
+            ->method('getPaths')
             ->willReturn($pathDefinitions);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
@@ -342,16 +346,18 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
 
         $this->documentMock
             ->expects($this->any())
-            ->method('getPathDefinitions')
+            ->method('getPaths')
             ->willReturn($pathDefinitions);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
 
         $definitionPaths = array_keys((array)$pathDefinitions);
         sort($definitionPaths);
-        $routePaths = array_map(function ($route) {
+
+        $routePaths = array_map(function (Route $route) {
             return $route->getPath();
         }, $routes->getIterator()->getArrayCopy());
+
         sort($routePaths);
         $this->assertSame($definitionPaths, $routePaths);
     }
@@ -373,7 +379,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
 
         $this->documentMock
             ->expects($this->any())
-            ->method('getPathDefinitions')
+            ->method('getPaths')
             ->willReturn($pathDefinitions);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
@@ -403,7 +409,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
 
         $this->documentMock
             ->expects($this->any())
-            ->method('getPathDefinitions')
+            ->method('getPaths')
             ->willReturn($pathDefinitions);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
@@ -434,7 +440,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
 
         $this->documentMock
             ->expects($this->any())
-            ->method('getPathDefinitions')
+            ->method('getPaths')
             ->willReturn($pathDefinitions);
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);

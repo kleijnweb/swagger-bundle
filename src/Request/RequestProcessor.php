@@ -8,7 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Request;
 
-use KleijnWeb\SwaggerBundle\Document\OperationObject;
+use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
 use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
 use KleijnWeb\SwaggerBundle\Exception\UnsupportedContentTypeException;
@@ -41,13 +41,13 @@ class RequestProcessor
 
     /**
      * @param Request         $request
-     * @param OperationObject $operationObject
+     * @param Operation $operationObject
      *
      * @throws InvalidParametersException
      * @throws MalformedContentException
      * @throws UnsupportedContentTypeException
      */
-    public function process(Request $request, OperationObject $operationObject)
+    public function process(Request $request, Operation $operationObject)
     {
         $this->coercer->coerceRequest($request, $operationObject);
         $this->validator->setOperationObject($operationObject);

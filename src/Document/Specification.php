@@ -8,10 +8,12 @@
 
 namespace KleijnWeb\SwaggerBundle\Document;
 
+use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
+
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class SwaggerDocument
+class Specification
 {
     /**
      * @var object
@@ -19,7 +21,7 @@ class SwaggerDocument
     private $definition;
 
     /**
-     * @var OperationObject[]
+     * @var Operation[]
      */
     private $operations;
 
@@ -42,7 +44,7 @@ class SwaggerDocument
     /**
      * @return \stdClass
      */
-    public function getPathDefinitions(): \stdClass
+    public function getPaths(): \stdClass
     {
         return $this->definition->paths;
     }
@@ -51,9 +53,9 @@ class SwaggerDocument
      * @param string $path
      * @param string $method
      *
-     * @return OperationObject
+     * @return Operation
      */
-    public function getOperationObject(string $path, string $method): OperationObject
+    public function getOperation(string $path, string $method): Operation
     {
         $key = "$path::$method";
 
@@ -61,7 +63,7 @@ class SwaggerDocument
             return $this->operations[$key];
         }
 
-        return $this->operations[$key] = new OperationObject($this, $path, $method);
+        return $this->operations[$key] = new Operation($this, $path, $method);
     }
 
     /**
@@ -74,6 +76,6 @@ class SwaggerDocument
      */
     public function getOperationDefinition(string $path, string $method): \stdClass
     {
-        return $this->getOperationObject($path, $method)->getDefinition();
+        return $this->getOperation($path, $method)->getDefinition();
     }
 }

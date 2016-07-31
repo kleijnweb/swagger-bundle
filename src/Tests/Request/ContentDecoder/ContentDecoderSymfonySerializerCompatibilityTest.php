@@ -8,11 +8,11 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Request\ContentDecoder;
 
-use KleijnWeb\SwaggerBundle\Document\OperationObject;
+use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
 use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
-use KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver;
-use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
-use KleijnWeb\SwaggerBundle\Serializer\SymfonySerializerFactory;
+use KleijnWeb\SwaggerBundle\Serialize\SerializationTypeResolver;
+use KleijnWeb\SwaggerBundle\Serialize\Serializer\Factory\SymfonySerializerFactory;
+use KleijnWeb\SwaggerBundle\Serialize\Serializer\SymfonySerializerAdapter;
 use KleijnWeb\SwaggerBundle\Tests\Request\TestRequestFactory;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 
@@ -62,7 +62,7 @@ class ContentDecoderSymfonySerializerCompatibilityTest extends \PHPUnit_Framewor
             ->method('supportsDecoding')
             ->willReturn(true);
 
-        $this->serializer = new SerializerAdapter(SymfonySerializerFactory::factory($this->jsonDecoderMock));
+        $this->serializer = new SymfonySerializerAdapter(SymfonySerializerFactory::factory($this->jsonDecoderMock));
 
         $typeResolver = $this
             ->getMockBuilder(SerializationTypeResolver::class)
@@ -71,7 +71,7 @@ class ContentDecoderSymfonySerializerCompatibilityTest extends \PHPUnit_Framewor
 
         $typeResolver
             ->expects($this->any())
-            ->method('resolve')
+            ->method('resolveOperationBodyType')
             ->willReturn(self::FAUX_CLASS_NAME);
 
         $this->contentDecoder = new ContentDecoder($this->serializer, $typeResolver);
@@ -111,7 +111,7 @@ class ContentDecoderSymfonySerializerCompatibilityTest extends \PHPUnit_Framewor
             ]
         ];
 
-        $operationObject = OperationObject::createFromOperationDefinition((object)$operationDefinition);
+        $operationObject = Operation::createFromOperationDefinition((object)$operationDefinition);
 
         $actual = $this->contentDecoder->decodeContent($request, $operationObject);
 
@@ -136,7 +136,7 @@ class ContentDecoderSymfonySerializerCompatibilityTest extends \PHPUnit_Framewor
             ->method('decode')
             ->with($request->getContent(), 'json');
 
-        $operationObject = OperationObject::createFromOperationDefinition((object)[]);
+        $operationObject = Operation::createFromOperationDefinition((object)[]);
 
         $this->contentDecoder->decodeContent($request, $operationObject);
     }

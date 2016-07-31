@@ -10,6 +10,7 @@ namespace KleijnWeb\SwaggerBundle\Document;
 
 use KleijnWeb\SwaggerBundle\Document\Exception\ResourceNotDecodableException;
 use KleijnWeb\SwaggerBundle\Document\Exception\ResourceNotReadableException;
+use KleijnWeb\SwaggerBundle\Document\Parser\YamlParser;
 use Symfony\Component\Yaml\Exception\ParseException;
 
 /**

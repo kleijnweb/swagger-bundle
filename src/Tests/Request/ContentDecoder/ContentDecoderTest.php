@@ -8,10 +8,9 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Request\ContentDecoder;
 
-use KleijnWeb\SwaggerBundle\Document\OperationObject;
+use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
 use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
-use KleijnWeb\SwaggerBundle\Serializer\ArraySerializer;
-use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
+use KleijnWeb\SwaggerBundle\Serialize\Serializer\ArraySerializer;
 use KleijnWeb\SwaggerBundle\Tests\Request\TestRequestFactory;
 
 /**
@@ -25,7 +24,7 @@ class ContentDecoderTest extends \PHPUnit_Framework_TestCase
     private $contentDecoder;
 
     /**
-     * @var SerializerAdapter
+     * @var ArraySerializer
      */
     private $serializer;
 
@@ -34,7 +33,7 @@ class ContentDecoderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->serializer     = new SerializerAdapter(new ArraySerializer());
+        $this->serializer     = new ArraySerializer();
         $this->contentDecoder = new ContentDecoder($this->serializer);
     }
 
@@ -47,7 +46,7 @@ class ContentDecoderTest extends \PHPUnit_Framework_TestCase
         $request = TestRequestFactory::create($content);
         $request->headers->set('Content-Type', 'application/json');
 
-        $operationObject = OperationObject::createFromOperationDefinition((object)[]);
+        $operationObject = Operation::createFromOperationDefinition((object)[]);
 
         $actual   = $this->contentDecoder->decodeContent($request, $operationObject);
         $expected = ['foo' => 'bar'];
@@ -65,7 +64,7 @@ class ContentDecoderTest extends \PHPUnit_Framework_TestCase
         $request = TestRequestFactory::create($content);
         $request->headers->set('Content-Type', 'application/json');
 
-        $operationObject = OperationObject::createFromOperationDefinition((object)[]);
+        $operationObject = Operation::createFromOperationDefinition((object)[]);
 
         $this->contentDecoder->decodeContent($request, $operationObject);
     }

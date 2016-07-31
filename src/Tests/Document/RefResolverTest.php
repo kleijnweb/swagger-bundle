@@ -9,7 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Document;
 
 use KleijnWeb\SwaggerBundle\Document\RefResolver;
-use KleijnWeb\SwaggerBundle\Document\YamlParser;
+use KleijnWeb\SwaggerBundle\Document\Parser\YamlParser;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>

@@ -31,7 +31,7 @@ public function placeOrder(array $body)
 __NOTE:__ SwaggerBundle applies some type conversion to query and path parameters and adds the converted values to the Request `attributes`. 
 Using `Request::get()` will give precedence to parameters in `query`. These values will be 'raw', using `attributes` is preferred.
 
-Your controllers do not need to implement any interfaces or extend any classes. A controller might look like this (using object deserialization, see section below):
+Your controllers do not need to implement any interfaces or extend any classes. A controller might look like this (using object deserialization):
 
 ```php
 class StoreController

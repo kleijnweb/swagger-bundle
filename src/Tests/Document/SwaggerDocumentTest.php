@@ -9,7 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Document;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
-use KleijnWeb\SwaggerBundle\Document\SwaggerDocument;
+use KleijnWeb\SwaggerBundle\Document\Specification;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -21,7 +21,7 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
      */
     public function canGetPathDefinitions()
     {
-        $actual = self::getPetStoreDocument()->getPathDefinitions();
+        $actual = self::getPetStoreDocument()->getPaths();
         $this->assertInternalType('object', $actual);
 
         // Check a few attributes
@@ -72,7 +72,7 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return SwaggerDocument
+     * @return Specification
      */
     public static function getPetStoreDocument()
     {

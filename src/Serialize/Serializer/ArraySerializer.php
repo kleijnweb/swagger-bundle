@@ -6,32 +6,34 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Serializer;
+namespace KleijnWeb\SwaggerBundle\Serialize\Serializer;
+
+use KleijnWeb\SwaggerBundle\Serialize\Serializer;
 
 /**
  * Simply utilizes json_encode/json_decode
  *
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class ArraySerializer
+class ArraySerializer implements Serializer
 {
     /**
      * @param mixed $data
      *
      * @return string
      */
-    public function serialize($data)
+    public function serialize($data): string
     {
         return json_encode($data);
     }
 
     /**
-     * @param mixed $data
+     * @param mixed       $data
+     * @param string|null $type
      *
-     * @return array
-     * @throws \UnexpectedValueException
+     * @return mixed
      */
-    public function deserialize($data)
+    public function deserialize($data, string $type = null)
     {
         $array = json_decode($data, true);
 

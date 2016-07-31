@@ -1,0 +1,27 @@
+services:
+  swagger.serializer.array:
+    class: KleijnWeb\SwaggerBundle\Serialize\Serializer\ArraySerializer
+
+  swagger.serializer.swagger:
+    class: KleijnWeb\SwaggerBundle\Serialize\SwaggerSerializer
+    arguments: ['@swagger.serializer.type_resolver']
+
+  swagger.serializer.jms:
+    class:   KleijnWeb\SwaggerBundle\Serialize\Serializer\JmsSerializerAdapter
+    arguments: ['@swagger.serializer.jms.target']
+
+  swagger.serializer.symfony:
+    class:   KleijnWeb\SwaggerBundle\Serialize\Serializer\SymfonySerializerAdapter
+    arguments: ['@swagger.serializer.symfony.target']
+
+  swagger.serializer.jms.target:
+    class:   JMS\Serializer\Serializer
+    factory: [KleijnWeb\SwaggerBundle\Serialize\Serializer\Factory\JmsSerializerFactory, factory]
+
+  swagger.serializer.symfony.target:
+    class:   Symfony\Component\Serializer\Serializer
+    factory: [KleijnWeb\SwaggerBundle\Serialize\Serializer\Factory\SymfonySerializerFactory, factory]
+
+  swagger.serializer.type_resolver:
+    class:   KleijnWeb\SwaggerBundle\Serialize\SerializationTypeResolver
+    arguments: [%swagger.serializer.namespace%]
