@@ -39,8 +39,9 @@ class SerializationTypeResolverTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function canResolveTypesInOrderUsingMultipleNamespaces()
+    public function canReverseLookupPreviouslyResolvedType()
     {
-        $this->assertSame(Stubs\Namespace2\Foo::class, $this->resolver->resolveUsingTypeName('Foo'));
+        $this->resolver->resolveUsingTypeName('Foo');
+        $this->assertSame('Foo', $this->resolver->reverseLookup(Stubs\Namespace2\Foo::class));
     }
 }
