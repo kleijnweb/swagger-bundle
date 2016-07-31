@@ -67,13 +67,19 @@ class SerializationTypeResolver
             ? $schema->{'$ref'}
             : (isset($schema->{'x-ref-id'}) ? $schema->{'x-ref-id'} : null);
 
+        $arrayItems = isset($schema->{'items'}) ? $schema->{'items'} : null;
+
+        if ($reference === null && $arrayItems !== null) {
+            $reference = (isset($arrayItems->{'x-ref-id'}) ? $arrayItems->{'x-ref-id'} : null);
+        }
+
         if ($reference) {
             $reference = substr($reference, strrpos($reference, '/') + 1);
 
             foreach ($this->resourceNamespaces as $resourceNamespace) {
                 $resourceFullNamespace = $this->qualify($resourceNamespace, $reference);
                 if (class_exists($resourceFullNamespace)) {
-                    return $resourceFullNamespace;
+                    return ($arrayItems !== null) ? 'array<' . $resourceFullNamespace . '>' : $resourceFullNamespace;
                 }
             }
         }
