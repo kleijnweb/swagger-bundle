@@ -54,6 +54,14 @@ class Operation
     }
 
     /**
+     * @return int[]
+     */
+    public function getResponseCodes(): array
+    {
+        return array_keys((array)$this->definition->responses);
+    }
+
+    /**
      * @param \stdClass $definition
      * @param string    $path
      * @param string    $method

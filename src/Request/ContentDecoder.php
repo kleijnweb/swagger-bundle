@@ -46,9 +46,9 @@ class ContentDecoder
         DocumentRepository $documentRepository,
         SerializationTypeResolver $typeResolver = null
     ) {
-        $this->serializer   = $serializer;
+        $this->serializer         = $serializer;
         $this->documentRepository = $documentRepository;
-        $this->typeResolver = $typeResolver;
+        $this->typeResolver       = $typeResolver;
     }
 
     /**

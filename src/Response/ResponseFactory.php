@@ -9,6 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\Response;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
+use KleijnWeb\SwaggerBundle\Serialize\SerializationTypeResolver;
 use KleijnWeb\SwaggerBundle\Serialize\Serializer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,13 +30,18 @@ class ResponseFactory
     private $documentRepository;
 
     /**
-     * @param DocumentRepository $documentRepository
-     * @param Serializer         $serializer
+     * @param DocumentRepository        $documentRepository
+     * @param Serializer                $serializer
+     * @param SerializationTypeResolver $typeResolver
      */
-    public function __construct(DocumentRepository $documentRepository, Serializer $serializer)
-    {
+    public function __construct(
+        DocumentRepository $documentRepository,
+        Serializer $serializer,
+        SerializationTypeResolver $typeResolver = null
+    ) {
         $this->serializer         = $serializer;
         $this->documentRepository = $documentRepository;
+        $this->typeResolver       = $typeResolver;
     }
 
     /**
@@ -62,14 +68,14 @@ class ResponseFactory
         }
 
         $operationDefinition = $specification
-            ->getOperationDefinition(
+            ->getOperation(
                 $request->get('_swagger_path'),
                 $request->getMethod()
             );
 
         $responseCode   = 200;
         $understands204 = false;
-        foreach (array_keys((array)$operationDefinition->responses) as $statusCode) {
+        foreach ($operationDefinition->getResponseCodes() as $statusCode) {
             if ($statusCode == 204) {
                 $understands204 = true;
             }

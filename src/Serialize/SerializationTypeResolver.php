@@ -7,6 +7,7 @@
  */
 namespace KleijnWeb\SwaggerBundle\Serialize;
 
+use KleijnWeb\SwaggerBundle\Document\Specification;
 use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
 
 class SerializationTypeResolver
@@ -17,11 +18,6 @@ class SerializationTypeResolver
     private $resourceNamespaces = [];
 
     /**
-     * @var array
-     */
-    private $lookupTable = [];
-
-    /**
      * SerializationTypeResolver constructor.
      *
      * @param array $resourceNamespaces
@@ -29,6 +25,29 @@ class SerializationTypeResolver
     public function __construct(array $resourceNamespaces)
     {
         $this->resourceNamespaces = $resourceNamespaces;
+    }
+
+    /**
+     * @param Specification $specification
+     *
+     * @return array
+     */
+    public function resolveAll(Specification $specification): array
+    {
+        $types = $specification->getResourceNames();
+
+        $explicitResources = array_map(function ($typeName) {
+            return $this->resolveUsingTypeName($typeName);
+        }, $types);
+
+        $xClassTypes = [];
+        $specification->apply(function ($value) use ($xClassTypes) {
+            if (isset($value->{'x-class'})) {
+                $xClassTypes[] = $this->resolveUsingTypeName($value->{'x-class'});
+            }
+        });
+
+        return array_merge($explicitResources, $xClassTypes);
     }
 
     /**
@@ -66,6 +85,10 @@ class SerializationTypeResolver
             );
         }
 
+        if (isset($schema->{'x-class'})) {
+            return $this->resolveUsingTypeName($schema->{'x-class'});
+        }
+
         throw new \InvalidArgumentException("Failed to resolve type using schema");
     }
 
@@ -76,15 +99,9 @@ class SerializationTypeResolver
      */
     public function resolveUsingTypeName(string $typeName): string
     {
-        if (isset($this->lookupTable[$typeName])) {
-            return $this->lookupTable[$typeName];
-        }
-
         foreach ($this->resourceNamespaces as $resourceNamespace) {
             $resourceFullNamespacedName = $this->qualify($resourceNamespace, $typeName);
             if (class_exists($resourceFullNamespacedName)) {
-                $this->lookupTable[$typeName] = $resourceFullNamespacedName;
-
                 return $resourceFullNamespacedName;
             }
         }
@@ -93,13 +110,15 @@ class SerializationTypeResolver
     }
 
     /**
-     * @param string $resourceFullNamespacedName
+     * @param string        $resourceFullNamespacedName
+     *
+     * @param Specification $specification
      *
      * @return string
      */
-    public function reverseLookup(string $resourceFullNamespacedName): string
+    public function reverseLookup(string $resourceFullNamespacedName, Specification $specification): string
     {
-        $table = array_flip($this->lookupTable);
+        $table = array_flip($this->resolveAll($specification));
 
         if (isset($table[$resourceFullNamespacedName])) {
             return $table[$resourceFullNamespacedName];

@@ -34,6 +34,30 @@ class Specification
     }
 
     /**
+     * @param callable $f
+     */
+    public function apply(callable  $f)
+    {
+        $array = $this->toArray();
+
+        array_walk_recursive($array, $f);
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        $array = (array)$this->definition;
+
+        array_walk_recursive($array, function (&$value) {
+            $value = (array)$value;
+        });
+
+        return $array;
+    }
+
+    /**
      * @param string $typeName
      *
      * @return \stdClass
@@ -45,6 +69,14 @@ class Specification
         }
 
         return $this->definition->definitions->$typeName;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getResourceNames(): array
+    {
+        return array_keys((array)$this->definition->definitions);
     }
 
     /**
