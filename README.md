@@ -8,8 +8,6 @@ Invert your workflow (contract first) using Swagger ([Open API](https://openapis
 
 Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig.
 
-**HEADS UP:** _You are looking at the main (4.0) development line, which is PHP 7 only. SwaggerBundle 3.x works with PHP 5.4+._
-
 ## Contract First
 
 SwaggerBundle is built around the idea of "contract first". Other "Swagger Bundles" see an OpenAPI definition as documentation, that you generate using config and annotations.
@@ -19,6 +17,8 @@ We say your OpenAPI definition *is* your config, and strive towards 'minimal add
  1. Configure Symfony Routing
  2. Validate input
  3. Coerce/transform in- and output
+
+**HEADS UP:** _You are looking at the main (4.0 ALPHA) development line, which is PHP 7 only. SwaggerBundle 3.x is stable and works with PHP 5.4+._
 
 ## Usage
 
@@ -31,12 +31,17 @@ We say your OpenAPI definition *is* your config, and strive towards 'minimal add
  - [Installation and configuration](docs/config.md)
  - [Routing](docs/routing.md)
  - [Controllers](docs/controllers.md)
- - [Errors and validation](docs/errors.md)
+ - [Validation](docs/validation.md)
+ - [Error Handling](docs/errors.md)
  - [Serialization](docs/serialization.md)
  - [Responses](docs/responses.md)
  - [Caching](docs/caching.md)
  - [API Development](docs/developing.md)
  - [Contributing](docs/contributing.md)
+ 
+## Bundle Config
+
+You can dump an up-to-date and documented configuration reference using `config:dump-reference` after you've added the bundle to your `AppKernel`.
  
 ## FAQ
 

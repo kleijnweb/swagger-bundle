@@ -10,8 +10,8 @@ namespace KleijnWeb\SwaggerBundle\Tests\Response;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\Response\ResponseFactory;
-use KleijnWeb\SwaggerBundle\Serializer\JmsSerializerFactory;
-use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
+use KleijnWeb\SwaggerBundle\Serialize\Serializer\Factory\JmsSerializerFactory;
+use KleijnWeb\SwaggerBundle\Serialize\Serializer\JmsSerializerAdapter;
 use KleijnWeb\SwaggerBundle\Tests\Request\ContentDecoder\JmsAnnotatedResourceStub;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -25,7 +25,7 @@ class ResponseFactoryJmsSerializerCompatibilityTest extends \PHPUnit_Framework_T
      */
     public function willCreateJsonResponseFromObject()
     {
-        $serializer = new SerializerAdapter(JmsSerializerFactory::factory());
+        $serializer = new JmsSerializerAdapter(JmsSerializerFactory::factory());
         $factory    = new ResponseFactory(new DocumentRepository(), $serializer);
         $request    = new Request();
         $request->attributes->set('_definition', 'src/Tests/Functional/PetStore/app/swagger/composite.yml');

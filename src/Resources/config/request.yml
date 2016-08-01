@@ -1,0 +1,15 @@
+services:
+  swagger.request.processor:
+    class: KleijnWeb\SwaggerBundle\Request\RequestProcessor
+    arguments: ['@swagger.request.processor.validator', '@swagger.request.processor.coercer']
+
+  swagger.request.processor.validator:
+    class: KleijnWeb\SwaggerBundle\Request\RequestValidator
+
+  swagger.request.processor.coercer:
+    class: KleijnWeb\SwaggerBundle\Request\RequestCoercer
+    arguments: ['@swagger.request.processor.content_decoder']
+
+  swagger.request.processor.content_decoder:
+    class: KleijnWeb\SwaggerBundle\Request\ContentDecoder
+    arguments: ['@swagger.serializer', '@swagger.document.repository']

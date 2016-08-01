@@ -24,7 +24,7 @@ class InvalidParametersException extends \Exception
      * @param array      $validationErrors
      * @param \Exception $previous
      */
-    public function __construct($message, array $validationErrors, int $code = 400, \Exception $previous = null)
+    public function __construct(string $message, array $validationErrors, int $code = 400, \Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
 

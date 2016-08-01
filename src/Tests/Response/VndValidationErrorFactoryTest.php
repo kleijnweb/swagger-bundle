@@ -11,7 +11,8 @@ namespace KleijnWeb\SwaggerBundle\Tests\Response;
 use JsonSchema\Validator;
 use KleijnWeb\SwaggerBundle\Document\ParameterRefBuilder;
 use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
-use KleijnWeb\SwaggerBundle\Response\VndValidationErrorFactory;
+use KleijnWeb\SwaggerBundle\Response\ErrorResponseFactory\VndError\VndValidationErrorFactory;
+use Ramsey\VndError\VndError;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -32,7 +33,7 @@ class VndValidationErrorFactoryTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->refBuilder = $this
-            ->getMockBuilder('KleijnWeb\SwaggerBundle\Document\ParameterRefBuilder')
+            ->getMockBuilder(ParameterRefBuilder::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->factory    = new VndValidationErrorFactory($this->refBuilder);
@@ -48,7 +49,7 @@ class VndValidationErrorFactoryTest extends \PHPUnit_Framework_TestCase
             new InvalidParametersException('Yikes', []),
             '123456789'
         );
-        $this->assertInstanceOf('Ramsey\VndError\VndError', $vndError);
+        $this->assertInstanceOf(VndError::class, $vndError);
         $this->assertSame('123456789', $vndError->getLogref());
     }
 

@@ -9,7 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\Routing;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
-use KleijnWeb\SwaggerBundle\Document\SwaggerDocument;
+use KleijnWeb\SwaggerBundle\Document\Specification;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
@@ -69,7 +69,7 @@ class SwaggerRouteLoader extends Loader
 
         $routes = new RouteCollection();
 
-        $paths  = $document->getPathDefinitions();
+        $paths  = $document->getPaths();
         $router = 'swagger.controller';
         foreach ($paths as $path => $pathSpec) {
             if ($path === 'x-router') {
@@ -115,15 +115,15 @@ class SwaggerRouteLoader extends Loader
     }
 
     /**
-     * @param SwaggerDocument $document
+     * @param Specification   $document
      * @param                 $path
      * @param                 $methodName
      *
      * @return array
      */
-    private function resolveRequirements(SwaggerDocument $document, $path, $methodName): array
+    private function resolveRequirements(Specification $document, $path, $methodName): array
     {
-        $operationObject = $document->getOperationObject($path, $methodName);
+        $operationObject = $document->getOperation($path, $methodName);
 
         $requirements = [];
 
@@ -169,8 +169,8 @@ class SwaggerRouteLoader extends Loader
         string $resourceName,
         string $router,
         string $routerController = null
-    ): string
-    {
+    ): string {
+
         $operationName = $methodName;
         $diKey         = "$router.$resourceName";
         if (isset($operationDefinition->operationId)) {

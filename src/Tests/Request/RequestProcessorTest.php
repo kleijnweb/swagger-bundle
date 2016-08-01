@@ -8,7 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Request;
 
-use KleijnWeb\SwaggerBundle\Document\OperationObject;
+use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
 use KleijnWeb\SwaggerBundle\Request\RequestCoercer;
 use KleijnWeb\SwaggerBundle\Request\RequestProcessor;
 use KleijnWeb\SwaggerBundle\Request\RequestValidator;
@@ -39,7 +39,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $operationObject = OperationObject::createFromOperationDefinition((object)$operationDefinition);
+        $operationObject = Operation::createFromOperationDefinition((object)$operationDefinition);
 
         $request = new Request();
         $validatorMock
@@ -96,7 +96,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $operationObject = OperationObject::createFromOperationDefinition((object)$operationDefinition);
+        $operationObject = Operation::createFromOperationDefinition((object)$operationDefinition);
 
         $processor->process($request, $operationObject);
     }

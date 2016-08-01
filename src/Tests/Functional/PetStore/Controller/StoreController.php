@@ -24,6 +24,8 @@ class StoreController
     {
         return $body
             ->setId(rand())
+            ->setComplete(true)
+            ->setShipDate($body->getShipDate()->add(new \DateInterval('P1D')))
             ->setStatus('placed');
     }
 }

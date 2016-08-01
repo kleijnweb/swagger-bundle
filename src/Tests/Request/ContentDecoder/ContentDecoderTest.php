@@ -8,10 +8,12 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Request\ContentDecoder;
 
-use KleijnWeb\SwaggerBundle\Document\OperationObject;
+use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
+use KleijnWeb\SwaggerBundle\Document\Specification;
+use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
 use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
-use KleijnWeb\SwaggerBundle\Serializer\ArraySerializer;
-use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
+use KleijnWeb\SwaggerBundle\Serialize\Serializer;
+use KleijnWeb\SwaggerBundle\Serialize\Serializer\ArraySerializer;
 use KleijnWeb\SwaggerBundle\Tests\Request\TestRequestFactory;
 
 /**
@@ -25,7 +27,7 @@ class ContentDecoderTest extends \PHPUnit_Framework_TestCase
     private $contentDecoder;
 
     /**
-     * @var SerializerAdapter
+     * @var ArraySerializer
      */
     private $serializer;
 
@@ -34,8 +36,48 @@ class ContentDecoderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->serializer     = new SerializerAdapter(new ArraySerializer());
-        $this->contentDecoder = new ContentDecoder($this->serializer);
+        $documentRepository = $this
+            ->getMockBuilder(DocumentRepository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $documentRepository
+            ->expects($this->any())
+            ->method('get')
+            ->willReturn(new Specification(new \stdClass));
+
+        $this->serializer = $mock = $this->getMockBuilder(Serializer::class)->getMock();
+
+        $mock->expects($this->any())
+            ->method('serialize')
+            ->willReturnCallback(function (array $value) {
+                return json_encode($value);
+            });
+
+        $mock->expects($this->any())
+            ->method('deserialize')
+            ->willReturnCallback(function (string $value) {
+                $array = json_decode($value, true);
+
+                if (!is_array($array)) {
+                    throw new \UnexpectedValueException("Expected result to be an array");
+                }
+
+                return $array;
+            });
+
+        $documentRepository = $this
+            ->getMockBuilder(DocumentRepository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $documentRepository
+            ->expects($this->any())
+            ->method('get')
+            ->willReturn(new Specification(new \stdClass));
+
+        /** @noinspection PhpParamsInspection */
+        $this->contentDecoder = new ContentDecoder($this->serializer, $documentRepository);
     }
 
     /**
@@ -44,10 +86,10 @@ class ContentDecoderTest extends \PHPUnit_Framework_TestCase
     public function canDecodeValidJson()
     {
         $content = '{ "foo": "bar" }';
-        $request = TestRequestFactory::create($content);
+        $request = TestRequestFactory::create($content, [], 'faux');
         $request->headers->set('Content-Type', 'application/json');
 
-        $operationObject = OperationObject::createFromOperationDefinition((object)[]);
+        $operationObject = Operation::createFromOperationDefinition((object)[]);
 
         $actual   = $this->contentDecoder->decodeContent($request, $operationObject);
         $expected = ['foo' => 'bar'];
@@ -62,10 +104,10 @@ class ContentDecoderTest extends \PHPUnit_Framework_TestCase
     public function willThrowMalformedContentExceptionWhenDecodingFails()
     {
         $content = 'NOT VALID JSON';
-        $request = TestRequestFactory::create($content);
+        $request = TestRequestFactory::create($content, [], 'faux');
         $request->headers->set('Content-Type', 'application/json');
 
-        $operationObject = OperationObject::createFromOperationDefinition((object)[]);
+        $operationObject = Operation::createFromOperationDefinition((object)[]);
 
         $this->contentDecoder->decodeContent($request, $operationObject);
     }

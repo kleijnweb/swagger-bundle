@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Document;
+namespace KleijnWeb\SwaggerBundle\Document\Parser;
 
 use Symfony\Component\Yaml\Parser;
 

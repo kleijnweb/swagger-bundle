@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Response;
+namespace KleijnWeb\SwaggerBundle\Response\ErrorResponseFactory\VndError;
 
 use Ramsey\VndError\VndError;
 use Symfony\Component\HttpFoundation\JsonResponse;

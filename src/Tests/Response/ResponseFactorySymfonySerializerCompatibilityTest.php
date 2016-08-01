@@ -10,8 +10,8 @@ namespace KleijnWeb\SwaggerBundle\Tests\Response;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\Response\ResponseFactory;
-use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
-use KleijnWeb\SwaggerBundle\Serializer\SymfonySerializerFactory;
+use KleijnWeb\SwaggerBundle\Serialize\Serializer\Factory\SymfonySerializerFactory;
+use KleijnWeb\SwaggerBundle\Serialize\Serializer\SymfonySerializerAdapter;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -58,7 +58,7 @@ class ResponseFactorySymfonySerializerCompatibilityTest extends \PHPUnit_Framewo
             ->method('supportsEncoding')
             ->willReturn(true);
 
-        $serializer = new SerializerAdapter(SymfonySerializerFactory::factory($jsonEncoderMock));
+        $serializer = new SymfonySerializerAdapter(SymfonySerializerFactory::factory($jsonEncoderMock));
         $factory    = new ResponseFactory(new DocumentRepository(), $serializer);
         $request    = new Request();
         $request->attributes->set('_definition', 'src/Tests/Functional/PetStore/app/swagger/composite.yml');

@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Response;
+namespace KleijnWeb\SwaggerBundle\Response\ErrorResponseFactory\VndError;
 
 use KleijnWeb\SwaggerBundle\Document\ParameterRefBuilder;
 use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;

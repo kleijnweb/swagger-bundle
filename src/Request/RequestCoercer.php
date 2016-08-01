@@ -8,7 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Request;
 
-use KleijnWeb\SwaggerBundle\Document\OperationObject;
+use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
 use KleijnWeb\SwaggerBundle\Exception\UnsupportedException;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,13 +32,13 @@ class RequestCoercer
     }
 
     /**
-     * @param Request         $request
-     * @param OperationObject $operationObject
+     * @param Request   $request
+     * @param Operation $operationObject
      *
      * @throws MalformedContentException
      * @throws UnsupportedException
      */
-    public function coerceRequest(Request $request, OperationObject $operationObject)
+    public function coerceRequest(Request $request, Operation $operationObject)
     {
         $content = $this->contentDecoder->decodeContent($request, $operationObject);
 

@@ -9,11 +9,13 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Request\ContentDecoder;
 
 use JMS\Serializer\Serializer;
-use KleijnWeb\SwaggerBundle\Document\OperationObject;
+use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
+use KleijnWeb\SwaggerBundle\Document\Specification;
+use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
 use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
-use KleijnWeb\SwaggerBundle\Serializer\JmsSerializerFactory;
-use KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver;
-use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
+use KleijnWeb\SwaggerBundle\Serialize\SerializationTypeResolver;
+use KleijnWeb\SwaggerBundle\Serialize\Serializer\Factory\JmsSerializerFactory;
+use KleijnWeb\SwaggerBundle\Serialize\Serializer\JmsSerializerAdapter;
 use KleijnWeb\SwaggerBundle\Tests\Request\TestRequestFactory;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -37,7 +39,7 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
      */
     protected function setUp()
     {
-        $this->serializer = new SerializerAdapter(JmsSerializerFactory::factory());
+        $this->serializer = new JmsSerializerAdapter(JmsSerializerFactory::factory());
 
         $typeResolver = $this
             ->getMockBuilder(SerializationTypeResolver::class)
@@ -46,10 +48,21 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
 
         $typeResolver
             ->expects($this->any())
-            ->method('resolve')
+            ->method('resolveOperationBodyType')
             ->willReturn(JmsAnnotatedResourceStub::class);
 
-        $this->contentDecoder = new ContentDecoder($this->serializer, $typeResolver);
+        $documentRepository = $this
+            ->getMockBuilder(DocumentRepository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $documentRepository
+            ->expects($this->any())
+            ->method('get')
+            ->willReturn(new Specification(new \stdClass));
+
+        /** @noinspection PhpParamsInspection */
+        $this->contentDecoder = new ContentDecoder($this->serializer, $documentRepository, $typeResolver);
     }
 
     /**
@@ -60,7 +73,7 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
         $content = [
             'foo' => 'bar'
         ];
-        $request = new Request([], [], [], [], [], [], json_encode($content));
+        $request = TestRequestFactory::create(json_encode($content), [], 'faux');
         $request->headers->set('Content-Type', 'application/json');
 
         $operationDefinition = (object)[
@@ -75,7 +88,7 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
             ]
         ];
 
-        $operationObject = OperationObject::createFromOperationDefinition((object)$operationDefinition);
+        $operationObject = Operation::createFromOperationDefinition((object)$operationDefinition);
 
         $actual = $this->contentDecoder->decodeContent($request, $operationObject);
 
@@ -92,10 +105,10 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
     public function willThrowMalformedContentExceptionWhenDecodingFails()
     {
         $content = 'lkjhlkj';
-        $request = TestRequestFactory::create($content);
+        $request = TestRequestFactory::create($content, [], 'faux');
         $request->headers->set('Content-Type', 'application/json');
 
-        $operationObject = OperationObject::createFromOperationDefinition((object)[]);
+        $operationObject = Operation::createFromOperationDefinition((object)[]);
         $this->contentDecoder->decodeContent($request, $operationObject);
     }
 
@@ -108,7 +121,7 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
     public function willAlwaysDecodeJson($contentType)
     {
         $content = '{ "foo": "bar" }';
-        $request = TestRequestFactory::create($content);
+        $request = TestRequestFactory::create($content, [], 'faux');
         $request->headers->set('Content-Type', $contentType);
 
         $operationDefinition = (object)[
@@ -123,7 +136,7 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
             ]
         ];
 
-        $operationObject = OperationObject::createFromOperationDefinition((object)$operationDefinition);
+        $operationObject = Operation::createFromOperationDefinition((object)$operationDefinition);
 
         $actual   = $this->contentDecoder->decodeContent($request, $operationObject);
         $expected = (new JmsAnnotatedResourceStub)->setFoo('bar');

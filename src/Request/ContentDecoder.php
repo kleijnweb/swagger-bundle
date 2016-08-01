@@ -8,11 +8,12 @@
 
 namespace KleijnWeb\SwaggerBundle\Request;
 
-use KleijnWeb\SwaggerBundle\Document\OperationObject;
+use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
+use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
 use KleijnWeb\SwaggerBundle\Exception\UnsupportedContentTypeException;
-use KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver;
-use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
+use KleijnWeb\SwaggerBundle\Serialize\SerializationTypeResolver;
+use KleijnWeb\SwaggerBundle\Serialize\Serializer;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -21,7 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 class ContentDecoder
 {
     /**
-     * @var SerializerAdapter
+     * @var Serializer
      */
     private $serializer;
 
@@ -31,42 +32,44 @@ class ContentDecoder
     private $typeResolver;
 
     /**
-     * @param SerializerAdapter         $serializer
+     * @var DocumentRepository
+     */
+    private $documentRepository;
+
+    /**
+     * @param Serializer                $serializer
+     * @param DocumentRepository        $documentRepository
      * @param SerializationTypeResolver $typeResolver
      */
-    public function __construct(SerializerAdapter $serializer, SerializationTypeResolver $typeResolver = null)
-    {
-        $this->serializer = $serializer;
-        $this->setTypeResolver($typeResolver);
+    public function __construct(
+        Serializer $serializer,
+        DocumentRepository $documentRepository,
+        SerializationTypeResolver $typeResolver = null
+    ) {
+        $this->serializer   = $serializer;
+        $this->documentRepository = $documentRepository;
         $this->typeResolver = $typeResolver;
     }
 
     /**
-     * @param SerializationTypeResolver $typeResolver
-     *
-     * @return ContentDecoder
-     */
-    public function setTypeResolver(SerializationTypeResolver $typeResolver = null): ContentDecoder
-    {
-        $this->typeResolver = $typeResolver;
-
-        return $this;
-    }
-
-    /**
-     * @param Request         $request
-     * @param OperationObject $operationObject
+     * @param Request   $request
+     * @param Operation $operationObject
      *
      * @return mixed
      * @throws MalformedContentException
      * @throws UnsupportedContentTypeException
      */
-    public function decodeContent(Request $request, OperationObject $operationObject)
+    public function decodeContent(Request $request, Operation $operationObject)
     {
         if ($content = $request->getContent()) {
-            $type = $this->typeResolver ? $this->typeResolver->resolve($operationObject) : '';
+            if (!$request->attributes->get('_definition')) {
+                throw new \LogicException("Request does not contain reference to definition");
+            }
+            $specification = $this->documentRepository->get($request->get('_definition'));
+            $type          = $this->typeResolver ? $this->typeResolver->resolveOperationBodyType($operationObject) : '';
+
             try {
-                return $this->serializer->deserialize($content, $type, 'json');
+                return $this->serializer->deserialize($content, $type, $specification);
             } catch (\Exception $e) {
                 throw new MalformedContentException("Unable to decode payload", 400, $e);
             }

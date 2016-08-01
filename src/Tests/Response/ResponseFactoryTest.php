@@ -10,8 +10,7 @@ namespace KleijnWeb\SwaggerBundle\Tests\Response;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\Response\ResponseFactory;
-use KleijnWeb\SwaggerBundle\Serializer\ArraySerializer;
-use KleijnWeb\SwaggerBundle\Serializer\SerializerAdapter;
+use KleijnWeb\SwaggerBundle\Serialize\Serializer\ArraySerializer;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -52,7 +51,7 @@ class ResponseFactoryTest extends \PHPUnit_Framework_TestCase
      */
     private function createResponse($data, $path, $method)
     {
-        $serializer = new SerializerAdapter(new ArraySerializer());
+        $serializer = new ArraySerializer();
         $factory    = new ResponseFactory(new DocumentRepository(), $serializer);
         $request    = new Request();
         $request->server->set('REQUEST_METHOD', $method);

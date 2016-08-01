@@ -8,7 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Request;
 
-use KleijnWeb\SwaggerBundle\Document\OperationObject;
+use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
 use KleijnWeb\SwaggerBundle\Request\RequestValidator;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -85,7 +85,7 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $validator = new RequestValidator(OperationObject::createFromOperationDefinition($operationDefinition));
+        $validator = new RequestValidator(Operation::createFromOperationDefinition($operationDefinition));
         $request   = new Request();
         $validator->validateRequest($request);
     }
@@ -109,7 +109,7 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $validator = new RequestValidator(OperationObject::createFromOperationDefinition($operationDefinition));
+        $validator = new RequestValidator(Operation::createFromOperationDefinition($operationDefinition));
         $validator->validateRequest($request);
     }
 
@@ -132,7 +132,7 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $validator = new RequestValidator(OperationObject::createFromOperationDefinition($operationDefinition));
+        $validator = new RequestValidator(Operation::createFromOperationDefinition($operationDefinition));
 
         $validator->validateRequest($request);
     }
@@ -173,7 +173,7 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
                 ]
             ];
 
-            $validator = new RequestValidator(OperationObject::createFromOperationDefinition($operationDefinition));
+            $validator = new RequestValidator(Operation::createFromOperationDefinition($operationDefinition));
             $request   = new Request();
             $bagName   = $paramBagMapping[$source];
 

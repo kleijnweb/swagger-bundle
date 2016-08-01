@@ -9,7 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Document;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
-use KleijnWeb\SwaggerBundle\Document\OperationObject;
+use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -23,7 +23,7 @@ class OperationObjectTest extends \PHPUnit_Framework_TestCase
     {
         $repository = new DocumentRepository('src/Tests/Functional/PetStore/app');
         $document   = $repository->get('swagger/petstore.yml');
-        $operation  = new OperationObject($document, '/store/order', 'post');
+        $operation  = new Operation($document, '/store/order', 'post');
 
         $pointer = $operation->createParameterSchemaPointer('body.properties.quantity');
 

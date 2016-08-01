@@ -13,17 +13,24 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class TestRequestFactory extends \PHPUnit_Framework_TestCase
+class TestRequestFactory
 {
     /**
      * @param string|null $content
      *
      * @param array       $query
+     * @param string      $specificationPath
      *
      * @return Request
      */
-    public static function create($content, array $query = [])
+    public static function create($content, array $query = [], string $specificationPath = null)
     {
-        return new Request($query, [], [], [], [], [], $content);
+        $request = new Request($query, [], [], [], [], [], $content);
+
+        if ($specificationPath) {
+            $request->attributes->set('_definition', $specificationPath);
+        }
+
+        return $request;
     }
 }

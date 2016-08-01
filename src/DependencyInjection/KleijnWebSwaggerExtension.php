@@ -32,7 +32,7 @@ class KleijnWebSwaggerExtension extends Extension
         $container->setParameter('swagger.serializer.namespace', $config['serializer']['namespace']);
 
         $serializerType = $config['serializer']['type'];
-        $container->setAlias('swagger.serializer.target', 'swagger.serializer.' . $serializerType);
+        $container->setAlias('swagger.serializer', "swagger.serializer.$serializerType");
 
         if ($serializerType !== 'array') {
             $resolverDefinition = $container->getDefinition('swagger.request.processor.content_decoder');
@@ -42,6 +42,16 @@ class KleijnWebSwaggerExtension extends Extension
         if (isset($config['document']['cache'])) {
             $resolverDefinition = $container->getDefinition('swagger.document.repository');
             $resolverDefinition->addArgument(new Reference($config['document']['cache']));
+        }
+
+        if ($config['errors']['strategy'] == 'fallthrough') {
+            // Unregister the exception listener
+            $container->removeDefinition('kernel.listener.swagger.exception');
+        } else {
+            $container->setAlias(
+                'swagger.response.error_factory',
+                "swagger.response.error_response_factory.{$config['errors']['strategy']}"
+            );
         }
 
         $parameterRefBuilderDefinition = $container->getDefinition('swagger.document.parameter_ref_builder');

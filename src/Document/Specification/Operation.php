@@ -6,15 +6,17 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Document;
+namespace KleijnWeb\SwaggerBundle\Document\Specification;
+
+use KleijnWeb\SwaggerBundle\Document\Specification;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class OperationObject
+class Operation
 {
     /**
-     * @var object
+     * @var \stdClass
      */
     private $definition;
 
@@ -29,13 +31,13 @@ class OperationObject
     private $method;
 
     /**
-     * @param SwaggerDocument $document
-     * @param string          $path
-     * @param string          $method
+     * @param Specification $document
+     * @param string        $path
+     * @param string        $method
      */
-    public function __construct(SwaggerDocument $document, string $path, string $method)
+    public function __construct(Specification $document, string $path, string $method)
     {
-        $paths = $document->getPathDefinitions();
+        $paths = $document->getPaths();
 
         if (!property_exists($paths, $path)) {
             throw new \InvalidArgumentException("Path '$path' not in Swagger document");
@@ -74,7 +76,7 @@ class OperationObject
             ]
         ];
 
-        return new static(new SwaggerDocument($documentDefinition), $path, $method);
+        return new static(new Specification($documentDefinition), $path, $method);
     }
 
     /**

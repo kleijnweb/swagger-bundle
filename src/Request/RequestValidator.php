@@ -9,7 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\Request;
 
 use JsonSchema\Validator;
-use KleijnWeb\SwaggerBundle\Document\OperationObject;
+use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
 use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
 use KleijnWeb\SwaggerBundle\Exception\UnsupportedException;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,14 +20,14 @@ use Symfony\Component\HttpFoundation\Request;
 class RequestValidator
 {
     /**
-     * @var OperationObject
+     * @var Operation
      */
     private $operationObject;
 
     /**
-     * @param OperationObject $operationObject
+     * @param Operation $operationObject
      */
-    public function __construct(OperationObject $operationObject = null)
+    public function __construct(Operation $operationObject = null)
     {
         if ($operationObject) {
             $this->setOperationObject($operationObject);
@@ -35,11 +35,11 @@ class RequestValidator
     }
 
     /**
-     * @param OperationObject $operationObject
+     * @param Operation $operationObject
      *
      * @return $this
      */
-    public function setOperationObject(OperationObject $operationObject)
+    public function setOperationObject(Operation $operationObject)
     {
         $this->operationObject = $operationObject;
 

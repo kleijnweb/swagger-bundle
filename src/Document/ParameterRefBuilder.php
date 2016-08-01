@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Document;
 
+use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -67,8 +68,8 @@ class ParameterRefBuilder
      */
     public function buildDocumentLink(Request $request)
     {
-        /** @var SwaggerDocument $document */
-        $document = $request->attributes->get('_swagger_document');
+        /** @var Specification $document */
+        $document = $request->attributes->get('_oa_spec');
         /** @var string $filePath */
         $filePath = $request->attributes->get('_definition');
 
@@ -80,10 +81,10 @@ class ParameterRefBuilder
         if (!$scheme) {
             $scheme = $request->getScheme();
             if (property_exists($definition, 'schemes')) {
-                if (!in_array($scheme, self::$schemes)) {
+                if (!in_array($scheme, $definition->schemes)) {
                     foreach (self::$schemes as $knownScheme) {
                         if (in_array($knownScheme, $definition->schemes)) {
-                            $this->scheme = $knownScheme;
+                            $scheme = $knownScheme;
                             break;
                         }
                     }
@@ -102,7 +103,7 @@ class ParameterRefBuilder
      */
     public function createParameterPointer(Request $request, string $parameterName): string
     {
-        /** @var OperationObject $operation */
+        /** @var Operation $operation */
         $operation = $request->attributes->get('_swagger_operation');
 
         return $operation->createParameterPointer($parameterName);
@@ -116,7 +117,7 @@ class ParameterRefBuilder
      */
     public function createParameterSchemaPointer(Request $request, string $parameterName): string
     {
-        /** @var OperationObject $operation */
+        /** @var Operation $operation */
         $operation = $request->attributes->get('_swagger_operation');
 
         return $operation->createParameterSchemaPointer($parameterName);

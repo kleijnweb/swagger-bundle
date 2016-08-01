@@ -8,7 +8,9 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Document;
 
+use Doctrine\Common\Cache\ArrayCache;
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
+use KleijnWeb\SwaggerBundle\Document\Specification;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -49,7 +51,7 @@ class DocumentRepositoryTest extends \PHPUnit_Framework_TestCase
     public function gettingDocumentThatDoestExistWillConstructIt()
     {
         $document = $this->repository->get('src/Tests/Functional/PetStore/app/swagger/petstore.yml');
-        $this->assertInstanceOf('KleijnWeb\SwaggerBundle\Document\SwaggerDocument', $document);
+        $this->assertInstanceOf(Specification::class, $document);
     }
 
     /**
@@ -67,7 +69,7 @@ class DocumentRepositoryTest extends \PHPUnit_Framework_TestCase
     public function willCache()
     {
         $path  = 'src/Tests/Functional/PetStore/app/swagger/petstore.yml';
-        $cache = $this->getMockBuilder('Doctrine\Common\Cache\ArrayCache')->disableOriginalConstructor()->getMock();
+        $cache = $this->getMockBuilder(ArrayCache::class)->disableOriginalConstructor()->getMock();
 
         $repository = new DocumentRepository(null, $cache);
         $cache->expects($this->exactly(1))->method('fetch')->with($path);
@@ -85,6 +87,6 @@ class DocumentRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $document = $this->repository->get('app/swagger/petstore.yml');
 
-        $this->assertInstanceOf('KleijnWeb\SwaggerBundle\Document\SwaggerDocument', $document);
+        $this->assertInstanceOf(Specification::class, $document);
     }
 }
