@@ -8,7 +8,6 @@
 namespace KleijnWeb\SwaggerBundle\Serialize\TypeResolver;
 
 use KleijnWeb\SwaggerBundle\Document\Specification;
-use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
 
 class TypeNameResolver
 {
@@ -31,24 +30,6 @@ class TypeNameResolver
     {
         if ($type = $this->findTypeInSchema($schema)) {
             return $type;
-        }
-
-        throw new \InvalidArgumentException("Failed to resolve type");
-    }
-
-    /**
-     * @param Operation $operationObject
-     *
-     * @return string
-     */
-    public function resolveUsingOperationBody(Operation $operationObject): string
-    {
-        if ($operationObject->hasParameters()) {
-            foreach ($operationObject->getParameters() as $parameterDefinition) {
-                if ($parameterDefinition->in == 'body' && isset($parameterDefinition->schema)) {
-                    return $this->resolveUsingSchema($parameterDefinition->schema);
-                }
-            }
         }
 
         throw new \InvalidArgumentException("Failed to resolve type");

@@ -44,13 +44,12 @@ class ContentDecoder
 
     /**
      * @param Request   $request
-     * @param Operation $operationObject
      *
      * @return mixed
      * @throws MalformedContentException
      * @throws UnsupportedContentTypeException
      */
-    public function decodeContent(Request $request, Operation $operationObject)
+    public function decodeContent(Request $request)
     {
         if ($content = $request->getContent()) {
             if (!$request->attributes->get('_swagger.file')) {

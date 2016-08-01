@@ -28,7 +28,7 @@ class ObjectSerializationTest extends ObjectSerializerTest
      */
     public function canSerialize(Foo $data, string $expected)
     {
-        $actual = $this->serializer->serialize($data, $this->specification);
+        $actual = $this->serializer->serialize($data, $this->definitionMap);
         $this->assertSame($expected, $actual);
     }
 

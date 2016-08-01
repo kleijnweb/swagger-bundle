@@ -66,6 +66,9 @@ class RequestListener
         if (!$request->attributes->get('_swagger.file')) {
             return;
         }
+        if (!$request->get('_swagger.path')) {
+            throw new \LogicException("Request does not contain reference to Swagger path");
+        }
 
         $specification = $this->documentRepository->get($request->attributes->get('_swagger.file'));
         $operation     = $specification->getOperation(

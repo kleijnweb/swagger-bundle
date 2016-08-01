@@ -52,7 +52,6 @@ class ResponseFactory
      */
     public function createResponse(Request $request, $data)
     {
-
         /** @var RequestMeta $meta */
         $meta = $request->attributes->get('_swagger.meta');
         $specification = $meta->getSpecification();

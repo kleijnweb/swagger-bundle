@@ -40,7 +40,7 @@ class RequestCoercer
      */
     public function coerceRequest(Request $request, Operation $operationObject): Request
     {
-        $content = $this->contentDecoder->decodeContent($request, $operationObject);
+        $content = $this->contentDecoder->decodeContent($request);
 
         $paramBagMapping = [
             'query'  => 'query',
