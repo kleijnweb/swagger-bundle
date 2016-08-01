@@ -30,7 +30,7 @@ In order for this to work properly, you may need some additional config.
 
 When SwaggerBundle generates the JSON Pointer URI, it uses the following conventions:
 
-1. For the protocol/scheme, it uses to the scheme used to make the request, unless globally configured otherwise, *or* if not in the specs `schemes` (in which case it will use, in order of preference: https, wss, http, ws).
+1. For the protocol/scheme, it uses to the scheme used to make the request, unless globally configured otherwise, *or* if not in the specs `schemes` (in which case it will use, in order of preference: https, wss, http, ws - the ws variants do not seem to be supported by Symfony though).
 2. For the host name, it will prefer the global config. If not defined it will use the value of `host` in the spec, ultimately falling back to the host name used to make the request.
 3. For the relative path, it will use the path relative to `swagger.document.base_path`. If configured, it will prefix the `swagger.document.public.base_url`
 

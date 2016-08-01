@@ -21,14 +21,32 @@ class Foo
     private $bar;
 
     /**
+     * @var \DateTimeInterface
+     */
+    private $aDate;
+
+    /**
+     * @var \DateTimeInterface
+     */
+    private $aDateTime;
+
+    /**
      * Foo constructor.
      *
-     * @param string   $a
-     * @param Bar|null $bar
+     * @param string             $a
+     * @param Bar                $bar
+     * @param \DateTimeInterface $aDate
+     * @param \DateTimeInterface $aDateTime
      */
-    public function __construct(string $a, Bar $bar = null)
-    {
-        $this->a   = $a;
-        $this->bar = $bar;
+    public function __construct(
+        string $a,
+        Bar $bar,
+        \DateTimeInterface $aDate = null,
+        \DateTimeInterface $aDateTime = null
+    ) {
+        $this->a         = $a;
+        $this->bar       = $bar;
+        $this->aDate     = $aDate;
+        $this->aDateTime = $aDateTime;
     }
 }

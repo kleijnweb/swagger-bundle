@@ -2,8 +2,8 @@ services:
   swagger.serializer.array:
     class: KleijnWeb\SwaggerBundle\Serialize\Serializer\ArraySerializer
 
-  swagger.serializer.swagger:
-    class: KleijnWeb\SwaggerBundle\Serialize\SwaggerSerializer
+  swagger.serializer.object:
+    class: KleijnWeb\SwaggerBundle\Serialize\Serializer\ObjectSerializer
     arguments: ['@swagger.serializer.type_resolver']
 
   swagger.serializer.jms:

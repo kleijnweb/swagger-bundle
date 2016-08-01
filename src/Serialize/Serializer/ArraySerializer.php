@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Serialize\Serializer;
 
+use KleijnWeb\SwaggerBundle\Document\Specification;
 use KleijnWeb\SwaggerBundle\Serialize\Serializer;
 
 /**
@@ -18,22 +19,24 @@ use KleijnWeb\SwaggerBundle\Serialize\Serializer;
 class ArraySerializer implements Serializer
 {
     /**
-     * @param mixed $data
+     * @param mixed         $data
+     * @param Specification $specification
      *
      * @return string
      */
-    public function serialize($data): string
+    public function serialize($data, Specification $specification): string
     {
         return json_encode($data);
     }
 
     /**
-     * @param mixed       $data
-     * @param string|null $type
+     * @param mixed         $data
+     * @param Specification $specification
+     * @param string|null   $type
      *
      * @return mixed
      */
-    public function deserialize($data, string $type = null)
+    public function deserialize($data, string $type, Specification $specification)
     {
         $array = json_decode($data, true);
 

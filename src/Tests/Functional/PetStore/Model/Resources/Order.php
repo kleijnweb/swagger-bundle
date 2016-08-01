@@ -29,7 +29,7 @@ class Order
 
     /**
      * @var \DateTime
-     * @Type("DateTime<'Y-m-d'>")
+     * @Type("DateTime")
      */
     private $shipDate;
 
@@ -40,17 +40,25 @@ class Order
     private $status;
 
     /**
-     * @var boolean
+     * @var bool
      * @Type("boolean")
      */
     private $complete;
 
     /**
-     * @param integer
-     *
-     * @return $this
+     * @return int
      */
-    public function setId($id)
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return Order
+     */
+    public function setId(int $id): Order
     {
         $this->id = $id;
 
@@ -58,11 +66,19 @@ class Order
     }
 
     /**
-     * @param integer
-     *
-     * @return $this
+     * @return int
      */
-    public function setPetid($petId)
+    public function getPetId(): int
+    {
+        return $this->petId;
+    }
+
+    /**
+     * @param int $petId
+     *
+     * @return Order
+     */
+    public function setPetId(int $petId): Order
     {
         $this->petId = $petId;
 
@@ -70,11 +86,19 @@ class Order
     }
 
     /**
-     * @param integer
-     *
-     * @return $this
+     * @return int
      */
-    public function setQuantity($quantity)
+    public function getQuantity(): int
+    {
+        return $this->quantity;
+    }
+
+    /**
+     * @param int $quantity
+     *
+     * @return Order
+     */
+    public function setQuantity(int $quantity): Order
     {
         $this->quantity = $quantity;
 
@@ -82,11 +106,19 @@ class Order
     }
 
     /**
-     * @param \DateTime
-     *
-     * @return $this
+     * @return \DateTime
      */
-    public function setShipdate($shipDate)
+    public function getShipDate(): \DateTime
+    {
+        return $this->shipDate;
+    }
+
+    /**
+     * @param \DateTime $shipDate
+     *
+     * @return Order
+     */
+    public function setShipDate(\DateTime $shipDate): Order
     {
         $this->shipDate = $shipDate;
 
@@ -94,11 +126,19 @@ class Order
     }
 
     /**
-     * @param string
-     *
-     * @return $this
+     * @return string
      */
-    public function setStatus($status)
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string $status
+     *
+     * @return Order
+     */
+    public function setStatus(string $status): Order
     {
         $this->status = $status;
 
@@ -106,63 +146,22 @@ class Order
     }
 
     /**
-     * @param boolean
-     *
-     * @return $this
+     * @return bool
      */
-    public function setComplete($complete)
+    public function isComplete(): bool
+    {
+        return $this->complete;
+    }
+
+    /**
+     * @param bool $complete
+     *
+     * @return Order
+     */
+    public function setComplete(bool $complete): Order
     {
         $this->complete = $complete;
 
         return $this;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getPetid()
-    {
-        return $this->petId;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getQuantity()
-    {
-        return $this->quantity;
-    }
-
-    /**
-     * @return \DateTime
-     */
-
-    public function getShipdate()
-    {
-        return $this->shipDate;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getComplete()
-    {
-        return $this->complete;
     }
 }

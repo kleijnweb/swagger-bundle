@@ -81,10 +81,10 @@ class ParameterRefBuilder
         if (!$scheme) {
             $scheme = $request->getScheme();
             if (property_exists($definition, 'schemes')) {
-                if (!in_array($scheme, self::$schemes)) {
+                if (!in_array($scheme, $definition->schemes)) {
                     foreach (self::$schemes as $knownScheme) {
                         if (in_array($knownScheme, $definition->schemes)) {
-                            $this->scheme = $knownScheme;
+                            $scheme = $knownScheme;
                             break;
                         }
                     }

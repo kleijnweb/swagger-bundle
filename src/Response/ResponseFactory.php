@@ -55,13 +55,13 @@ class ResponseFactory
             throw new \LogicException("Request does not contain reference to Swagger path");
         }
 
+        $specification = $this->documentRepository->get($request->get('_definition'));
+
         if ($data !== null) {
-            $data = $this->serializer->serialize($data);
+            $data = $this->serializer->serialize($data, $specification);
         }
 
-        $swaggerDocument = $this->documentRepository->get($request->get('_definition'));
-
-        $operationDefinition = $swaggerDocument
+        $operationDefinition = $specification
             ->getOperationDefinition(
                 $request->get('_swagger_path'),
                 $request->getMethod()

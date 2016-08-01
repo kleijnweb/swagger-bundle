@@ -8,6 +8,8 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Request\ContentDecoder;
 
+use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
+use KleijnWeb\SwaggerBundle\Document\Specification;
 use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
 use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
 use KleijnWeb\SwaggerBundle\Serialize\SerializationTypeResolver;
@@ -74,7 +76,18 @@ class ContentDecoderSymfonySerializerCompatibilityTest extends \PHPUnit_Framewor
             ->method('resolveOperationBodyType')
             ->willReturn(self::FAUX_CLASS_NAME);
 
-        $this->contentDecoder = new ContentDecoder($this->serializer, $typeResolver);
+        $documentRepository = $this
+            ->getMockBuilder(DocumentRepository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $documentRepository
+            ->expects($this->any())
+            ->method('get')
+            ->willReturn(new Specification(new \stdClass));
+
+        /** @noinspection PhpParamsInspection */
+        $this->contentDecoder = new ContentDecoder($this->serializer, $documentRepository, $typeResolver);
     }
 
     /**
@@ -87,7 +100,7 @@ class ContentDecoderSymfonySerializerCompatibilityTest extends \PHPUnit_Framewor
             'foo' => 'bar'
         ];
 
-        $request = TestRequestFactory::create(json_encode($content));
+        $request = TestRequestFactory::create(json_encode($content), [], 'faux');
         $request->headers->set('Content-Type', 'application/json');
 
         $className = self::FAUX_CLASS_NAME;
@@ -128,7 +141,7 @@ class ContentDecoderSymfonySerializerCompatibilityTest extends \PHPUnit_Framewor
     public function willThrowMalformedContentExceptionWhenDecodingFails()
     {
         $content = 'lkjhlkj';
-        $request = TestRequestFactory::create($content);
+        $request = TestRequestFactory::create($content, [], 'faux');
         $request->headers->set('Content-Type', 'application/json');
 
         $this->jsonDecoderMock

@@ -46,7 +46,7 @@ class Configuration implements ConfigurationInterface
                     ->addDefaultsIfNotSet()
                     ->children()
                         ->enumNode('type')
-                            ->values(array('array', 'swagger', 'jms', 'symfony'))
+                            ->values(array('array', 'object', 'jms', 'symfony'))
                             ->defaultValue('array')
                             ->cannotBeEmpty()
                         ->end()

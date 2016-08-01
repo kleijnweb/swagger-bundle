@@ -34,6 +34,20 @@ class Specification
     }
 
     /**
+     * @param string $typeName
+     *
+     * @return \stdClass
+     */
+    public function getResourceDefinition(string $typeName): \stdClass
+    {
+        if (!isset($this->definition->definitions->$typeName)) {
+            throw new \InvalidArgumentException("Unknown resource type name '$typeName'");
+        }
+
+        return $this->definition->definitions->$typeName;
+    }
+
+    /**
      * @return \stdClass
      */
     public function getDefinition(): \stdClass

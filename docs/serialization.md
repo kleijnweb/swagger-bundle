@@ -5,26 +5,20 @@
 By default Swagger bundle will simply encode and decode arrays. This means your controllers can expect `$request->getContent()`
  to contain an associative array, and are expected to return those as well.
  
-Optionally SwaggerBundle can do object de- serialization. You will need to pass the Symfony Components Serializer, 
-or JMS\Serializer to the SerializerAdapter, which can be done by configuration:
+Optionally SwaggerBundle can do object de- serialization. It will use the type info from your JSON Schema to populate your objects (unless you use a 3rd party serializer).
 
 ```yml
 swagger:
-    serializer: 
-        type: symfony
-        namespace: My\Bundle\Resource\Namespace # Required for 'symfony' and 'jms' serializers
+  serializer: 
+    type: object
+    namespace: My\Bundle\Resource\Namespace # Required for 'object', 'symfony' and 'jms' serializers
 ```
-
-Replace `symfony` with `jms` to use the JMS Serializer. You can specifiy more than one namespace by replacing the string value for `namespace` with an array which will be tried in order of occurrence.
-
-__NOTE:__ You do not need to install `JMSSerializerBundle`. Just `composer require jms/serializer` (or `composer require symfony/serializer`).
-
-The `namespace` value is used to configure `@swagger.serializer.type_resolver` (`SerializationTypeResolver`).
+The `namespace` value is used to configure `@swagger.serializer.type_resolver` (`SerializationTypeResolver`). You can specify more than one namespace by replacing the string value for `namespace` with an array which will be tried in order of occurrence.
 
 `SerializationTypeResolver` will use the last segment of the `$ref` (or `id`) of the schema for the `in: body` parameter.
-  Eg `#/definitions/Pet` will resolve to `My\Bundle\Resource\Namespace\Pet`. Currently `SerializationTypeResolver` supports only a single namespace.
+  Eg `#/definitions/Pet` will resolve to `My\Bundle\Resource\Namespace\Pet`. 
   
-This will only work for operations where the `in: body` parameter is defined, for example:
+Deserialization will only work for operations where the `in: body` parameter is defined, for example:
 
 ```yml
 parameters:
@@ -55,9 +49,15 @@ public function placeOrder(Request $request)
 }
 ```
 
+### 3rd Party Serializers
+
+SwaggerBundle supports the Symfony and JMS serializers out of the box. Factory classes instantiate these classes with default properties, if you need specific behavior you will need to override the relevant DI keys.
+ 
+__NOTE:__ You do not need to install `JMSSerializerBundle`. Just `composer require jms/serializer` (or `composer require symfony/serializer`).
+
 ### Custom Serializers
 
-Below is an early prototype of the SwaggerSerializer which is a good example to create custom serializers.
+Below is an early prototype of the ObjectSerializer which is a good example to create custom serializers.
 
 ```yaml
 services:

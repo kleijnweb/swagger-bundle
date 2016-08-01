@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Serialize\Serializer;
 
+use KleijnWeb\SwaggerBundle\Document\Specification;
 use KleijnWeb\SwaggerBundle\Serialize\Serializer;
 use Symfony\Component\Serializer\SerializerInterface as SymfonySerializer;
 
@@ -34,11 +35,12 @@ class SymfonySerializerAdapter implements Serializer
     }
 
     /**
-     * @param mixed $data any data
+     * @param mixed         $data any data
+     * @param Specification $specification
      *
      * @return string
      */
-    public function serialize($data): string
+    public function serialize($data, Specification $specification): string
     {
         return $this->target->serialize($data, 'json');
     }
@@ -46,12 +48,14 @@ class SymfonySerializerAdapter implements Serializer
     /**
      * Deserializes data into the given type.
      *
-     * @param mixed  $data
-     * @param string $type
+     * @param mixed         $data
+     * @param string        $type
      *
-     * @return object|array
+     * @param Specification $specification
+     *
+     * @return array|object
      */
-    public function deserialize($data, string $type)
+    public function deserialize($data, string $type, Specification $specification)
     {
         return $this->target->deserialize($data, $type, 'json');
     }

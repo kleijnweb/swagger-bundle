@@ -14,16 +14,16 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class SerializationPetStoreApiTest extends WebTestCase
+class JmsSerializationPetStoreApiTest extends WebTestCase
 {
     use ApiTestCase;
 
     /**
-     * Use config_object.yml
+     * Use config_jms.yml
      *
      * @var bool
      */
-    protected $env = 'object';
+    protected $env = 'jms';
 
     /**
      * Initialize SwaggerAssertions Schema Manager
@@ -49,31 +49,6 @@ class SerializationPetStoreApiTest extends WebTestCase
         $this->assertSame('placed', $actual->status);
         $this->assertSame($content['petId'], $actual->petId);
         $this->assertSame($content['quantity'], $actual->quantity);
-
-        $this->assertTrue($actual->complete);
-        $this->assertSame('2016-01-02T01:00:00+0000', $actual->shipDate);
-
         $this->assertInternalType('integer', $actual->id);
-    }
-
-    /**
-     * @test
-     */
-    public function canPostPet()
-    {
-        $content = [
-            'name'      => 'fido',
-            'photoUrls' => ['1', '2'],
-            'quantity'  => 10,
-            'category'  => ['name' => 'dogs']
-        ];
-
-        $actual = $this->post('/v2/pet', $content);
-        $this->assertSame($content['name'], $actual->name);
-        $this->assertSame($content['photoUrls'], $actual->photoUrls);
-        $this->assertInternalType('integer', $actual->id);
-        $this->assertObjectNotHasAttribute('quantity', $actual);
-        $this->assertObjectHasAttribute('category', $actual);
-        $this->assertObjectHasAttribute('id', $actual->category);
     }
 }

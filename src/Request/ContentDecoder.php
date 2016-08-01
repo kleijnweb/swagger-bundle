@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Request;
 
+use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
 use KleijnWeb\SwaggerBundle\Exception\UnsupportedContentTypeException;
@@ -31,12 +32,22 @@ class ContentDecoder
     private $typeResolver;
 
     /**
+     * @var DocumentRepository
+     */
+    private $documentRepository;
+
+    /**
      * @param Serializer                $serializer
+     * @param DocumentRepository        $documentRepository
      * @param SerializationTypeResolver $typeResolver
      */
-    public function __construct(Serializer $serializer, SerializationTypeResolver $typeResolver = null)
-    {
+    public function __construct(
+        Serializer $serializer,
+        DocumentRepository $documentRepository,
+        SerializationTypeResolver $typeResolver = null
+    ) {
         $this->serializer   = $serializer;
+        $this->documentRepository = $documentRepository;
         $this->typeResolver = $typeResolver;
     }
 
@@ -51,10 +62,14 @@ class ContentDecoder
     public function decodeContent(Request $request, Operation $operationObject)
     {
         if ($content = $request->getContent()) {
-            try {
-                $type = $this->typeResolver ? $this->typeResolver->resolveOperationBodyType($operationObject) : '';
+            if (!$request->attributes->get('_definition')) {
+                throw new \LogicException("Request does not contain reference to definition");
+            }
+            $specification = $this->documentRepository->get($request->get('_definition'));
+            $type          = $this->typeResolver ? $this->typeResolver->resolveOperationBodyType($operationObject) : '';
 
-                return $this->serializer->deserialize($content, $type);
+            try {
+                return $this->serializer->deserialize($content, $type, $specification);
             } catch (\Exception $e) {
                 throw new MalformedContentException("Unable to decode payload", 400, $e);
             }

@@ -14,7 +14,7 @@ use KleijnWeb\SwaggerBundle\Document\Specification;
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
+class SwaggerSpecificationTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
@@ -22,7 +22,7 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
     public function canGetPathDefinitions()
     {
         $actual = self::getPetStoreDocument()->getPaths();
-        $this->assertInternalType('object', $actual);
+        $this->assertinstanceOf('\stdClass', $actual);
 
         // Check a few attributes
         $this->assertObjectHasAttribute('/pet', $actual);
@@ -34,10 +34,30 @@ class SwaggerDocumentTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function canGetResourceTypeDefinition()
+    {
+        $actual = self::getPetStoreDocument()->getResourceDefinition('Pet');
+        $this->assertinstanceOf('\stdClass', $actual);
+        $this->assertObjectHasAttribute('properties', $actual);
+        $this->assertObjectHasAttribute('id', $actual->properties);
+    }
+
+    /**
+     * @test
+     * @expectedException \InvalidArgumentException
+     */
+    public function canFailToGetResourceTypeDefinition()
+    {
+        self::getPetStoreDocument()->getResourceDefinition('Zebra');
+    }
+
+    /**
+     * @test
+     */
     public function getOperationDefinition()
     {
         $actual = self::getPetStoreDocument()->getOperationDefinition('/store/inventory', 'get');
-        $this->assertInternalType('object', $actual);
+        $this->assertinstanceOf('\stdClass', $actual);
 
         // Check a few attributes
         $this->assertObjectHasAttribute('parameters', $actual);
