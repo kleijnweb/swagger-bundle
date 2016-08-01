@@ -9,7 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Serialize\Serializer;
 
 use KleijnWeb\SwaggerBundle\Document\Specification;
-use KleijnWeb\SwaggerBundle\Serialize\SerializationTypeResolver;
+use KleijnWeb\SwaggerBundle\Serialize\TypeNameResolver;
 use KleijnWeb\SwaggerBundle\Serialize\Serializer\ObjectSerializer;
 
 /**
@@ -36,8 +36,8 @@ abstract class ObjectSerializerTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        /** @var SerializationTypeResolver $typeResolver */
-        $typeResolver = $this->typeResolverMock = $this->getMockBuilder(SerializationTypeResolver::class)
+        /** @var TypeNameResolver $typeResolver */
+        $typeResolver = $this->typeResolverMock = $this->getMockBuilder(TypeNameResolver::class)
             ->disableOriginalConstructor()
             ->getMock();
 

@@ -12,7 +12,7 @@ use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\Document\Specification;
 use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
 use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
-use KleijnWeb\SwaggerBundle\Serialize\SerializationTypeResolver;
+use KleijnWeb\SwaggerBundle\Serialize\TypeNameResolver;
 use KleijnWeb\SwaggerBundle\Serialize\Serializer\Factory\SymfonySerializerFactory;
 use KleijnWeb\SwaggerBundle\Serialize\Serializer\SymfonySerializerAdapter;
 use KleijnWeb\SwaggerBundle\Tests\Request\TestRequestFactory;
@@ -67,13 +67,13 @@ class ContentDecoderSymfonySerializerCompatibilityTest extends \PHPUnit_Framewor
         $this->serializer = new SymfonySerializerAdapter(SymfonySerializerFactory::factory($this->jsonDecoderMock));
 
         $typeResolver = $this
-            ->getMockBuilder(SerializationTypeResolver::class)
+            ->getMockBuilder(TypeNameResolver::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $typeResolver
             ->expects($this->any())
-            ->method('resolveOperationBodyType')
+            ->method('getFqcnFromOperationBody')
             ->willReturn(self::FAUX_CLASS_NAME);
 
         $documentRepository = $this

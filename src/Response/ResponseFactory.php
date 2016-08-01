@@ -9,7 +9,8 @@
 namespace KleijnWeb\SwaggerBundle\Response;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
-use KleijnWeb\SwaggerBundle\Serialize\SerializationTypeResolver;
+use KleijnWeb\SwaggerBundle\Document\Specification;
+use KleijnWeb\SwaggerBundle\Request\RequestMeta;
 use KleijnWeb\SwaggerBundle\Serialize\Serializer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,18 +31,15 @@ class ResponseFactory
     private $documentRepository;
 
     /**
-     * @param DocumentRepository        $documentRepository
-     * @param Serializer                $serializer
-     * @param SerializationTypeResolver $typeResolver
+     * @param DocumentRepository $documentRepository
+     * @param Serializer         $serializer
      */
     public function __construct(
         DocumentRepository $documentRepository,
-        Serializer $serializer,
-        SerializationTypeResolver $typeResolver = null
+        Serializer $serializer
     ) {
         $this->serializer         = $serializer;
         $this->documentRepository = $documentRepository;
-        $this->typeResolver       = $typeResolver;
     }
 
     /**
@@ -54,28 +52,24 @@ class ResponseFactory
      */
     public function createResponse(Request $request, $data)
     {
-        if (!$request->get('_definition')) {
-            throw new \LogicException("Request does not contain reference to definition");
-        }
-        if (!$request->get('_swagger_path')) {
-            throw new \LogicException("Request does not contain reference to Swagger path");
-        }
 
-        $specification = $this->documentRepository->get($request->get('_definition'));
+        /** @var RequestMeta $meta */
+        $meta = $request->attributes->get('_swagger.meta');
+        $specification = $meta->getSpecification();
 
         if ($data !== null) {
-            $data = $this->serializer->serialize($data, $specification);
+            $data = $this->serializer->serialize($data, $meta->getDefinitionMap());
         }
 
-        $operationDefinition = $specification
+        $operation = $specification
             ->getOperation(
-                $request->get('_swagger_path'),
+                $request->get('_swagger.path'),
                 $request->getMethod()
             );
 
         $responseCode   = 200;
         $understands204 = false;
-        foreach ($operationDefinition->getResponseCodes() as $statusCode) {
+        foreach ($operation->getResponseCodes() as $statusCode) {
             if ($statusCode == 204) {
                 $understands204 = true;
             }

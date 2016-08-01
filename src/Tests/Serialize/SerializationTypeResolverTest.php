@@ -8,8 +8,9 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Serialize;
 
+use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
-use KleijnWeb\SwaggerBundle\Serialize\SerializationTypeResolver;
+use KleijnWeb\SwaggerBundle\Serialize\TypeNameResolver;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -17,16 +18,34 @@ use KleijnWeb\SwaggerBundle\Serialize\SerializationTypeResolver;
 class SerializationTypeResolverTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var SerializationTypeResolver
+     * @var TypeNameResolver
      */
     private $resolver;
 
     protected function setUp()
     {
-        $this->resolver = new SerializationTypeResolver([
+        $this->resolver = new TypeNameResolver([
             'KleijnWeb\SwaggerBundle\Tests\Serialize\Stubs\Namespace2',
             'KleijnWeb\SwaggerBundle\Tests\Serialize\Stubs\Namespace1'
         ]);
+    }
+
+    /**
+     * @test
+     * @dataProvider typeNamesProvider
+     *
+     * @param string $fileName
+     * @param array  $expected
+     */
+    public function canFindTypeNamesInSpecification(string $fileName, array $expected)
+    {
+        $typeNames = $this->resolver->findTypeNames(
+            (new DocumentRepository('src/Tests/Functional/PetStore/app/swagger'))->get($fileName)
+        );
+        sort($typeNames);
+
+        $this->assertSame($expected, $typeNames);
+
     }
 
     /**
@@ -70,6 +89,7 @@ class SerializationTypeResolverTest extends \PHPUnit_Framework_TestCase
      */
     public function canReverseLookupPreviouslyResolvedType()
     {
+        $this->markTestIncomplete();
         $this->resolver->resolveUsingTypeName('Foo');
         $this->assertSame('Foo', $this->resolver->reverseLookup(Stubs\Namespace2\Foo::class));
     }
@@ -80,6 +100,7 @@ class SerializationTypeResolverTest extends \PHPUnit_Framework_TestCase
      */
     public function reverseLookupWillFailIfNotPreviouslyResolved()
     {
+        $this->markTestIncomplete();
         $this->resolver->reverseLookup(Stubs\Namespace2\Foo::class);
     }
 
@@ -93,5 +114,20 @@ class SerializationTypeResolverTest extends \PHPUnit_Framework_TestCase
         $operation = $this->getMockBuilder(Operation::class)->disableOriginalConstructor()->getMock();
 
         $this->resolver->resolveOperationBodyType($operation);
+    }
+
+    /**
+     * @return array
+     */
+    public function typeNamesProvider()
+    {
+        return [
+            ['petstore.yml', ['ApiResponse', 'Category', 'Order', 'Pet', 'Tag', 'User']],
+            [
+                'instagram.yml',
+                ['Comment', 'Image', 'Like', 'Location', 'Media', 'MiniProfile', 'Tag', 'User']
+            ],
+            ['composite.yml', ['Pet', 'VndError']]
+        ];
     }
 }

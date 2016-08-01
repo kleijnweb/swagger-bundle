@@ -69,9 +69,9 @@ class ParameterRefBuilder
     public function buildDocumentLink(Request $request)
     {
         /** @var Specification $document */
-        $document = $request->attributes->get('_oa_spec');
+        $document = $request->attributes->get('_swagger.meta')->getSpecification();
         /** @var string $filePath */
-        $filePath = $request->attributes->get('_definition');
+        $filePath = $request->attributes->get('_swagger.file');
 
         $definition = $document->getDefinition();
         $basePath   = $this->basePath;
@@ -104,7 +104,7 @@ class ParameterRefBuilder
     public function createParameterPointer(Request $request, string $parameterName): string
     {
         /** @var Operation $operation */
-        $operation = $request->attributes->get('_swagger_operation');
+        $operation = $request->attributes->get('_swagger.meta')->getOperation();
 
         return $operation->createParameterPointer($parameterName);
     }
@@ -118,7 +118,7 @@ class ParameterRefBuilder
     public function createParameterSchemaPointer(Request $request, string $parameterName): string
     {
         /** @var Operation $operation */
-        $operation = $request->attributes->get('_swagger_operation');
+        $operation = $request->attributes->get('_swagger.meta')->getOperation();
 
         return $operation->createParameterSchemaPointer($parameterName);
     }

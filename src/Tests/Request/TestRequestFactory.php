@@ -28,7 +28,7 @@ class TestRequestFactory
         $request = new Request($query, [], [], [], [], [], $content);
 
         if ($specificationPath) {
-            $request->attributes->set('_definition', $specificationPath);
+            $request->attributes->set('_swagger.file', $specificationPath);
         }
 
         return $request;

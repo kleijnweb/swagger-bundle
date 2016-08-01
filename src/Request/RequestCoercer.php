@@ -38,7 +38,7 @@ class RequestCoercer
      * @throws MalformedContentException
      * @throws UnsupportedException
      */
-    public function coerceRequest(Request $request, Operation $operationObject)
+    public function coerceRequest(Request $request, Operation $operationObject): Request
     {
         $content = $this->contentDecoder->decodeContent($request, $operationObject);
 
@@ -72,5 +72,7 @@ class RequestCoercer
                 );
             }
         }
+
+        return $request;
     }
 }

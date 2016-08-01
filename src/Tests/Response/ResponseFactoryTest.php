@@ -55,8 +55,8 @@ class ResponseFactoryTest extends \PHPUnit_Framework_TestCase
         $factory    = new ResponseFactory(new DocumentRepository(), $serializer);
         $request    = new Request();
         $request->server->set('REQUEST_METHOD', $method);
-        $request->attributes->set('_definition', 'src/Tests/Functional/PetStore/app/swagger/composite.yml');
-        $request->attributes->set('_swagger_path', $path);
+        $request->attributes->set('_swagger.file', 'src/Tests/Functional/PetStore/app/swagger/composite.yml');
+        $request->attributes->set('_swagger.path', $path);
 
         return $factory->createResponse($request, $data);
     }

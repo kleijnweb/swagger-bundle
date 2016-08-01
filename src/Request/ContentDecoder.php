@@ -12,7 +12,6 @@ use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
 use KleijnWeb\SwaggerBundle\Exception\UnsupportedContentTypeException;
-use KleijnWeb\SwaggerBundle\Serialize\SerializationTypeResolver;
 use KleijnWeb\SwaggerBundle\Serialize\Serializer;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -27,28 +26,20 @@ class ContentDecoder
     private $serializer;
 
     /**
-     * @var SerializationTypeResolver
-     */
-    private $typeResolver;
-
-    /**
      * @var DocumentRepository
      */
     private $documentRepository;
 
     /**
-     * @param Serializer                $serializer
-     * @param DocumentRepository        $documentRepository
-     * @param SerializationTypeResolver $typeResolver
+     * @param Serializer         $serializer
+     * @param DocumentRepository $documentRepository
      */
     public function __construct(
         Serializer $serializer,
-        DocumentRepository $documentRepository,
-        SerializationTypeResolver $typeResolver = null
+        DocumentRepository $documentRepository
     ) {
         $this->serializer         = $serializer;
         $this->documentRepository = $documentRepository;
-        $this->typeResolver       = $typeResolver;
     }
 
     /**
@@ -62,14 +53,20 @@ class ContentDecoder
     public function decodeContent(Request $request, Operation $operationObject)
     {
         if ($content = $request->getContent()) {
-            if (!$request->attributes->get('_definition')) {
+            if (!$request->attributes->get('_swagger.file')) {
                 throw new \LogicException("Request does not contain reference to definition");
             }
-            $specification = $this->documentRepository->get($request->get('_definition'));
-            $type          = $this->typeResolver ? $this->typeResolver->resolveOperationBodyType($operationObject) : '';
+            /** @var RequestMeta $meta */
+            $meta = $request->get('_swagger.meta');
+
+            $type = ($definitionMap = $meta->getDefinitionMap())
+                ? $definitionMap->getFqcn(
+                    $definitionMap->getTypeNameByOperationId($meta->getOperation()->getId())
+                )
+                : '';
 
             try {
-                return $this->serializer->deserialize($content, $type, $specification);
+                return $this->serializer->deserialize($content, $type, $definitionMap);
             } catch (\Exception $e) {
                 throw new MalformedContentException("Unable to decode payload", 400, $e);
             }

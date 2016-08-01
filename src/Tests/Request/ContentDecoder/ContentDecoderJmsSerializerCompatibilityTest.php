@@ -13,7 +13,7 @@ use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\Document\Specification;
 use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
 use KleijnWeb\SwaggerBundle\Request\ContentDecoder;
-use KleijnWeb\SwaggerBundle\Serialize\SerializationTypeResolver;
+use KleijnWeb\SwaggerBundle\Serialize\TypeNameResolver;
 use KleijnWeb\SwaggerBundle\Serialize\Serializer\Factory\JmsSerializerFactory;
 use KleijnWeb\SwaggerBundle\Serialize\Serializer\JmsSerializerAdapter;
 use KleijnWeb\SwaggerBundle\Tests\Request\TestRequestFactory;
@@ -42,13 +42,13 @@ class ContentDecoderJmsSerializerCompatibilityTest extends \PHPUnit_Framework_Te
         $this->serializer = new JmsSerializerAdapter(JmsSerializerFactory::factory());
 
         $typeResolver = $this
-            ->getMockBuilder(SerializationTypeResolver::class)
+            ->getMockBuilder(TypeNameResolver::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $typeResolver
             ->expects($this->any())
-            ->method('resolveOperationBodyType')
+            ->method('getFqcnFromOperationBody')
             ->willReturn(JmsAnnotatedResourceStub::class);
 
         $documentRepository = $this

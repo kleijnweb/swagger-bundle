@@ -11,6 +11,7 @@ namespace KleijnWeb\SwaggerBundle\Serialize\Serializer;
 use JMS\Serializer\SerializerInterface as JmsSerializer;
 use KleijnWeb\SwaggerBundle\Document\Specification;
 use KleijnWeb\SwaggerBundle\Serialize\Serializer;
+use KleijnWeb\SwaggerBundle\Serialize\TypeResolver\SerializerTypeDefinitionMap;
 
 /**
  * Adapter for JMS\Serializer
@@ -35,12 +36,13 @@ class JmsSerializerAdapter implements Serializer
     }
 
     /**
-     * @param mixed         $data any data
-     * @param Specification $specification
+     * @param mixed                       $data any data
+     *
+     * @param SerializerTypeDefinitionMap $definitionMap
      *
      * @return string
      */
-    public function serialize($data, Specification $specification): string
+    public function serialize($data, SerializerTypeDefinitionMap $definitionMap = null): string
     {
         return $this->target->serialize($data, 'json');
     }
@@ -48,14 +50,14 @@ class JmsSerializerAdapter implements Serializer
     /**
      * Deserializes data into the given type.
      *
-     * @param mixed         $data
-     * @param string        $type
-     * @param Specification $specification
+     * @param mixed                       $data
+     * @param string                      $fqdn
+     * @param SerializerTypeDefinitionMap $definitionMap
      *
      * @return array|object
      */
-    public function deserialize($data, string $type, Specification $specification)
+    public function deserialize($data, string $fqdn, SerializerTypeDefinitionMap $definitionMap = null)
     {
-        return $this->target->deserialize($data, $type, 'json');
+        return $this->target->deserialize($data, $fqdn, 'json');
     }
 }

@@ -32,7 +32,7 @@ class RefResolver
     private $directory;
 
     /**
-     * @var YamlParser
+     * @var Loader
      */
     private $loader;
 

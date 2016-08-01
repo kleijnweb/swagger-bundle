@@ -39,12 +39,11 @@ class ViewListener
      */
     public function onKernelView(GetResponseForControllerResultEvent $event)
     {
-        $result   = $event->getControllerResult();
-        $response = $this->responseFactory->createResponse(
-            $event->getRequest(),
-            $result
+        $event->setResponse(
+            $this->responseFactory->createResponse(
+                $event->getRequest(),
+                $event->getControllerResult()
+            )
         );
-
-        $event->setResponse($response);
     }
 }

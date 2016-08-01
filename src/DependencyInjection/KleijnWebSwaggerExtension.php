@@ -35,9 +35,10 @@ class KleijnWebSwaggerExtension extends Extension
         $container->setAlias('swagger.serializer', "swagger.serializer.$serializerType");
 
         if ($serializerType !== 'array') {
-            $typeResolverRef = new Reference('swagger.serializer.type_resolver');
-            $container->getDefinition('swagger.request.processor.content_decoder')->addArgument($typeResolverRef);
-            $container->getDefinition('swagger.response.factory')->addArgument($typeResolverRef);
+            $definitionMapBuilderRef = new Reference(
+                'swagger.serializer.type_resolver.serializer_type_definition_map_builder'
+            );
+            $container->getDefinition('kernel.listener.swagger.request')->addArgument($definitionMapBuilderRef);
         }
 
         if (isset($config['document']['cache'])) {

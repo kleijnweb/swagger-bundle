@@ -35,48 +35,30 @@ class Specification
 
     /**
      * @param callable $f
+     *
+     * @return void
      */
     public function apply(callable  $f)
     {
-        $array = $this->toArray();
+        $recurse = function (&$item) use ($f, &$recurse) {
 
-        array_walk_recursive($array, $f);
-    }
+            foreach ($item as $attribute => &$value) {
+                if (false === $f($value, $attribute)) {
+                    return false;
+                }
+                if ($value === null) {
+                    return true;
+                }
+                if (!is_scalar($value)) {
+                    if (false === $recurse($value)) {
+                        return false;
+                    }
+                }
+            }
 
-    /**
-     * @return array
-     */
-    public function toArray(): array
-    {
-        $array = (array)$this->definition;
-
-        array_walk_recursive($array, function (&$value) {
-            $value = (array)$value;
-        });
-
-        return $array;
-    }
-
-    /**
-     * @param string $typeName
-     *
-     * @return \stdClass
-     */
-    public function getResourceDefinition(string $typeName): \stdClass
-    {
-        if (!isset($this->definition->definitions->$typeName)) {
-            throw new \InvalidArgumentException("Unknown resource type name '$typeName'");
-        }
-
-        return $this->definition->definitions->$typeName;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getResourceNames(): array
-    {
-        return array_keys((array)$this->definition->definitions);
+            return true;
+        };
+        $recurse($this->definition);
     }
 
     /**
@@ -103,13 +85,29 @@ class Specification
      */
     public function getOperation(string $path, string $method): Operation
     {
-        $key = "$path::$method";
+        $operation = new Operation($this, $path, $method);
 
-        if (isset($this->operations[$key])) {
-            return $this->operations[$key];
+        if (isset($this->operations[$operation->getId()])) {
+            return $this->operations[$operation->getId()];
         }
 
-        return $this->operations[$key] = new Operation($this, $path, $method);
+        return $this->operations[$operation->getId()] = $operation;
+    }
+
+    /**
+     * @return Operation[]
+     */
+    public function getOperations(): array
+    {
+        $operations = [];
+
+        foreach ($this->getPaths() as $path => $pathItem) {
+            foreach (array_keys((array)$pathItem) as $method) {
+                $operations[] = $this->getOperation($path, $method);
+            }
+        }
+
+        return $operations;
     }
 
     /**

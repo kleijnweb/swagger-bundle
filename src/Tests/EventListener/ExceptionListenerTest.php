@@ -68,7 +68,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $this->codeProperty = $codeProperty;
         $this->codeProperty->setAccessible(true);
         $attributes    = [
-            '_definition' => '/foo/bar'
+            '_swagger.file' => '/foo/bar'
         ];
         $this->request = new Request($query = [], $request = [], $attributes);
 

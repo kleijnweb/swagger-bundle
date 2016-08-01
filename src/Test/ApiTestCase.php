@@ -281,13 +281,13 @@ trait ApiTestCase
     private function validateResponse(int $code, Response $response, string $method, string $fullPath, $data)
     {
         $request = $this->client->getRequest();
-        if (!self::$schemaManager->hasPath(['paths', $request->get('_swagger_path'), $method, 'responses', $code])) {
+        if (!self::$schemaManager->hasPath(['paths', $request->get('_swagger.path'), $method, 'responses', $code])) {
             $statusClass = (int)substr((string)$code, 0, 1);
             if (in_array($statusClass, [4, 5])) {
                 return;
             }
             throw new \UnexpectedValueException(
-                "There is no $code response definition for {$request->get('_swagger_path')}:$method. "
+                "There is no $code response definition for {$request->get('_swagger.path')}:$method. "
             );
         }
         $headers = [];

@@ -11,7 +11,6 @@ namespace KleijnWeb\SwaggerBundle\Request;
 use JsonSchema\Validator;
 use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
 use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
-use KleijnWeb\SwaggerBundle\Exception\UnsupportedException;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -20,45 +19,19 @@ use Symfony\Component\HttpFoundation\Request;
 class RequestValidator
 {
     /**
-     * @var Operation
-     */
-    private $operationObject;
-
-    /**
-     * @param Operation $operationObject
-     */
-    public function __construct(Operation $operationObject = null)
-    {
-        if ($operationObject) {
-            $this->setOperationObject($operationObject);
-        }
-    }
-
-    /**
-     * @param Operation $operationObject
+     * @param Request   $request
      *
-     * @return $this
-     */
-    public function setOperationObject(Operation $operationObject)
-    {
-        $this->operationObject = $operationObject;
-
-        return $this;
-    }
-
-    /**
-     * @param Request $request
+     * @param Operation $operation
      *
      * @throws InvalidParametersException
-     * @throws UnsupportedException
      */
-    public function validateRequest(Request $request)
+    public function validateRequest(Request $request, Operation $operation)
     {
         $validator = new Validator();
 
         $validator->check(
-            $this->assembleParameterDataForValidation($request),
-            $this->operationObject->getRequestSchema()
+            $this->assembleParameterDataForValidation($request, $operation),
+            $operation->getRequestSchema()
         );
 
         if (!$validator->isValid()) {
@@ -71,12 +44,13 @@ class RequestValidator
     }
 
     /**
-     * @param Request $request
+     * @param Request   $request
+     *
+     * @param Operation $operation
      *
      * @return \stdClass
-     * @throws UnsupportedException
      */
-    private function assembleParameterDataForValidation(Request $request)
+    private function assembleParameterDataForValidation(Request $request, Operation $operation)
     {
         /**
          * TODO Hack
@@ -91,8 +65,8 @@ class RequestValidator
 
         $parameters = new \stdClass;
 
-        if (isset($this->operationObject->getDefinition()->parameters)) {
-            foreach ($this->operationObject->getDefinition()->parameters as $paramDefinition) {
+        if (isset($operation->getDefinition()->parameters)) {
+            foreach ($operation->getDefinition()->parameters as $paramDefinition) {
                 $paramName = $paramDefinition->name;
 
                 if (!$request->attributes->has($paramName)) {

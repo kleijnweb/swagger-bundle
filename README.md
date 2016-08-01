@@ -52,6 +52,7 @@ If `x` is any of these, the answer will probably stay 'no':
  * Handle Form posts.
  * Generate API documentation.
  * Mix well with GUI bundles. The bundle is biased towards lightweight API-only apps.
+ * Support Symfony sub-requests. You won't miss them.
  * Support XML.
  
 ## Notes
