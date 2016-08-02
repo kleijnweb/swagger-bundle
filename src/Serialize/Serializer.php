@@ -9,6 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\Serialize;
 
 use KleijnWeb\SwaggerBundle\Document\Specification;
+use KleijnWeb\SwaggerBundle\Serialize\TypeResolver\SerializerTypeDefinitionMap;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -16,19 +17,19 @@ use KleijnWeb\SwaggerBundle\Document\Specification;
 interface Serializer
 {
     /**
-     * @param mixed         $data
-     * @param Specification $specification
+     * @param mixed                       $data
+     * @param SerializerTypeDefinitionMap $definitionMap
      *
      * @return string
      */
-    public function serialize($data, Specification $specification): string;
+    public function serialize($data, SerializerTypeDefinitionMap $definitionMap): string;
 
     /**
-     * @param mixed         $data
-     * @param string        $type
-     * @param Specification $specification
+     * @param mixed                       $data
+     * @param string                      $fqdn
+     * @param SerializerTypeDefinitionMap $definitionMap
      *
      * @return mixed
      */
-    public function deserialize($data, string $type, Specification $specification);
+    public function deserialize($data, string $fqdn, SerializerTypeDefinitionMap $definitionMap);
 }

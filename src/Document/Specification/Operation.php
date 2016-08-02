@@ -51,6 +51,25 @@ class Operation
         $this->method                           = $method;
         $this->definition                       = $paths->$path->$method;
         $this->definition->{'x-request-schema'} = $this->assembleRequestSchema();
+        if (!isset($this->definition->operationId)) {
+            $this->definition->operationId = "$path::$method";
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->definition->operationId;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getResponseCodes(): array
+    {
+        return array_keys((array)$this->definition->responses);
     }
 
     /**

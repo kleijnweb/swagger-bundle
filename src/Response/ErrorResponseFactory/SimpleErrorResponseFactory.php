@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Response\ErrorResponseFactory;
 
+use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
 use KleijnWeb\SwaggerBundle\Response\Error\HttpError;
 use KleijnWeb\SwaggerBundle\Response\ErrorResponseFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,6 +26,17 @@ class SimpleErrorResponseFactory implements ErrorResponseFactory
      */
     public function create(HttpError $error): Response
     {
-        return new JsonResponse(['message' => $error->getMessage()], $error->getStatusCode());
+        $data = [
+            'message' => $error->getMessage(),
+            'logref'  => $error->getLogRef()
+        ];
+
+        $exception = $error->getException();
+
+        if($exception instanceof InvalidParametersException){
+            $data['errors'] = $exception->getValidationErrors();
+        }
+
+        return new JsonResponse($data, $error->getStatusCode());
     }
 }

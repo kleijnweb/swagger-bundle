@@ -21,14 +21,6 @@ class ObjectDeserializationTest extends ObjectSerializerTest
     protected function setUp()
     {
         parent::setUp();
-
-        $this->typeResolverMock->expects($this->once())->method('reverseLookup')->willReturn('Foo');
-        $this->typeResolverMock
-            ->expects($this->atLeast(1))
-            ->method('resolveUsingSchema')
-            ->willReturnCallback(function (\stdClass $schema) {
-                return "KleijnWeb\\SwaggerBundle\\Tests\\Serialize\\Serializer\\Stubs\\$schema->class";
-            });
     }
 
     /**
@@ -41,7 +33,7 @@ class ObjectDeserializationTest extends ObjectSerializerTest
      */
     public function canDeSerialize(string $data, Foo $expected)
     {
-        $actual = $this->serializer->deserialize($data, Foo::class, $this->specification);
+        $actual = $this->serializer->deserialize($data, Foo::class, $this->definitionMap);
         $this->assertEquals($expected, $actual);
     }
 

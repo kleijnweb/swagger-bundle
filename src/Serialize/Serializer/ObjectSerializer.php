@@ -10,8 +10,9 @@ namespace KleijnWeb\SwaggerBundle\Serialize\Serializer;
 
 use KleijnWeb\SwaggerBundle\Document\Specification;
 use KleijnWeb\SwaggerBundle\Request\ParameterCoercer;
-use KleijnWeb\SwaggerBundle\Serialize\SerializationTypeResolver;
 use KleijnWeb\SwaggerBundle\Serialize\Serializer;
+use KleijnWeb\SwaggerBundle\Serialize\TypeResolver\ClassNameResolver;
+use KleijnWeb\SwaggerBundle\Serialize\TypeResolver\SerializerTypeDefinitionMap;
 
 /**
  * (De-) Serializes objects using JSON Schema
@@ -21,27 +22,12 @@ use KleijnWeb\SwaggerBundle\Serialize\Serializer;
 class ObjectSerializer implements Serializer
 {
     /**
-     * @var SerializationTypeResolver
-     */
-    private $serializationTypeResolver;
-
-    /**
-     * ObjectSerializer constructor.
-     *
-     * @param SerializationTypeResolver $serializationTypeResolver
-     */
-    public function __construct(SerializationTypeResolver $serializationTypeResolver)
-    {
-        $this->serializationTypeResolver = $serializationTypeResolver;
-    }
-
-    /**
-     * @param mixed         $data
-     * @param Specification $specification
+     * @param mixed                       $data
+     * @param SerializerTypeDefinitionMap $definitionMap
      *
      * @return string
      */
-    public function serialize($data, Specification $specification): string
+    public function serialize($data, SerializerTypeDefinitionMap $definitionMap): string
     {
         $export = function ($item, \stdClass $schema) use (&$export) {
             if ($item instanceof \DateTimeInterface) {
@@ -84,22 +70,17 @@ class ObjectSerializer implements Serializer
 
         };
 
-        return json_encode(
-            $export(
-                $data,
-                $specification->getResourceDefinition($this->serializationTypeResolver->reverseLookup(get_class($data)))
-            )
-        );
+        return json_encode($export($data, $definitionMap->getDefinitionByFqcn(get_class($data))));
     }
 
     /**
-     * @param mixed         $data
-     * @param string        $type
-     * @param Specification $specification
+     * @param mixed                       $data
+     * @param string                      $fqdn
+     * @param SerializerTypeDefinitionMap $definitionMap
      *
      * @return mixed
      */
-    public function deserialize($data, string $type, Specification $specification)
+    public function deserialize($data, string $fqdn, SerializerTypeDefinitionMap $definitionMap)
     {
         $import = function ($item, \stdClass $schema) use (&$import) {
             switch ($schema->type) {
@@ -108,7 +89,7 @@ class ObjectSerializer implements Serializer
                         return $import($value, $schema->items);
                     }, $item);
                 case 'object':
-                    $fqcn      = $this->serializationTypeResolver->resolveUsingSchema($schema);
+                    $fqcn      = $schema->{'x-class'};
                     $object    = unserialize(sprintf('O:%d:"%s":0:{}', strlen($fqcn), $fqcn));
                     $reflector = new \ReflectionObject($object);
 
@@ -133,7 +114,7 @@ class ObjectSerializer implements Serializer
 
         return $import(
             json_decode($data, true),
-            $specification->getResourceDefinition($this->serializationTypeResolver->reverseLookup($type))
+            $definitionMap->getDefinitionByFqcn($fqdn)
         );
     }
 }

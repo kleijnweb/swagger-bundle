@@ -85,9 +85,9 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $validator = new RequestValidator(Operation::createFromOperationDefinition($operationDefinition));
+        $validator = new RequestValidator();
         $request   = new Request();
-        $validator->validateRequest($request);
+        $validator->validateRequest($request, Operation::createFromOperationDefinition($operationDefinition));
     }
 
     /**
@@ -109,8 +109,8 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $validator = new RequestValidator(Operation::createFromOperationDefinition($operationDefinition));
-        $validator->validateRequest($request);
+        $validator = new RequestValidator();
+        $validator->validateRequest($request, Operation::createFromOperationDefinition($operationDefinition));
     }
 
     /**
@@ -132,9 +132,9 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $validator = new RequestValidator(Operation::createFromOperationDefinition($operationDefinition));
+        $validator = new RequestValidator();
 
-        $validator->validateRequest($request);
+        $validator->validateRequest($request, Operation::createFromOperationDefinition($operationDefinition));
     }
 
     /**
@@ -173,13 +173,13 @@ class RequestValidatorTest extends \PHPUnit_Framework_TestCase
                 ]
             ];
 
-            $validator = new RequestValidator(Operation::createFromOperationDefinition($operationDefinition));
+            $validator = new RequestValidator();
             $request   = new Request();
             $bagName   = $paramBagMapping[$source];
 
             $request->$bagName->set($parameterName, $rawValue);
             $request->attributes->set($parameterName, $value);
-            $validator->validateRequest($request);
+            $validator->validateRequest($request, Operation::createFromOperationDefinition($operationDefinition));
         }
     }
 }

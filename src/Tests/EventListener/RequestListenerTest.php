@@ -67,7 +67,7 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
         $this->request = new Request(
             [],
             [],
-            ['_definition' => self::DOCUMENT_PATH, '_swagger_path' => self::SWAGGER_PATH]
+            ['_swagger.file' => self::DOCUMENT_PATH, '_swagger.path' => self::SWAGGER_PATH]
         );
 
         $this->eventMock = $this->event = $this
@@ -181,7 +181,7 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
         $wrongRequest = new Request(
             [],
             [],
-            ['_definition' => self::DOCUMENT_PATH]
+            ['_swagger.file' => self::DOCUMENT_PATH]
         );
 
         $this->eventMock

@@ -46,10 +46,6 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('validateRequest')
             ->with($request);
-        $validatorMock
-            ->expects($this->once())
-            ->method('setOperationObject')
-            ->with($operationObject);
 
         /** @var RequestCoercer $contentDecoderMock */
         $coercerMock = $this

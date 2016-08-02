@@ -10,6 +10,7 @@ namespace KleijnWeb\SwaggerBundle\Serialize\Serializer;
 
 use KleijnWeb\SwaggerBundle\Document\Specification;
 use KleijnWeb\SwaggerBundle\Serialize\Serializer;
+use KleijnWeb\SwaggerBundle\Serialize\TypeResolver\SerializerTypeDefinitionMap;
 
 /**
  * Simply utilizes json_encode/json_decode
@@ -19,24 +20,24 @@ use KleijnWeb\SwaggerBundle\Serialize\Serializer;
 class ArraySerializer implements Serializer
 {
     /**
-     * @param mixed         $data
-     * @param Specification $specification
+     * @param mixed                       $data
+     * @param SerializerTypeDefinitionMap $definitionMap
      *
      * @return string
      */
-    public function serialize($data, Specification $specification): string
+    public function serialize($data, SerializerTypeDefinitionMap $definitionMap = null): string
     {
         return json_encode($data);
     }
 
     /**
-     * @param mixed         $data
-     * @param Specification $specification
-     * @param string|null   $type
+     * @param mixed                       $data
+     * @param string|null                 $fqdn
+     * @param SerializerTypeDefinitionMap $definitionMap
      *
      * @return mixed
      */
-    public function deserialize($data, string $type, Specification $specification)
+    public function deserialize($data, string $fqdn, SerializerTypeDefinitionMap $definitionMap = null)
     {
         $array = json_decode($data, true);
 

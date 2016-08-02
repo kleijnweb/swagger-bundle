@@ -25,7 +25,7 @@ class ResponseListener
         }
         $request = $event->getRequest();
         $headers = $event->getResponse()->headers;
-        switch ($request->attributes->get('_swagger_path')) {
+        switch ($request->attributes->get('_swagger.path')) {
             case '/user/login':
                 $headers->set('X-Rate-Limit', 123456789);
                 $headers->set('X-Expires-After', date('Y-m-d\TH:i:s\Z'));

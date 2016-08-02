@@ -9,6 +9,8 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Response;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
+use KleijnWeb\SwaggerBundle\Document\Specification;
+use KleijnWeb\SwaggerBundle\Request\RequestMeta;
 use KleijnWeb\SwaggerBundle\Response\ResponseFactory;
 use KleijnWeb\SwaggerBundle\Serialize\Serializer\ArraySerializer;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,12 +53,19 @@ class ResponseFactoryTest extends \PHPUnit_Framework_TestCase
      */
     private function createResponse($data, $path, $method)
     {
+        $repository = new DocumentRepository();
+        $metaMock = $this->getMockBuilder(RequestMeta::class)->disableOriginalConstructor()->getMock();
+        $metaMock->expects($this->any())
+            ->method('getSpecification')
+            ->willReturn($repository->get('src/Tests/Functional/PetStore/app/swagger/composite.yml'));
+
         $serializer = new ArraySerializer();
-        $factory    = new ResponseFactory(new DocumentRepository(), $serializer);
+        $factory    = new ResponseFactory($repository, $serializer);
         $request    = new Request();
         $request->server->set('REQUEST_METHOD', $method);
-        $request->attributes->set('_definition', 'src/Tests/Functional/PetStore/app/swagger/composite.yml');
-        $request->attributes->set('_swagger_path', $path);
+        $request->attributes->set('_swagger.file', 'src/Tests/Functional/PetStore/app/swagger/composite.yml');
+        $request->attributes->set('_swagger.path', $path);
+        $request->attributes->set('_swagger.meta', $metaMock);
 
         return $factory->createResponse($request, $data);
     }

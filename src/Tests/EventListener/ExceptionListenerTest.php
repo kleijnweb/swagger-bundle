@@ -68,7 +68,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $this->codeProperty = $codeProperty;
         $this->codeProperty->setAccessible(true);
         $attributes    = [
-            '_definition' => '/foo/bar'
+            '_swagger.file' => '/foo/bar'
         ];
         $this->request = new Request($query = [], $request = [], $attributes);
 
@@ -109,7 +109,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
                 ->with(LogLevel::NOTICE, $this->stringStartsWith('Bad Request'));
 
             /** @var LoggerInterface $logger */
-            $this->exceptionListener->setLogger($logger);
+            $this->setLogger($this->exceptionListener, $logger);
             $this->codeProperty->setValue($this->exception, 400 + $i);
             $this->exceptionListener->onKernelException($this->event);
         }
@@ -128,7 +128,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
                 ->with(LogLevel::ERROR, $this->stringStartsWith('Internal Server Error'));
 
             /** @var LoggerInterface $logger */
-            $this->exceptionListener->setLogger($logger);
+            $this->setLogger($this->exceptionListener, $logger);
             $this->codeProperty->setValue($this->exception, 500 + $i);
             $this->exceptionListener->onKernelException($this->event);
         }
@@ -148,9 +148,21 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
                 ->with(LogLevel::CRITICAL, $this->stringStartsWith('Internal Server Error'));
 
             /** @var LoggerInterface $logger */
-            $this->exceptionListener->setLogger($logger);
+            $this->setLogger($this->exceptionListener, $logger);
             $this->codeProperty->setValue($this->exception, $code);
             $this->exceptionListener->onKernelException($this->event);
         }
+    }
+
+    /**
+     * @param ExceptionListener $exceptionListener
+     * @param LoggerInterface   $logger
+     */
+    private function setLogger(ExceptionListener $exceptionListener, LoggerInterface $logger)
+    {
+        $reflection = new \ReflectionObject($exceptionListener);
+        $property   = $reflection->getProperty('logger');
+        $property->setAccessible(true);
+        $property->setValue($exceptionListener, $logger);
     }
 }

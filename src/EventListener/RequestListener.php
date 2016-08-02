@@ -9,7 +9,12 @@
 namespace KleijnWeb\SwaggerBundle\EventListener;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
+use KleijnWeb\SwaggerBundle\Document\Specification;
+use KleijnWeb\SwaggerBundle\Document\Specification\Operation;
+use KleijnWeb\SwaggerBundle\Request\RequestMeta;
 use KleijnWeb\SwaggerBundle\Request\RequestProcessor;
+use KleijnWeb\SwaggerBundle\Serialize\Serializer;
+use KleijnWeb\SwaggerBundle\Serialize\TypeResolver\SerializerTypeDefinitionMapBuilder;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 /**
@@ -28,13 +33,25 @@ class RequestListener
     private $processor;
 
     /**
-     * @param DocumentRepository $schemaRepository
-     * @param RequestProcessor   $processor
+     * @var SerializerTypeDefinitionMapBuilder
      */
-    public function __construct(DocumentRepository $schemaRepository, RequestProcessor $processor)
-    {
-        $this->documentRepository = $schemaRepository;
-        $this->processor          = $processor;
+    private $serializerTypeDefinitionMapBuilder;
+
+    /**
+     * RequestListener constructor.
+     *
+     * @param DocumentRepository                      $schemaRepository
+     * @param RequestProcessor                        $processor
+     * @param SerializerTypeDefinitionMapBuilder|null $serializerTypeDefinitionMapBuilder
+     */
+    public function __construct(
+        DocumentRepository $schemaRepository,
+        RequestProcessor $processor,
+        SerializerTypeDefinitionMapBuilder $serializerTypeDefinitionMapBuilder = null
+    ) {
+        $this->documentRepository                 = $schemaRepository;
+        $this->processor                          = $processor;
+        $this->serializerTypeDefinitionMapBuilder = $serializerTypeDefinitionMapBuilder;
     }
 
     /**
@@ -46,18 +63,40 @@ class RequestListener
             return;
         }
         $request = $event->getRequest();
-        if (!$request->get('_definition')) {
+        if (!$request->attributes->get('_swagger.file')) {
             return;
         }
-        if (!$request->get('_swagger_path')) {
+        if (!$request->get('_swagger.path')) {
             throw new \LogicException("Request does not contain reference to Swagger path");
         }
-        $swaggerDocument = $this->documentRepository->get($request->get('_definition'));
-        $request->attributes->set('_oa_spec', $swaggerDocument);
 
-        $operation = $swaggerDocument->getOperation($request->get('_swagger_path'), $request->getMethod());
-        $request->attributes->set('_swagger_operation', $operation);
+        $specification = $this->documentRepository->get($request->attributes->get('_swagger.file'));
+        $operation     = $specification->getOperation(
+            $request->attributes->get('_swagger.path'),
+            $request->getMethod()
+        );
+
+        $request->attributes->set('_swagger.meta', $this->createRequestMeta($specification, $operation));
 
         $this->processor->process($request, $operation);
+    }
+
+    /**
+     * @param Specification $specification
+     * @param Operation     $operation
+     *
+     * @return RequestMeta
+     */
+    private function createRequestMeta(Specification $specification, Operation $operation): RequestMeta
+    {
+        if ($this->serializerTypeDefinitionMapBuilder) {
+            return new RequestMeta(
+                $specification,
+                $operation,
+                $this->serializerTypeDefinitionMapBuilder->build($specification)
+            );
+        }
+
+        return new RequestMeta($specification, $operation);
     }
 }

@@ -34,17 +34,31 @@ class Specification
     }
 
     /**
-     * @param string $typeName
+     * @param callable $f
      *
-     * @return \stdClass
+     * @return void
      */
-    public function getResourceDefinition(string $typeName): \stdClass
+    public function apply(callable  $f)
     {
-        if (!isset($this->definition->definitions->$typeName)) {
-            throw new \InvalidArgumentException("Unknown resource type name '$typeName'");
-        }
+        $recurse = function (&$item) use ($f, &$recurse) {
 
-        return $this->definition->definitions->$typeName;
+            foreach ($item as $attribute => &$value) {
+                if (false === $f($value, $attribute)) {
+                    return false;
+                }
+                if ($value === null) {
+                    return true;
+                }
+                if (!is_scalar($value)) {
+                    if (false === $recurse($value)) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        };
+        $recurse($this->definition);
     }
 
     /**
@@ -71,13 +85,29 @@ class Specification
      */
     public function getOperation(string $path, string $method): Operation
     {
-        $key = "$path::$method";
+        $operation = new Operation($this, $path, $method);
 
-        if (isset($this->operations[$key])) {
-            return $this->operations[$key];
+        if (isset($this->operations[$operation->getId()])) {
+            return $this->operations[$operation->getId()];
         }
 
-        return $this->operations[$key] = new Operation($this, $path, $method);
+        return $this->operations[$operation->getId()] = $operation;
+    }
+
+    /**
+     * @return Operation[]
+     */
+    public function getOperations(): array
+    {
+        $operations = [];
+
+        foreach ($this->getPaths() as $path => $pathItem) {
+            foreach (array_keys((array)$pathItem) as $method) {
+                $operations[] = $this->getOperation($path, $method);
+            }
+        }
+
+        return $operations;
     }
 
     /**

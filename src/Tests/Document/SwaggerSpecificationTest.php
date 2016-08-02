@@ -19,6 +19,61 @@ class SwaggerSpecificationTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function canApplyRecursiveCallback()
+    {
+        $keys = [];
+        self::getPetStoreDocument()->apply(function ($value, $key) use (&$keys) {
+            $keys[] = $key;
+        });
+
+        $this->assertGreaterThan(1000, count($keys));
+    }
+
+    /**
+     * @test
+     */
+    public function canModifyValuesUsingRecursiveCallback()
+    {
+        $spec = self::getPetStoreDocument();
+
+        $spec->apply(function (&$value) {
+            if (is_scalar($value)) {
+                $value = __CLASS__;
+            }
+        });
+
+        $spec->apply(function ($value) use (&$values) {
+            if (is_scalar($value)) {
+                $values[] = $value;
+            }
+        });
+
+        $this->assertCount(1, array_unique($values));
+    }
+
+    /**
+     * @test
+     */
+    public function canStopRecursiveProcessingByReturningFalse()
+    {
+        $spec = self::getPetStoreDocument();
+
+        $spec->apply(function ($value, $key) use (&$keys) {
+
+            if ($key === 'paths') {
+
+                return false;
+            }
+            $keys[] = $key;
+
+            return true;
+        });
+        $this->assertCount(31, $keys);
+    }
+
+    /**
+     * @test
+     */
     public function canGetPathDefinitions()
     {
         $actual = self::getPetStoreDocument()->getPaths();
@@ -29,26 +84,6 @@ class SwaggerSpecificationTest extends \PHPUnit_Framework_TestCase
         $this->assertObjectHasAttribute('/pet/findByStatus', $actual);
         $this->assertObjectHasAttribute('/store/inventory', $actual);
         $this->assertObjectHasAttribute('/user', $actual);
-    }
-
-    /**
-     * @test
-     */
-    public function canGetResourceTypeDefinition()
-    {
-        $actual = self::getPetStoreDocument()->getResourceDefinition('Pet');
-        $this->assertinstanceOf('\stdClass', $actual);
-        $this->assertObjectHasAttribute('properties', $actual);
-        $this->assertObjectHasAttribute('id', $actual->properties);
-    }
-
-    /**
-     * @test
-     * @expectedException \InvalidArgumentException
-     */
-    public function canFailToGetResourceTypeDefinition()
-    {
-        self::getPetStoreDocument()->getResourceDefinition('Zebra');
     }
 
     /**

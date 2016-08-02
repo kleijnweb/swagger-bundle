@@ -10,6 +10,7 @@ namespace KleijnWeb\SwaggerBundle\Tests\Document;
 
 use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
 use KleijnWeb\SwaggerBundle\Document\ParameterRefBuilder;
+use KleijnWeb\SwaggerBundle\Request\RequestMeta;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -29,10 +30,12 @@ class ParameterRefBuilderTest extends \PHPUnit_Framework_TestCase
             '/pet/100',
             'POST'
         );
-        $request->attributes->set('_definition', 'swagger/petstore.yml');
-        $request->attributes->set('_swagger_path', '/pet/{petId}');
-        $request->attributes->set('_oa_spec', $document);
-        $request->attributes->set('_swagger_operation', $document->getOperation('/pet/{petId}', 'POST'));
+        $request->attributes->set('_swagger.file', 'swagger/petstore.yml');
+        $request->attributes->set('_swagger.path', '/pet/{petId}');
+        $request->attributes->set(
+            '_swagger.meta',
+            new RequestMeta($document, $document->getOperation('/pet/{petId}', 'POST'))
+        );
 
         $actual = $builder->buildSpecificationLink($request, 'name');
 
@@ -51,10 +54,12 @@ class ParameterRefBuilderTest extends \PHPUnit_Framework_TestCase
             'https://localhost/pet/100',
             'POST'
         );
-        $request->attributes->set('_definition', 'swagger/petstore.yml');
-        $request->attributes->set('_swagger_path', '/pet/{petId}');
-        $request->attributes->set('_oa_spec', $document);
-        $request->attributes->set('_swagger_operation', $document->getOperation('/pet/{petId}', 'POST'));
+        $request->attributes->set('_swagger.file', 'swagger/petstore.yml');
+        $request->attributes->set('_swagger.path', '/pet/{petId}');
+        $request->attributes->set(
+            '_swagger.meta',
+            new RequestMeta($document, $document->getOperation('/pet/{petId}', 'POST'))
+        );
 
         $actual = $builder->buildSpecificationLink($request, 'name');
 

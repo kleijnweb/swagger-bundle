@@ -99,8 +99,8 @@ class SwaggerRouteLoader extends Loader
                 );
                 $defaults      = [
                     '_controller'   => $controllerKey,
-                    '_definition'   => $resource,
-                    '_swagger_path' => $path
+                    '_swagger.file'   => $resource,
+                    '_swagger.path' => $path
                 ];
 
                 $route = new Route($path, $defaults, $this->resolveRequirements($document, $path, $methodName));

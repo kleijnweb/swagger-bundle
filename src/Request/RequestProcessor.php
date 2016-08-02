@@ -41,16 +41,15 @@ class RequestProcessor
 
     /**
      * @param Request   $request
-     * @param Operation $operationObject
+     * @param Operation $operation
      *
      * @throws InvalidParametersException
      * @throws MalformedContentException
      * @throws UnsupportedContentTypeException
      */
-    public function process(Request $request, Operation $operationObject)
+    public function process(Request $request, Operation $operation)
     {
-        $this->coercer->coerceRequest($request, $operationObject);
-        $this->validator->setOperationObject($operationObject);
-        $this->validator->validateRequest($request);
+        $this->coercer->coerceRequest($request, $operation);
+        $this->validator->validateRequest($request, $operation);
     }
 }
