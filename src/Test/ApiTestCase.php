@@ -87,11 +87,6 @@ trait ApiTestCase
             json_encode(self::$document->getDefinition())
         );
 
-        file_put_contents(
-            '/tmp/swagger.json',
-            json_encode(self::$document->getDefinition(), JSON_PRETTY_PRINT)
-        );
-
         self::$schemaManager = new SchemaManager(vfsStream::url('root') . '/swagger.json');
     }
 
