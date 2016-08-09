@@ -8,13 +8,8 @@
 
 namespace KleijnWeb\SwaggerBundle\EventListener;
 
-use KleijnWeb\PhpApi\Descriptions\Description\Repository;
-use KleijnWeb\PhpApi\Descriptions\Description\Schema\Validator\SchemaValidator;
-use KleijnWeb\PhpApi\Descriptions\Request\RequestParameterAssembler;
-use KleijnWeb\PhpApi\Hydrator\ObjectHydrator;
-use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
-use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
-use Symfony\Component\HttpFoundation\Request;
+use KleijnWeb\SwaggerBundle\EventListener\Request\RequestMeta;
+use KleijnWeb\SwaggerBundle\EventListener\Request\RequestProcessor;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 /**
@@ -23,24 +18,19 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 class RequestListener
 {
     /**
-     * @var Repository
+     * @var RequestProcessor
      */
-    private $repository;
+    private $processor;
 
     /**
-     * @var SchemaValidator
+     * RequestListener constructor.
+     *
+     * @param RequestProcessor $processor
      */
-    private $validator;
-
-    /**
-     * @var ObjectHydrator
-     */
-    private $hydrator;
-
-    /**
-     * @var RequestParameterAssembler
-     */
-    private $parametersAssembler;
+    public function __construct(RequestProcessor $processor)
+    {
+        $this->processor = $processor;
+    }
 
     /**
      * @param GetResponseEvent $event
@@ -54,62 +44,6 @@ class RequestListener
         if (!$request->attributes->get(RequestMeta::ATTRIBUTE_URI)) {
             return;
         }
-        $this->handle($request);
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @throws InvalidParametersException
-     * @throws MalformedContentException
-     */
-    public function handle(Request $request)
-    {
-        if (!$request->get(RequestMeta::ATTRIBUTE_PATH)) {
-            throw new \LogicException("Request does not contain reference to Swagger path");
-        }
-
-        $description = $this->repository->get($request->attributes->get(RequestMeta::ATTRIBUTE_URI));
-        $operation   = $description
-            ->getPath($request->attributes->get(RequestMeta::ATTRIBUTE_PATH))
-            ->getOperation(
-                $request->getMethod()
-            );
-
-        $body = null;
-        if ($request->getContent()) {
-            $body = json_decode($request->getContent());
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new MalformedContentException(json_last_error_msg());
-            }
-        }
-
-        $coercedParams = $this->parametersAssembler->assemble(
-            $operation,
-            $request->query->all(),
-            $request->attributes->all(),
-            $request->headers->all(),
-            $body
-        );
-
-        if ($this->hydrator
-            && $schema = $description->getRequestBodySchema($operation->getPath(), $operation->getMethod())
-        ) {
-            $body &= $this->hydrator->hydrate($body, $schema);
-        }
-
-        foreach ($coercedParams as $attribute => $value) {
-            $request->attributes->set($attribute, $value);
-        }
-
-        $result = $this->validator->validate($operation->getRequestSchema(), $request->attributes->all());
-        $request->attributes->set(
-            RequestMeta::ATTRIBUTE,
-            new RequestMeta($description, $operation)
-        );
-
-        if (!$result->isValid()) {
-            throw new InvalidParametersException($result->getErrorMessages());
-        }
+        $this->processor->process($request);
     }
 }

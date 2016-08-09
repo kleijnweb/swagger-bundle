@@ -9,7 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\EventListener\Response;
 
 use KleijnWeb\PhpApi\Hydrator\ObjectHydrator;
-use KleijnWeb\SwaggerBundle\EventListener\RequestMeta;
+use KleijnWeb\SwaggerBundle\EventListener\Request\RequestMeta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

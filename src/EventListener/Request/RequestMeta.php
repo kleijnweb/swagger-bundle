@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\EventListener;
+namespace KleijnWeb\SwaggerBundle\EventListener\Request;
 
 use KleijnWeb\PhpApi\Descriptions\Description\Description;
 use KleijnWeb\PhpApi\Descriptions\Description\Operation;

@@ -10,7 +10,7 @@ namespace KleijnWeb\SwaggerBundle\Test;
 
 use KleijnWeb\PhpApi\Descriptions\Description\Operation;
 use KleijnWeb\PhpApi\Descriptions\Description\Schema\Validator\SchemaValidator;
-use KleijnWeb\SwaggerBundle\EventListener\RequestMeta;
+use KleijnWeb\SwaggerBundle\EventListener\Request\RequestMeta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

@@ -30,7 +30,7 @@ SwaggerBundle 4.0 is currently in the alpha stage. Much of the behavior dealing 
 
  - Serialization
  
-Support for 3rd party serializers has been replaced by a new _API Description Based_ hydrator ([KleijnWeb\PhpApi\Hydrator](https://github.com/kleijnweb/php-api-hydrator)). Array serialization has been removed. The hydrator is optional, but without it in- and ouput will be `stdClass|stdClass[]`, not a combination of arrays and associative arrays as was the <4.0 default.
+Support for 3rd party serializers has been replaced by a new _API Description Based_ hydrator ([KleijnWeb\PhpApi\Hydrator](https://github.com/kleijnweb/php-api-hydrator)). Array serialization has been removed. The hydrator is optional, but without it in- and output will be `stdClass|stdClass[]`, not a combination of arrays and associative arrays as was the <4.0 default.
 
  - Testing
  

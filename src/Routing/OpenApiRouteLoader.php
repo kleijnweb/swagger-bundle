@@ -13,7 +13,7 @@ use KleijnWeb\PhpApi\Descriptions\Description\Parameter;
 use KleijnWeb\PhpApi\Descriptions\Description\Repository;
 use KleijnWeb\PhpApi\Descriptions\Description\Schema\ScalarSchema;
 use KleijnWeb\PhpApi\Descriptions\Description\Schema\Schema;
-use KleijnWeb\SwaggerBundle\EventListener\RequestMeta;
+use KleijnWeb\SwaggerBundle\EventListener\Request\RequestMeta;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
@@ -127,11 +127,8 @@ class OpenApiRouteLoader extends Loader
                     case Schema::TYPE_STRING:
                         if ($pattern = $schema->getPattern()) {
                             $requirements[$parameter->getName()] = $pattern;
-                            break;
-                        }
-                        if ($enum = $schema->getEnum()) {
+                        } elseif ($enum = $schema->getEnum()) {
                             $requirements[$parameter->getName()] = '(' . implode('|', $enum) . ')';
-                            break;
                         }
                         break;
                     default:

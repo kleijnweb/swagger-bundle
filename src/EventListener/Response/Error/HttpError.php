@@ -110,14 +110,6 @@ class HttpError
     }
 
     /**
-     * @return Request
-     */
-    public function getRequest(): Request
-    {
-        return $this->request;
-    }
-
-    /**
      * @return \Exception
      */
     public function getException(): \Exception

@@ -420,16 +420,6 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $enum            = ['a', 'b', 'c'];
         $expected        = '(a|b|c)';
-        $pathDefinitions = (object)[
-            '/a' => (object)[
-                'get' => (object)[
-                    'parameters' => [
-                        (object)['name' => 'aString', 'in' => 'path', 'type' => 'string', 'enum' => $enum]
-                    ]
-                ]
-            ],
-        ];
-
         $parameter = new Parameter(
             'aString',
             true,

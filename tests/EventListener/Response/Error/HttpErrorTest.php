@@ -13,14 +13,14 @@ use KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilder;
 use KleijnWeb\SwaggerBundle\EventListener\Response\ErrorResponseFactory;
 use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
 class HttpErrorTest extends \PHPUnit_Framework_TestCase
 {
-    const LOGREF = 'abcdefghij';
-
     /**
      * @var LogRefBuilder
      */
@@ -28,8 +28,7 @@ class HttpErrorTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->logRefBuilder = $mockObject = $this->getMockForAbstractClass(LogRefBuilder::class);
-        $mockObject->expects($this->any())->method('create')->willReturn(self::LOGREF);
+        $this->logRefBuilder = new LogRefBuilder\UniqueIdLogRefBuilder();
     }
 
     /**
@@ -70,5 +69,27 @@ class HttpErrorTest extends \PHPUnit_Framework_TestCase
             $this->assertSame($error->getStatusCode(), 500);
             $this->assertStringStartsWith('Internal Server Error', $error->getMessage());
         }
+    }
+
+    /**
+     * @test
+     */
+    public function willClassifyMethodNotAllowedHttpExceptionAsWarningsAndReturn405Status()
+    {
+        $error = new HttpError(new Request(), new MethodNotAllowedHttpException(['GET']), $this->logRefBuilder);
+        $this->assertSame($error->getSeverity(), LogLevel::WARNING);
+        $this->assertSame($error->getStatusCode(), 405);
+        $this->assertStringStartsWith('Method Not Allowed', $error->getMessage());
+    }
+
+    /**
+     * @test
+     */
+    public function willClassifyAuthenticationExceptionAsWarningsAndReturn401Status()
+    {
+        $error = new HttpError(new Request(), new AuthenticationException(), $this->logRefBuilder);
+        $this->assertSame($error->getSeverity(), LogLevel::WARNING);
+        $this->assertSame($error->getStatusCode(), 401);
+        $this->assertStringStartsWith('Unauthorized', $error->getMessage());
     }
 }

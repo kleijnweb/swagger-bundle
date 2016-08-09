@@ -10,7 +10,7 @@ namespace KleijnWeb\SwaggerBundle\Tests\EventListener\Response;
 
 use KleijnWeb\PhpApi\Descriptions\Description\Operation;
 use KleijnWeb\PhpApi\Hydrator\ObjectHydrator;
-use KleijnWeb\SwaggerBundle\EventListener\RequestMeta;
+use KleijnWeb\SwaggerBundle\EventListener\Request\RequestMeta;
 use KleijnWeb\SwaggerBundle\EventListener\Response\ResponseFactory;
 use Symfony\Component\HttpFoundation\Request;
 
