@@ -8,96 +8,48 @@
 
 namespace KleijnWeb\SwaggerBundle\Test;
 
-use FR3D\SwaggerAssertions\PhpUnit\AssertsTrait;
-use FR3D\SwaggerAssertions\SchemaManager;
-use JsonSchema\Validator;
-use KleijnWeb\SwaggerBundle\Document\DocumentRepository;
-use KleijnWeb\SwaggerBundle\Document\Specification;
-use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamDirectory;
-use org\bovigo\vfs\vfsStreamWrapper;
+use KleijnWeb\PhpApi\Descriptions\Description\Operation;
+use KleijnWeb\PhpApi\Descriptions\Description\Schema\Validator\SchemaValidator;
+use KleijnWeb\SwaggerBundle\EventListener\RequestMeta;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  *
- * @property bool   validateErrorResponse
  * @property string env
  * @property array  defaultServerVars
  */
 trait ApiTestCase
 {
-    use AssertsTrait;
-
-    /**
-     * @var SchemaManager
-     */
-    protected static $schemaManager;
-
-    /**
-     * @var Specification
-     */
-    protected static $document;
-
     /**
      * @var ApiTestClient
      */
     protected $client;
 
     /**
-     * PHPUnit cannot add this to code coverage
-     *
-     * @codeCoverageIgnore
-     *
-     * @param string $swaggerPath
-     *
-     * @throws \InvalidArgumentException
-     * @throws \org\bovigo\vfs\vfsStreamException
+     * @var SchemaValidator
      */
-    public static function initSchemaManager(string $swaggerPath)
+    private $validator;
+
+    /**
+     */
+    protected function setUp()
     {
-        $swaggerContents = file_get_contents($swaggerPath);
-        $swaggerJson     = json_decode(
-            preg_match('/\.(yaml|yml)$/', $swaggerPath)
-                ? json_encode(Yaml::parse($swaggerContents))
-                : $swaggerContents
-        );
-
-        $validator = new Validator();
-        $validator->check(
-            $swaggerJson,
-            json_decode(file_get_contents(__DIR__ . '/../../assets/swagger-schema.json'))
-        );
-
-        if (!$validator->isValid()) {
-            throw new \InvalidArgumentException(
-                "Swagger '$swaggerPath' not valid"
-            );
-        }
-
-        $repository     = new DocumentRepository(dirname($swaggerPath));
-        self::$document = $repository->get(basename($swaggerPath));
-
-        vfsStreamWrapper::register();
-        vfsStreamWrapper::setRoot(new vfsStreamDirectory('root'));
-
-        file_put_contents(
-            vfsStream::url('root') . '/swagger.json',
-            json_encode(self::$document->getDefinition())
-        );
-
-        self::$schemaManager = new SchemaManager(vfsStream::url('root') . '/swagger.json');
+        $this->createApiTestClient();
     }
 
     /**
      * Create a client, booting the kernel using SYMFONY_ENV = $this->env
      */
-    protected function setUp()
+    protected function createApiTestClient()
     {
-        $this->client = new ApiTestClient(static::createClient(['environment' => $this->getEnv(), 'debug' => true]));
-
-        parent::setUp();
+        return $this->client = new ApiTestClient(
+            static::createClient([
+                'environment' => $this->getEnv(),
+                'debug'       => true
+            ])
+        );
     }
 
     /**
@@ -117,14 +69,6 @@ trait ApiTestCase
     }
 
     /**
-     * @return bool
-     */
-    protected function getValidateErrorResponse(): bool
-    {
-        return isset($this->validateErrorResponse) ? $this->validateErrorResponse : false;
-    }
-
-    /**
      * @param string $path
      * @param array  $params
      *
@@ -133,7 +77,7 @@ trait ApiTestCase
      */
     protected function get(string $path, array $params = [])
     {
-        return $this->sendRequest($path, 'GET', $params);
+        return $this->request($path, 'GET', $params);
     }
 
     /**
@@ -145,7 +89,7 @@ trait ApiTestCase
      */
     protected function delete(string $path, array $params = [])
     {
-        return $this->sendRequest($path, 'DELETE', $params);
+        return $this->request($path, 'DELETE', $params);
     }
 
     /**
@@ -158,7 +102,7 @@ trait ApiTestCase
      */
     protected function patch(string $path, array $content, array $params = [])
     {
-        return $this->sendRequest($path, 'PATCH', $params, $content);
+        return $this->request($path, 'PATCH', $params, $content);
     }
 
     /**
@@ -171,7 +115,7 @@ trait ApiTestCase
      */
     protected function post(string $path, array $content, array $params = [])
     {
-        return $this->sendRequest($path, 'POST', $params, $content);
+        return $this->request($path, 'POST', $params, $content);
     }
 
     /**
@@ -184,7 +128,7 @@ trait ApiTestCase
      */
     protected function put(string $path, array $content, array $params = [])
     {
-        return $this->sendRequest($path, 'PUT', $params, $content);
+        return $this->request($path, 'PUT', $params, $content);
     }
 
     /**
@@ -196,16 +140,50 @@ trait ApiTestCase
      * @return mixed
      * @throws ApiResponseErrorException
      */
-    protected function sendRequest(string $path, string $method, array $params = [], array $content = null)
+    protected function request(string $path, string $method, array $params = [], array $content = null)
     {
-        $request = new ApiRequest($this->assembleUri($path, $params), $method);
-        $request->setServer(array_merge(['CONTENT_TYPE' => 'application/json'], $this->getDefaultServerVars()));
-        if ($content !== null) {
-            $request->setContent(json_encode($content));
-        }
-        $this->client->requestFromRequest($request);
+        $apiRequest = new ApiRequest($this->assembleUri($path, $params), $method);
+        $apiRequest->setServer(array_merge(['CONTENT_TYPE' => 'application/json'], $this->getDefaultServerVars()));
 
-        return $this->getJsonForLastRequest($path, $method);
+        if ($content !== null) {
+            $apiRequest->setContent(json_encode($content));
+        }
+
+        $this->client->requestFromRequest($apiRequest);
+
+        /** @var Response $response */
+        $response = $this->client->getResponse();
+        /** @var Request $request */
+        $request = $this->client->getRequest();
+
+        $body    = null;
+        $content = null;
+
+        if ($content = $response->getContent() && $response->getStatusCode() !== Response::HTTP_NO_CONTENT) {
+            $body = json_decode($content);
+            $this->assertSame(
+                JSON_ERROR_NONE,
+                json_last_error(),
+                "Not valid JSON: " . json_last_error_msg() . "(" . var_export($content, true) . ")"
+            );
+        }
+
+        if (substr((string)$response->getStatusCode(), 0, 1) != '2') {
+            // This throws an exception so that tests can catch it when it is expected
+            throw new ApiResponseErrorException($content, $body, $response->getStatusCode());
+        }
+
+        /** @var Operation $operation */
+        $operation = $request->attributes->get(RequestMeta::ATTRIBUTE)->getOperation();
+        $schema    = $operation->getResponse($response->getStatusCode())->getSchema();
+
+        $result = $this->validator->validate($schema, $body);
+
+        if (!$result->isvalid()) {
+            throw new \UnexpectedValueException("Invalid response: " . implode(', ', $result->getErrorMessages()));
+        }
+
+        return $body;
     }
 
     /**
@@ -225,104 +203,11 @@ trait ApiTestCase
     }
 
     /**
-     * @param string $fullPath
-     * @param string $method
-     *
-     * @return mixed|null
-     * @throws ApiResponseErrorException
-     */
-    private function getJsonForLastRequest(string $fullPath, string $method)
-    {
-        $method = strtolower($method);
-
-        /** @var Response $response */
-        $response = $this->client->getResponse();
-        $json     = $response->getContent();
-        $data     = json_decode($json);
-
-        if ($response->getStatusCode() !== 204) {
-            static $errors = [
-                JSON_ERROR_NONE           => 'No error',
-                JSON_ERROR_DEPTH          => 'Maximum stack depth exceeded',
-                JSON_ERROR_STATE_MISMATCH => 'State mismatch (invalid or malformed JSON)',
-                JSON_ERROR_CTRL_CHAR      => 'Control character error, possibly incorrectly encoded',
-                JSON_ERROR_SYNTAX         => 'Syntax error',
-                JSON_ERROR_UTF8           => 'Malformed UTF-8 characters, possibly incorrectly encoded'
-            ];
-            $error            = json_last_error();
-            $jsonErrorMessage = isset($errors[$error]) ? $errors[$error] : 'Unknown error';
-            $this->assertSame(
-                JSON_ERROR_NONE,
-                json_last_error(),
-                "Not valid JSON: " . $jsonErrorMessage . "(" . var_export($json, true) . ")"
-            );
-        }
-
-        if (substr((string)$response->getStatusCode(), 0, 1) != '2') {
-            if ($this->getValidateErrorResponse()) {
-                $this->validateResponse($response->getStatusCode(), $response, $method, $fullPath, $data);
-            }
-            // This throws an exception so that tests can catch it when it is expected
-            throw new ApiResponseErrorException($json, $data, $response->getStatusCode());
-        }
-
-        $this->validateResponse($response->getStatusCode(), $response, $method, $fullPath, $data);
-
-        return $data;
-    }
-
-    /**
-     * @param int      $code
-     * @param Response $response
-     * @param string   $method
-     * @param string   $fullPath
-     * @param mixed    $data
-     */
-    private function validateResponse(int $code, Response $response, string $method, string $fullPath, $data)
-    {
-        $request = $this->client->getRequest();
-        if (!self::$schemaManager->hasPath(['paths', $request->get('_swagger.path'), $method, 'responses', $code])) {
-            $statusClass = (int)substr((string)$code, 0, 1);
-            if (in_array($statusClass, [4, 5])) {
-                return;
-            }
-            throw new \UnexpectedValueException(
-                "There is no $code response definition for {$request->get('_swagger.path')}:$method. "
-            );
-        }
-        $headers = [];
-
-        foreach ($response->headers->all() as $key => $values) {
-            $headers[str_replace(' ', '-', ucwords(str_replace('-', ' ', $key)))] = $values[0];
-        }
-        try {
-            try {
-                $this->assertResponseMediaTypeMatch(
-                    $response->headers->get('Content-Type'),
-                    self::$schemaManager,
-                    $fullPath,
-                    $method
-                );
-            } catch (\InvalidArgumentException $e) {
-                // Not required, so skip if not found
-            }
-
-            $this->assertResponseHeadersMatch($headers, self::$schemaManager, $fullPath, $method, $code);
-            $this->assertResponseBodyMatch($data, self::$schemaManager, $fullPath, $method, $code);
-        } catch (\UnexpectedValueException $e) {
-            $statusClass = (int)(string)$code[0];
-            if (in_array($statusClass, [4, 5])) {
-                return;
-            }
-        }
-    }
-
-    /**
      * @param mixed  $expected
      * @param mixed  $actual
      * @param string $message
      *
      * @return mixed
      */
-    public abstract function assertSame($expected, $actual, $message = '');
+    abstract public function assertSame($expected, $actual, $message = '');
 }

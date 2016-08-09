@@ -1,6 +1,0 @@
-imports:
-  - { resource: config.yml }
-
-swagger:
-  errors:
-    strategy: vnd_error

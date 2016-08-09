@@ -12,4 +12,4 @@ services:
 
   swagger.request.processor.content_decoder:
     class: KleijnWeb\SwaggerBundle\Request\ContentDecoder
-    arguments: ['@swagger.serializer', '@swagger.document.repository']
+    arguments: ['@swagger.hydrator', '@swagger.document.repository']

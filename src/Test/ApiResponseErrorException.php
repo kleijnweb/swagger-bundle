@@ -21,14 +21,14 @@ class ApiResponseErrorException extends \Exception
     /**
      * @var string
      */
-    private $json;
+    private $content;
 
     /**
-     * @param string    $json
+     * @param string    $content
      * @param \stdClass $data
      * @param int       $httpStatusCode
      */
-    public function __construct($json, \stdClass $data, int $httpStatusCode)
+    public function __construct(string $content, \stdClass $data, int $httpStatusCode)
     {
         $this->message = "Returned $httpStatusCode";
         if ($data) {
@@ -36,20 +36,19 @@ class ApiResponseErrorException extends \Exception
             if (isset($data->logref)) {
                 $this->message = "$data->message [logref $data->logref]";
             }
-
         }
 
-        $this->code = $httpStatusCode;
-        $this->data = $data;
-        $this->json = $json;
+        $this->code    = $httpStatusCode;
+        $this->data    = $data;
+        $this->content = $content;
     }
 
     /**
      * @return string
      */
-    public function getJson(): string
+    public function getContent(): string
     {
-        return $this->json;
+        return $this->content;
     }
 
     /**

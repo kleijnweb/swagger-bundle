@@ -8,9 +8,9 @@
 
 namespace KleijnWeb\SwaggerBundle\EventListener;
 
-use KleijnWeb\SwaggerBundle\Response\Error\HttpError;
-use KleijnWeb\SwaggerBundle\Response\Error\LogRefBuilder;
-use KleijnWeb\SwaggerBundle\Response\ErrorResponseFactory;
+use KleijnWeb\SwaggerBundle\EventListener\Response\Error\HttpError;
+use KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilder;
+use KleijnWeb\SwaggerBundle\EventListener\Response\ErrorResponseFactory;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 

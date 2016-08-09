@@ -1,0 +1,44 @@
+swagger:
+  document:
+    base_path: 'tests/Functional/PetStore/app'
+    cache: 'petstore.cache'
+  hydrator:
+    type: array
+    namespace: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Model\Resources
+
+services:
+  petstore.cache:
+    class: Doctrine\Common\Cache\ArrayCache
+  swagger.controller.pet:
+    class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller\PetController
+  swagger.controller.store:
+    class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller\StoreController
+  swagger.controller.user:
+    class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller\UserController
+  swagger.controller.entity:
+    class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller\EntityController
+
+  kernel.listener.petstore_response:
+    class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\EventListener\ResponseListener
+    tags:
+      - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+
+framework:
+  test: true
+  secret: test
+  router:
+    resource: "%kernel.root_dir%/routing.yml"
+    strict_requirements: ~
+  fragments:       ~
+  http_method_override: true
+  session:
+    storage_id: session.storage.filesystem
+  profiler:
+    collect: false
+
+monolog:
+  handlers:
+    stderr:
+      type:  stream
+      path:  php://stderr
+      level: notice

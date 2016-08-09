@@ -13,6 +13,8 @@ namespace KleijnWeb\SwaggerBundle\Exception;
  */
 class InvalidParametersException extends \Exception
 {
+    const MESSAGE = 'Validation failed';
+
     /**
      * @var array
      */
@@ -24,8 +26,12 @@ class InvalidParametersException extends \Exception
      * @param array      $validationErrors
      * @param \Exception $previous
      */
-    public function __construct(string $message, array $validationErrors, int $code = 400, \Exception $previous = null)
-    {
+    public function __construct(
+        array $validationErrors,
+        string $message = self::MESSAGE,
+        int $code = 400,
+        \Exception $previous = null
+    ) {
         parent::__construct($message, $code, $previous);
 
         $this->validationErrors = $validationErrors;

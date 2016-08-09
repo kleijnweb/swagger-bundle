@@ -29,14 +29,14 @@ class KleijnWebSwaggerExtension extends Extension
         $loader->load('services.yml');
 
         $container->setParameter('swagger.document.base_path', $config['document']['base_path']);
-        $container->setParameter('swagger.serializer.namespace', $config['serializer']['namespace']);
+        $container->setParameter('swagger.hydrator.namespace', $config['hydrator']['namespace']);
 
-        $serializerType = $config['serializer']['type'];
-        $container->setAlias('swagger.serializer', "swagger.serializer.$serializerType");
+        $hydratorType = $config['hydrator']['type'];
+        $container->setAlias('swagger.hydrator', "swagger.hydrator.$hydratorType");
 
-        if ($serializerType !== 'array') {
+        if ($hydratorType !== 'array') {
             $definitionMapBuilderRef = new Reference(
-                'swagger.serializer.type_resolver.serializer_type_definition_map_builder'
+                'swagger.hydrator.type_resolver.hydrator_type_definition_map_builder'
             );
             $container->getDefinition('kernel.listener.swagger.request')->addArgument($definitionMapBuilderRef);
         }
