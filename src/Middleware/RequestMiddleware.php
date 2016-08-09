@@ -6,11 +6,11 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Document\Exception;
+namespace KleijnWeb\SwaggerBundle\Middleware;
 
-/**
- * @author John Kleijn <john@kleijnweb.nl>
- */
-class InvalidReferenceException extends \Exception
+use Psr\Http\Message\ServerRequestInterface as Request;
+
+interface RequestMiddleware extends Middleware
 {
+    public function process(Request $request): Request;
 }
