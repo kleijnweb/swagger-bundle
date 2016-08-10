@@ -36,6 +36,12 @@ class ApiResponseErrorException extends \Exception
             if (isset($data->logref)) {
                 $this->message = "$data->message [logref $data->logref]";
             }
+            if (isset($data->errors)) {
+                $this->message .= "\n";
+                foreach ($data->errors as $attribute => $error) {
+                    $this->message .= "[$attribute]: $error\n";
+                }
+            }
         }
 
         $this->code    = $httpStatusCode;

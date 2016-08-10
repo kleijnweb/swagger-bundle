@@ -11,7 +11,7 @@ namespace KleijnWeb\SwaggerBundle\Tests\EventListener\Response\ErrorResponseFact
 use KleijnWeb\SwaggerBundle\EventListener\Response\Error\HttpError;
 use KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilder;
 use KleijnWeb\SwaggerBundle\EventListener\Response\ErrorResponseFactory\SimpleErrorResponseFactory;
-use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
+use KleijnWeb\SwaggerBundle\Exception\ValidationException;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -105,7 +105,7 @@ class SimpleErrorResponseFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $validationErrors = ['Wrong.', 'Wrong.', 'Wrong!'];
 
-        $exception = new InvalidParametersException($validationErrors);
+        $exception = new ValidationException($validationErrors);
         $request   = new Request();
 
         $response = $this->factory->create(new HttpError($request, $exception, $this->logRefBuilder));

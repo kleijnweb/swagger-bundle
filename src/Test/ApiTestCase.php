@@ -159,7 +159,7 @@ trait ApiTestCase
         $body    = null;
         $content = null;
 
-        if ($content = $response->getContent() && $response->getStatusCode() !== Response::HTTP_NO_CONTENT) {
+        if (($content = $response->getContent()) && $response->getStatusCode() !== Response::HTTP_NO_CONTENT) {
             $body = json_decode($content);
             $this->assertSame(
                 JSON_ERROR_NONE,
@@ -177,13 +177,16 @@ trait ApiTestCase
         $operation = $request->attributes->get(RequestMeta::ATTRIBUTE)->getOperation();
         $schema    = $operation->getResponse($response->getStatusCode())->getSchema();
 
-        $result = $this->validator->validate($schema, $body);
-
-        if (!$result->isvalid()) {
-            throw new \UnexpectedValueException("Invalid response: " . implode(', ', $result->getErrorMessages()));
-        }
 
         return $body;
+    }
+
+    /**
+     * @return SchemaValidator
+     */
+    protected function getValidator(): SchemaValidator
+    {
+        return $this->client->getContainer()->get('swagger.request.validator');
     }
 
     /**

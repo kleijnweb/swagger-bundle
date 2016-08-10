@@ -10,6 +10,10 @@
     <filter>
         <whitelist>
             <directory>./src/</directory>
+            <exclude>
+                <directory>./src/DependencyInjection</directory>
+                <file>./src/KleijnWebSwaggerBundle.php</file>
+            </exclude>
         </whitelist>
     </filter>
 

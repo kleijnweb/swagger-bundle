@@ -93,7 +93,7 @@ class OpenApiRouteLoader extends Loader
                 $defaults      = [
                     '_controller'               => $controllerKey,
                     RequestMeta::ATTRIBUTE_URI  => $resource,
-                    RequestMeta::ATTRIBUTE_PATH => $pathItem
+                    RequestMeta::ATTRIBUTE_PATH => $pathItem->getPath()
                 ];
 
                 $route = new Route($pathItem->getPath(), $defaults, $this->resolveRequirements($operation));

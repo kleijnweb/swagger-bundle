@@ -20,7 +20,7 @@ use KleijnWeb\PhpApi\Descriptions\Request\RequestParameterAssembler;
 use KleijnWeb\PhpApi\Hydrator\ObjectHydrator;
 use KleijnWeb\SwaggerBundle\EventListener\Request\RequestMeta;
 use KleijnWeb\SwaggerBundle\EventListener\Request\RequestProcessor;
-use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
+use KleijnWeb\SwaggerBundle\Exception\ValidationException;
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
@@ -254,7 +254,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $processor = $this->createProcessor(false);
 
-        $this->setExpectedException(InvalidParametersException::class);
+        $this->setExpectedException(ValidationException::class);
 
         $processor->process($this->createRequest([
             RequestMeta::ATTRIBUTE_URI  => '/uri',

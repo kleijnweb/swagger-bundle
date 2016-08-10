@@ -8,6 +8,6 @@ imports:
 services:
   swagger.route_loader:
     class: KleijnWeb\SwaggerBundle\Routing\OpenApiRouteLoader
-    arguments: ['@swagger.document.repository']
+    arguments: ['@swagger.description.repository']
     tags:
        - { name: routing.loader }

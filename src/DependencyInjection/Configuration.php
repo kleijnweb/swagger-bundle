@@ -26,17 +26,26 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+            ->scalarNode('validate_responses')->defaultFalse()
+            ->end()
             ->arrayNode('hydrator')
-            ->addDefaultsIfNotSet()
             ->children()
-            ->arrayNode('namespaces')
+            ->arrayNode('namespaces')->isRequired()
+            ->beforeNormalization()
+            ->ifString()
+            ->then(function ($v) {
+                return [$v];
+            })
+            ->end()
+            ->prototype('scalar')
+            ->end()
             ->end()
             ->end()
             ->end()
             ->arrayNode('document')
             ->addDefaultsIfNotSet()
             ->children()
-            ->scalarNode('cache')->isRequired()->defaultFalse()->end()
+            ->scalarNode('cache')->isRequired()->defaultFalse()->end()->scalarNode('base_path')->defaultValue('')->end()
             ->end()
             ->end()
             ->end();

@@ -34,7 +34,7 @@ Support for 3rd party serializers has been replaced by a new _API Description Ba
 
  - Testing
  
-The dependency on `SwaggerAssertions` has been removed, as response validation is now facilitated by `KleijnWeb\PhpApi\Descriptions`.
+The dependency on `SwaggerAssertions` has been removed, as response validation is now facilitated by `KleijnWeb\PhpApi\Descriptions` and integrated into the request cycle. Recommended to keep enabled until SYMFONY_ENV == prod.
 
  - Errors
  
@@ -241,7 +241,7 @@ swagger:
 
 ## <a name="serialization"></a> Responses
  
-When a controller action returns `NULL`, SwaggerBundle will return an empty `204` response, provided that one is defined in the specification.
+When a controller action returns `NULL` or an empty string, SwaggerBundle will return an empty `204` response, provided that one is defined in the specification.
 Otherwise, it will default to the first 2xx type response defined in your spec, or if all else fails, simply 200.
 
 You cannot return Symfony responses from your controllers. Any response manipulation (including custom status codes) you want needs to be implemented using "Response Listeners". Example that sets some headers:

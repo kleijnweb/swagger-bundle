@@ -8,12 +8,13 @@
 
 namespace KleijnWeb\SwaggerBundle\EventListener\Request;
 
-use KleijnWeb\PhpApi\Descriptions\Description\Parameter;
 use KleijnWeb\PhpApi\Descriptions\Description\Repository;
+use KleijnWeb\PhpApi\Descriptions\Description\Schema\ScalarSchema;
 use KleijnWeb\PhpApi\Descriptions\Description\Schema\Validator\SchemaValidator;
 use KleijnWeb\PhpApi\Descriptions\Request\RequestParameterAssembler;
+use KleijnWeb\PhpApi\Hydrator\DateTimeSerializer;
 use KleijnWeb\PhpApi\Hydrator\ObjectHydrator;
-use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
+use KleijnWeb\SwaggerBundle\Exception\ValidationException;
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -43,30 +44,38 @@ class RequestProcessor
     private $parametersAssembler;
 
     /**
+     * @var DateTimeSerializer
+     */
+    private $dateTimeSerializer;
+
+    /**
      * RequestProcessor constructor.
      *
      * @param Repository                $repository
      * @param SchemaValidator           $validator
      * @param RequestParameterAssembler $parametersAssembler
      * @param ObjectHydrator            $hydrator
+     * @param DateTimeSerializer        $dateTimeSerializer
      */
     public function __construct(
         Repository $repository,
         SchemaValidator $validator,
         RequestParameterAssembler $parametersAssembler,
-        ObjectHydrator $hydrator = null
+        ObjectHydrator $hydrator = null,
+        DateTimeSerializer $dateTimeSerializer = null
     ) {
         $this->repository          = $repository;
         $this->validator           = $validator;
         $this->hydrator            = $hydrator;
         $this->parametersAssembler = $parametersAssembler;
+        $this->dateTimeSerializer  = $dateTimeSerializer ?: new DateTimeSerializer();
     }
 
 
     /**
      * @param Request $request
      *
-     * @throws InvalidParametersException
+     * @throws ValidationException
      * @throws MalformedContentException
      */
     public function process(Request $request)
@@ -89,18 +98,27 @@ class RequestProcessor
             }
         }
 
-        $coercedParams = $this->parametersAssembler->assemble(
-            $operation,
-            $request->query->all(),
-            $request->attributes->all(),
-            $request->headers->all(),
-            $body
+        $result = $this->validator->validate(
+            $operation->getRequestSchema(),
+            $coercedParams = $this->parametersAssembler->assemble(
+                $operation,
+                $request->query->all(),
+                $request->attributes->all(),
+                $request->headers->all(),
+                $body
+            )
         );
 
         foreach ($coercedParams as $attribute => $value) {
+            /** @var ScalarSchema  $schema*/
+            if (($schema = $operation->getParameter($attribute)->getSchema()) instanceof ScalarSchema) {
+                if ($schema->isDateTime()) {
+                    $value = $this->dateTimeSerializer->deserialize($value, $schema);
+                }
+            }
+
             $request->attributes->set($attribute, $value);
         }
-
         if ($this->hydrator
             && $bodyParam = $description->getRequestBodyParameter($operation->getPath(), $operation->getMethod())
         ) {
@@ -108,15 +126,13 @@ class RequestProcessor
             $request->attributes->set($bodyParam->getName(), $body);
         }
 
-        $result = $this->validator->validate($operation->getRequestSchema(), $request->attributes->all());
-
         $request->attributes->set(
             RequestMeta::ATTRIBUTE,
             new RequestMeta($description, $operation)
         );
 
         if (!$result->isValid()) {
-            throw new InvalidParametersException($result->getErrorMessages());
+            throw new ValidationException($result->getErrorMessages());
         }
     }
 }

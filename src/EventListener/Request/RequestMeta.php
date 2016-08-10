@@ -43,14 +43,6 @@ class RequestMeta
     }
 
     /**
-     * @return Description
-     */
-    public function getDescription(): Description
-    {
-        return $this->description;
-    }
-
-    /**
      * @return Operation
      */
     public function getOperation(): Operation

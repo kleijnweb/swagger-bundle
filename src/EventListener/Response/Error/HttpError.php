@@ -8,7 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\EventListener\Response\Error;
 
-use KleijnWeb\SwaggerBundle\Exception\InvalidParametersException;
+use KleijnWeb\SwaggerBundle\Exception\ValidationException;
 use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -66,10 +66,10 @@ class HttpError
 
         $code = $exception->getCode();
 
-        if ($exception instanceof InvalidParametersException) {
+        if ($exception instanceof ValidationException) {
             $this->severity   = LogLevel::NOTICE;
             $this->statusCode = Response::HTTP_BAD_REQUEST;
-            $this->message    = "Validation failed";
+            $this->message    = $exception->getMessage();
 
             return;
         }

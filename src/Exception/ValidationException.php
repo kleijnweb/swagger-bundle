@@ -11,9 +11,10 @@ namespace KleijnWeb\SwaggerBundle\Exception;
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class InvalidParametersException extends \Exception
+class ValidationException extends \Exception
 {
-    const MESSAGE = 'Validation failed';
+    const MESSAGE_INPUT = 'Input validation failed';
+    const MESSAGE_OUTPUT = 'Output validation failed';
 
     /**
      * @var array
@@ -28,8 +29,8 @@ class InvalidParametersException extends \Exception
      */
     public function __construct(
         array $validationErrors,
-        string $message = self::MESSAGE,
         int $code = 400,
+        string $message = self::MESSAGE_INPUT,
         \Exception $previous = null
     ) {
         parent::__construct($message, $code, $previous);

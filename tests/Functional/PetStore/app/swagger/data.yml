@@ -77,7 +77,8 @@ paths:
         '204':
           description: "Empty response"
           schema:
-            type: null
+            type: string
+            maxLength: 0
     get:
       parameters:
         - in: path

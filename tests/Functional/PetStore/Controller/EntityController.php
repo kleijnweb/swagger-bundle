@@ -34,11 +34,11 @@ class EntityController
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      * @param string    $type
-     * @param \stdClass $criteria
+     * @param array $criteria
      *
      * @return array
      */
-    public function findByCriteria(string $type, \stdClass $criteria)
+    public function findByCriteria(string $type, array $criteria)
     {
         $entities = [];
 
@@ -77,8 +77,8 @@ class EntityController
      */
     public function put(string $type, int $id, \stdClass $data)
     {
-        $data['id']   = $id;
-        $data['type'] = $type;
+        $data->id   = $id;
+        $data->type = $type;
 
         return $data;
     }
@@ -91,8 +91,8 @@ class EntityController
      */
     public function post(string $type, \stdClass $data)
     {
-        $data['id']   = rand();
-        $data['type'] = $type;
+        $data->id   = rand();
+        $data->type = $type;
 
         return $data;
     }
