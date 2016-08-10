@@ -275,10 +275,9 @@ SwaggerBundle works well with [E-Tags Based on REST Semantics](https://github.co
 
 ---------------------------------------
 
-## <a name="testing"></a> Functional Testing
+## <a name="testing"></a> Testing
 
-The easiest way to create functional tests for your API, is by using mixin `ApiTestCase`. This will provide you with some convenience methods (`get()`, `post()`, `put()`, etc) and 
-will validate responses to ensure the responses received are compliant with your OpenAPI document.
+The easiest way to create functional tests for your API, is by using mixin `ApiTestCase`. This will provide you with some convenience methods (`get()`, `post()`, `put()`, etc), and convert validation errors into readable exception messages.
 
 ```php
 class PetStoreApiTest extends WebTestCase
@@ -302,5 +301,11 @@ class PetStoreApiTest extends WebTestCase
     }
 }
 ```
+
+**NOTE:** If you implement `setUp()` you will have to manually invoke `createApiTestClient()`. 
+
+### Response validation
+
+During any type of testing, you will want to have `validate_responses` option enabled. This will ensure the responses produced by your controllers are complient with your OpenAPI document.
 
 [Back to topics](#topics)

@@ -8,10 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Test;
 
-use KleijnWeb\PhpApi\Descriptions\Description\Operation;
 use KleijnWeb\PhpApi\Descriptions\Description\Schema\Validator\SchemaValidator;
-use KleijnWeb\SwaggerBundle\EventListener\Request\RequestMeta;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -153,8 +150,6 @@ trait ApiTestCase
 
         /** @var Response $response */
         $response = $this->client->getResponse();
-        /** @var Request $request */
-        $request = $this->client->getRequest();
 
         $body    = null;
         $content = null;
@@ -173,20 +168,7 @@ trait ApiTestCase
             throw new ApiResponseErrorException($content, $body, $response->getStatusCode());
         }
 
-        /** @var Operation $operation */
-        $operation = $request->attributes->get(RequestMeta::ATTRIBUTE)->getOperation();
-        $schema    = $operation->getResponse($response->getStatusCode())->getSchema();
-
-
         return $body;
-    }
-
-    /**
-     * @return SchemaValidator
-     */
-    protected function getValidator(): SchemaValidator
-    {
-        return $this->client->getContainer()->get('swagger.request.validator');
     }
 
     /**

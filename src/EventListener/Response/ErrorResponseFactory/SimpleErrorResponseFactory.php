@@ -38,7 +38,6 @@ class SimpleErrorResponseFactory implements ErrorResponseFactory
             foreach ($exception->getValidationErrors() as $path => $errorMessage) {
                 $data['errors'][$path === '' ? '*root*' : $path] = $errorMessage;
             }
-
         }
 
         return new JsonResponse($data, $error->getStatusCode());
