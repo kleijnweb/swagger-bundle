@@ -67,6 +67,14 @@ The dependency on `SwaggerAssertions` has been removed, as response validation i
  
  This bundle is currently actively maintained. Go to the [release page](https://github.com/kleijnweb/swagger-bundle/releases) to find details about the latest release.
  
+# Contributing
+
+Pull request are *very* welcome, as long as:
+
+ - All automated checks were successful
+ - Merge would not violate semantic versioning 
+ - When applicable, the relevant documentation is updated
+ 
 ## License
  
 KleijnWeb\SwaggerBundle is made available under the terms of the [LGPL, version 3.0](https://spdx.org/licenses/LGPL-3.0.html#licenseText).

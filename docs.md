@@ -33,8 +33,6 @@ swagger:
     base_path: "%kernel.root_dir%"
 ```
 
----------------------------------------
-
 ### Bundle Config
 
 You can dump an up-to-date and documented configuration reference using `config:dump-reference` after you've added the bundle to your `AppKernel`.
@@ -305,16 +303,4 @@ class PetStoreApiTest extends WebTestCase
 }
 ```
 
-[Back to topics](#topics)
-
----------------------------------------
-
-# Contributing
-
-Pull request are *very* welcome, as long as:
-
- - All automated checks were successful
- - Backwards compatibility is maintained
- - When applicable, the relevant documentation is updated
- 
 [Back to topics](#topics)
