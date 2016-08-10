@@ -28,18 +28,27 @@ We say your OpenAPI definition *is* your config, and strive towards 'minimal add
 
 SwaggerBundle 4.0 is currently in the alpha stage. Much of the behavior dealing with OpenAPI documents has been moved to [KleijnWeb\PhpApi\Descriptions](https://github.com/kleijnweb/php-api-descriptions).
 
- - Serialization
+### Serialization
  
-Support for 3rd party serializers has been replaced by a new _API Description Based_ hydrator ([KleijnWeb\PhpApi\Hydrator](https://github.com/kleijnweb/php-api-hydrator)). Array serialization has been removed. The hydrator is optional, but without it in- and output will be `stdClass|stdClass[]`, not a combination of arrays and associative arrays as was the <4.0 default.
+Support for 3rd party serializers has been replaced by a new _API Description Based_ hyrator ([KleijnWeb\PhpApi\Hydrator](https://github.com/kleijnweb/php-api-hydrator)). The hydrator is optional, but without it in- and output will be `stdClass|stdClass[]`, not a combination of arrays and associative arrays as was the `<4.0` default. 
 
- - Testing
+### Testing
  
 The dependency on `SwaggerAssertions` has been removed, as response validation is now facilitated by `KleijnWeb\PhpApi\Descriptions` and integrated into the request cycle. Recommended to keep enabled until SYMFONY_ENV == prod.
 
- - Errors
+### Errors
  
 `vnd.error` support has been removed in favor of simpler error responses. This also gets rid of some dependencies that were unneeded for most use cases.
 
+## What's the roadmap?
+
+ - 4.0 ALPHA: 3.x compatibility plugins
+ - 4.0 BETA: feature freeze, refactoring, lots of testing (*ETA 2016-09-01*).
+ - 4.0 STABLE: ETA 2016-10-01
+ - 4.1: Stubbing responses
+ - 4.2: Proxying, Registry App
+ - 4.3: Service routing, [EIP](https://en.wikipedia.org/wiki/Enterprise_Integration_Patterns) recipes.
+ 
 ## <a name="topics"></a> Documentation Topics
 
  - [Install And Configure](#config)
