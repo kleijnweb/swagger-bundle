@@ -1,7 +1,4 @@
 services:
-  swagger.document.repository:
-    class: KleijnWeb\SwaggerBundle\Document\DocumentRepository
+  swagger.description.repository:
+    class: KleijnWeb\PhpApi\Descriptions\Description\Repository
     arguments: [%swagger.document.base_path%]
-
-  swagger.document.parameter_ref_builder:
-    class: KleijnWeb\SwaggerBundle\Document\ParameterRefBuilder

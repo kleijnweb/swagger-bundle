@@ -8,9 +8,9 @@
 
 namespace KleijnWeb\SwaggerBundle\EventListener;
 
+use KleijnWeb\SwaggerBundle\EventListener\Response\ResponseFactory;
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
 use KleijnWeb\SwaggerBundle\Exception\UnsupportedContentTypeException;
-use KleijnWeb\SwaggerBundle\Response\ResponseFactory;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 
 /**

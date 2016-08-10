@@ -1,7 +1,0 @@
-imports:
-  - { resource: config.yml }
-
-swagger:
-  serializer:
-    type: jms
-    namespace: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Model\Resources

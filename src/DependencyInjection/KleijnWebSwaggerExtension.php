@@ -29,41 +29,28 @@ class KleijnWebSwaggerExtension extends Extension
         $loader->load('services.yml');
 
         $container->setParameter('swagger.document.base_path', $config['document']['base_path']);
-        $container->setParameter('swagger.serializer.namespace', $config['serializer']['namespace']);
-
-        $serializerType = $config['serializer']['type'];
-        $container->setAlias('swagger.serializer', "swagger.serializer.$serializerType");
-
-        if ($serializerType !== 'array') {
-            $definitionMapBuilderRef = new Reference(
-                'swagger.serializer.type_resolver.serializer_type_definition_map_builder'
-            );
-            $container->getDefinition('kernel.listener.swagger.request')->addArgument($definitionMapBuilderRef);
-        }
 
         if (isset($config['document']['cache'])) {
-            $resolverDefinition = $container->getDefinition('swagger.document.repository');
+            $resolverDefinition = $container->getDefinition('swagger.description.repository');
             $resolverDefinition->addArgument(new Reference($config['document']['cache']));
         }
+        if (isset($config['hydrator'])) {
+            $container
+                ->getDefinition('swagger.hydrator.class_name_resolver')
+                ->replaceArgument(0, $config['hydrator']['namespaces']);
 
-        if ($config['errors']['strategy'] == 'fallthrough') {
-            // Unregister the exception listener
-            $container->removeDefinition('kernel.listener.swagger.exception');
-        } else {
-            $container->setAlias(
-                'swagger.response.error_factory',
-                "swagger.response.error_response_factory.{$config['errors']['strategy']}"
-            );
+            $definition = $container->getDefinition('swagger.request.processor');
+            $definition->addArgument(new Reference('swagger.hydrator'));
         }
+        if ($config['validate_responses']) {
+            $responseFactory = $container
+                ->getDefinition('swagger.response.factory');
 
-        $parameterRefBuilderDefinition = $container->getDefinition('swagger.document.parameter_ref_builder');
-        $publicDocsConfig              = $config['document']['public'];
-        $arguments                     = [
-            $publicDocsConfig['base_url'],
-            $publicDocsConfig['scheme'],
-            $publicDocsConfig['host']
-        ];
-        $parameterRefBuilderDefinition->setArguments($arguments);
+            if (!isset($config['hydrator'])) {
+                $responseFactory->addArgument(null);
+            }
+            $responseFactory->addArgument(new Reference('swagger.request.validator'));
+        }
     }
 
     /**

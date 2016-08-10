@@ -7,12 +7,12 @@ services:
 
   kernel.listener.swagger.exception:
     class: KleijnWeb\SwaggerBundle\EventListener\ExceptionListener
-    arguments: ['@swagger.response.error_factory', '@swagger.response.error.logref_builder', '@logger']
+    arguments: ['@swagger.response.error_response_factory.simple', '@swagger.response.error.logref_builder', '@logger']
     tags:
       - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
 
   kernel.listener.swagger.request:
     class: KleijnWeb\SwaggerBundle\EventListener\RequestListener
-    arguments: ['@swagger.document.repository', '@swagger.request.processor']
+    arguments: [ '@swagger.request.processor']
     tags:
       - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }

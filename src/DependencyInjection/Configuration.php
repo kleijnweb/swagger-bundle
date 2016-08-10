@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -26,59 +26,30 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->arrayNode('errors')
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        ->scalarNode('strategy')
-                            ->defaultValue('simple')
-                            ->cannotBeEmpty()
-                            ->info('Strategy name or error response factory DI key')
-                        ->end()
-                        ->scalarNode('logref_builder')
-                            ->defaultValue('uniqid')
-                            ->cannotBeEmpty()
-                            ->info('Strategy name or error response factory DI key')
-                        ->end()
-                    ->end()
-                ->end()
-
-                ->arrayNode('serializer')
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        ->enumNode('type')
-                            ->values(array('array', 'object', 'jms', 'symfony'))
-                            ->defaultValue('array')
-                            ->cannotBeEmpty()
-                        ->end()
-                        ->arrayNode('namespace')
-                            ->beforeNormalization()
-                                ->ifString()
-                                ->then(function ($v) {
-                                    return [$v];
-                                })
-                            ->end()
-                            ->prototype('scalar')
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
-                ->arrayNode('document')
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        ->scalarNode('cache')->isRequired()->defaultFalse()->end()
-                        ->scalarNode('base_path')->defaultValue('')->end()
-                        ->arrayNode('public')
-                            ->addDefaultsIfNotSet()
-                            ->children()
-                                ->scalarNode('scheme')->defaultNull()->end()
-                                ->scalarNode('base_url')->defaultValue('/')->end()
-                                ->scalarNode('host')->defaultNull()->end()
-                            ->end()
-                         ->end()
-                    ->end()
-                ->end()
+            ->scalarNode('validate_responses')->defaultFalse()
             ->end()
-            ;
+            ->arrayNode('hydrator')
+            ->children()
+            ->arrayNode('namespaces')->isRequired()
+            ->beforeNormalization()
+            ->ifString()
+            ->then(function ($v) {
+                return [$v];
+            })
+            ->end()
+            ->prototype('scalar')
+            ->end()
+            ->end()
+            ->end()
+            ->end()
+            ->arrayNode('document')
+            ->addDefaultsIfNotSet()
+            ->children()
+            ->scalarNode('cache')->isRequired()->defaultFalse()->end()->scalarNode('base_path')->defaultValue('')->end()
+            ->end()
+            ->end()
+            ->end();
+
         return $treeBuilder;
     }
 }

@@ -1,21 +1,13 @@
 services:
   swagger.response.factory:
-    class: KleijnWeb\SwaggerBundle\Response\ResponseFactory
-    arguments: ['@swagger.document.repository', '@swagger.serializer']
+    class: KleijnWeb\SwaggerBundle\EventListener\Response\ResponseFactory
+    arguments: ['@swagger.hydrator']
 
   swagger.response.error.simple:
-    class: KleijnWeb\SwaggerBundle\Response\ErrorResponseFactory\SimpleErrorResponseFactory
+    class: KleijnWeb\SwaggerBundle\EventListener\Response\ErrorResponseFactory\SimpleErrorResponseFactory
 
   swagger.response.error.logref_builder:
-    class: KleijnWeb\SwaggerBundle\Response\Error\LogRefBuilder\UniqueIdLogRefBuilder
+    class: KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilder\UniqueIdLogRefBuilder
 
   swagger.response.error_response_factory.simple:
-    class: KleijnWeb\SwaggerBundle\Response\ErrorResponseFactory\SimpleErrorResponseFactory
-
-  swagger.response.error_response_factory.vnd_error:
-    class: KleijnWeb\SwaggerBundle\Response\ErrorResponseFactory\VndErrorResponseFactory
-    arguments: ['@swagger.response.vnd_error.validation_error_factory']
-
-  swagger.response.vnd_error.validation_error_factory:
-    class: KleijnWeb\SwaggerBundle\Response\ErrorResponseFactory\VndError\VndValidationErrorFactory
-    arguments: ['@swagger.document.parameter_ref_builder']
+    class: KleijnWeb\SwaggerBundle\EventListener\Response\ErrorResponseFactory\SimpleErrorResponseFactory

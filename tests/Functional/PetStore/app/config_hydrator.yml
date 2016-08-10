@@ -1,0 +1,12 @@
+imports:
+  - { resource: config.yml }
+
+swagger:
+  hydrator:
+    namespaces: [KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Model\Resources]
+
+services:
+  petstore.cache:
+    class: Doctrine\Common\Cache\ArrayCache
+  swagger.controller.pet:
+    class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller\HydratedPetController

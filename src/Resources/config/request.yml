@@ -1,15 +1,13 @@
 services:
   swagger.request.processor:
-    class: KleijnWeb\SwaggerBundle\Request\RequestProcessor
-    arguments: ['@swagger.request.processor.validator', '@swagger.request.processor.coercer']
+    class: KleijnWeb\SwaggerBundle\EventListener\Request\RequestProcessor
+    arguments:
+      - '@swagger.description.repository'
+      - '@swagger.request.validator'
+      - '@swagger.request.parameters_assembler'
 
-  swagger.request.processor.validator:
-    class: KleijnWeb\SwaggerBundle\Request\RequestValidator
+  swagger.request.parameters_assembler:
+    class: KleijnWeb\PhpApi\Descriptions\Request\RequestParameterAssembler
 
-  swagger.request.processor.coercer:
-    class: KleijnWeb\SwaggerBundle\Request\RequestCoercer
-    arguments: ['@swagger.request.processor.content_decoder']
-
-  swagger.request.processor.content_decoder:
-    class: KleijnWeb\SwaggerBundle\Request\ContentDecoder
-    arguments: ['@swagger.serializer', '@swagger.document.repository']
+  swagger.request.validator:
+    class: KleijnWeb\PhpApi\Descriptions\Description\Schema\Validator\DefaultValidator

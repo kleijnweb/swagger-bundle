@@ -1,0 +1,11 @@
+services:
+  swagger.hydrator.class_name_resolver:
+    class:   KleijnWeb\PhpApi\Hydrator\ClassNameResolver
+    arguments: [[]]
+
+  swagger.hydrator.date_time_serializer:
+    class:   KleijnWeb\PhpApi\Hydrator\DateTimeSerializer
+
+  swagger.hydrator:
+    class:   KleijnWeb\PhpApi\Hydrator\ObjectHydrator
+    arguments: ['@swagger.hydrator.class_name_resolver', '@swagger.hydrator.date_time_serializer']

@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit bootstrap="./src/Tests/Functional/PetStore/app/autoload.php"
-         colors="true"
-         syntaxCheck="true">
+<phpunit bootstrap="vendor/autoload.php" colors="true" syntaxCheck="true">
     <testsuites>
-        <testsuite name="unit">
-            <directory suffix="Test.php">./src/Tests</directory>
+        <testsuite name="All">
+            <directory suffix="Test.php">./tests</directory>
         </testsuite>
     </testsuites>
 
@@ -13,8 +11,6 @@
         <whitelist>
             <directory>./src/</directory>
             <exclude>
-                <directory>./src/Resources</directory>
-                <directory>./src/Tests</directory>
                 <directory>./src/DependencyInjection</directory>
                 <file>./src/KleijnWebSwaggerBundle.php</file>
             </exclude>
@@ -22,6 +18,6 @@
     </filter>
 
     <php>
-        <server name="KERNEL_DIR" value="./src/Tests/Functional/PetStore/app"/>
+        <server name="KERNEL_DIR" value="./tests/Functional/PetStore/app"/>
     </php>
 </phpunit>

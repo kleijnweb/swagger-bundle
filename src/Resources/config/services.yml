@@ -3,11 +3,11 @@ imports:
   - { resource: listeners.yml }
   - { resource: request.yml }
   - { resource: response.yml }
-  - { resource: serializer.yml }
+  - { resource: hydrator.yml }
 
 services:
   swagger.route_loader:
-    class: KleijnWeb\SwaggerBundle\Routing\SwaggerRouteLoader
-    arguments: ['@swagger.document.repository']
+    class: KleijnWeb\SwaggerBundle\Routing\OpenApiRouteLoader
+    arguments: ['@swagger.description.repository']
     tags:
        - { name: routing.loader }
