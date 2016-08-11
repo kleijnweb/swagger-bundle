@@ -8,7 +8,7 @@
  - [Serialization](#serialization)
  - [Responses](#responses)
  - [Caching](#caching)
- - [Functional Testing](#testing)
+ - [Testing](#testing)
  - [Contributing](#contributing)
  
 ---------------------------------------

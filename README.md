@@ -2,19 +2,20 @@
 [![Build Status](https://travis-ci.org/kleijnweb/swagger-bundle.svg?branch=master)](https://travis-ci.org/kleijnweb/swagger-bundle)
 [![Coverage Status](https://coveralls.io/repos/github/kleijnweb/swagger-bundle/badge.svg?branch=master)](https://coveralls.io/github/kleijnweb/swagger-bundle?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kleijnweb/swagger-bundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/kleijnweb/swagger-bundle/?branch=master)
+[![Latest Unstable Version](https://poser.pugx.org/kleijnweb/swagger-bundle/v/unstable)](https://packagist.org/packages/kleijnweb/swagger-bundle)
 [![Latest Stable Version](https://poser.pugx.org/kleijnweb/swagger-bundle/v/stable)](https://packagist.org/packages/kleijnweb/swagger-bundle)
 
 Invert your workflow (contract first) using Swagger ([Open API](https://openapis.org/)) specs and set up a Symfony REST app with minimal config.
 
 Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig.
 
-**HEADS UP:** _You are looking at the main (4.0 ALPHA) development line, which is PHP 7 only. SwaggerBundle 3.x is stable and works with PHP 5.4+._
+**HEADS UP:** _You are looking at the main (4.0 ALPHA) development line, which is PHP 7 only. SwaggerBundle 3.x is stable, maintained, and works with PHP 5.4+._
 
 ## Contract First
 
 We say your OpenAPI definition *is* your config, and strive towards 'minimal additional config'. At the core, SwaggerBundle does three things:
 
- 1. Configure Symfony Routing
+ 1. Configure Symfony routing
  2. Validate input
  3. Coerce/transform in- and output
 
@@ -36,7 +37,7 @@ Support for 3rd party serializers has been replaced by a new _API Description Ba
 
 ### Testing
  
-The dependency on `SwaggerAssertions` has been removed, as response validation is now facilitated by `KleijnWeb\PhpApi\Descriptions` and integrated into the request cycle. Recommended to keep enabled until SYMFONY_ENV == prod.
+The dependency on `SwaggerAssertions` has been removed, as response validation is now facilitated by `KleijnWeb\PhpApi\Descriptions` and [integrated into the request cycle](docs.md#testing).
 
 ### Errors
  
@@ -44,11 +45,11 @@ The dependency on `SwaggerAssertions` has been removed, as response validation i
 
 ## What's the roadmap?
 
- - 4.0 ALPHA: 3.x compatibility plugins
+ - 4.0 ALPHA: 3.x compatibility plugins, registry controller
  - 4.0 BETA: feature freeze, refactoring, lots of testing (*ETA 2016-09-01*).
  - 4.0 STABLE: ETA 2016-10-01
- - 4.1: Stubbing responses
- - 4.2: Proxying, Registry App
+ - 4.1: Stubbing
+ - 4.2: Proxying, definition registry
  - 4.3: Service routing, [EIP](https://en.wikipedia.org/wiki/Enterprise_Integration_Patterns) recipes.
  
 ## FAQ
@@ -59,13 +60,12 @@ The dependency on `SwaggerAssertions` has been removed, as response validation i
  
   * Handle Form posts.
   * Generate API documentation.
-  * Mix well with GUI bundles. The bundle is biased towards lightweight API-only apps.
   * Support Symfony sub-requests. You won't miss them.
   * Support XML.
   
 ## Notes
  
- This bundle is currently actively maintained. Go to the [release page](https://github.com/kleijnweb/swagger-bundle/releases) to find details about the latest release.
+Go to the [release page](https://github.com/kleijnweb/swagger-bundle/releases) to find details about the latest release.
  
 ## Contributing
 
