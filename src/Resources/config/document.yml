@@ -1,4 +1,4 @@
 services:
   swagger.description.repository:
     class: KleijnWeb\PhpApi\Descriptions\Description\Repository
-    arguments: [%swagger.document.base_path%]
+    arguments: ['%swagger.document.base_path%']
