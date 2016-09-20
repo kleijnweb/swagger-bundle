@@ -63,8 +63,6 @@ services:
   kernel.listener.swagger.vnd_error_exception:
     class: KleijnWeb\SwaggerBundle\EventListener\VndErrorExceptionListener
     arguments: ['@swagger.response.vnd_validation_error_factory', '@logger']
-    tags:
-      - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
 
   kernel.listener.swagger.request:
     class: KleijnWeb\SwaggerBundle\EventListener\RequestListener

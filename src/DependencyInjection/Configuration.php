@@ -26,6 +26,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+                ->booleanNode('disable_error_listener')->defaultFalse()->end()
                 ->arrayNode('serializer')
                     ->addDefaultsIfNotSet()
                     ->children()
