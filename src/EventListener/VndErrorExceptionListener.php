@@ -16,6 +16,7 @@ use Psr\Log\LogLevel;
 use Ramsey\VndError\VndError;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -87,6 +88,10 @@ class VndErrorExceptionListener
                         break;
                     case $exception instanceof AuthenticationException:
                         $statusCode = Response::HTTP_UNAUTHORIZED;
+                        $severity   = LogLevel::WARNING;
+                        break;
+                    case $exception instanceof AccessDeniedHttpException:
+                        $statusCode = Response::HTTP_FORBIDDEN;
                         $severity   = LogLevel::WARNING;
                         break;
                     default:
