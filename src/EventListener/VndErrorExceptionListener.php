@@ -76,17 +76,20 @@ class VndErrorExceptionListener
                 $statusCode = Response::HTTP_BAD_REQUEST;
                 $vndError   = $this->validationErrorFactory->create($request, $exception, $logRef);
             } else {
-                if ($exception instanceof NotFoundHttpException) {
-                    $statusCode = Response::HTTP_NOT_FOUND;
-                    $severity   = LogLevel::INFO;
-                } else {
-                    if ($exception instanceof MethodNotAllowedHttpException) {
+                switch(true) {
+                    case $exception instanceof NotFoundHttpException:
+                        $statusCode = Response::HTTP_NOT_FOUND;
+                        $severity   = LogLevel::INFO;
+                        break;
+                    case $exception instanceof MethodNotAllowedHttpException:
                         $statusCode = Response::HTTP_METHOD_NOT_ALLOWED;
                         $severity   = LogLevel::WARNING;
-                    } elseif ($exception instanceof AuthenticationException) {
+                        break;
+                    case $exception instanceof AuthenticationException:
                         $statusCode = Response::HTTP_UNAUTHORIZED;
                         $severity   = LogLevel::WARNING;
-                    } else {
+                        break;
+                    default:
                         $is3Digits = strlen($code) === 3;
                         $class     = (int)substr($code, 0, 1);
                         if (!$is3Digits) {
@@ -107,8 +110,8 @@ class VndErrorExceptionListener
                                     $severity   = LogLevel::CRITICAL;
                             }
                         }
-                    }
                 }
+
                 $message  = Response::$statusTexts[$statusCode];
                 $vndError = new VndError($message, $logRef);
                 $vndError->addLink('help', $request->get('_definition'), ['title' => 'Error Information']);
