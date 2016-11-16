@@ -39,7 +39,7 @@ class KleijnWebSwaggerExtension extends Extension
             $resolverDefinition->addArgument(new Reference('swagger.serializer.type_resolver'));
         }
 
-        if (isset($config['document']['cache'])) {
+        if (!empty($config['document']['cache'])) {
             $resolverDefinition = $container->getDefinition('swagger.document.repository');
             $resolverDefinition->addArgument(new Reference($config['document']['cache']));
         }
