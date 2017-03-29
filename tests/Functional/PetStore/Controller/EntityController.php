@@ -23,7 +23,7 @@ class EntityController
     public function find(string $type, \DateTime $lastModified)
     {
         return [
-            [
+            (object)[
                 'id'   => 2,
                 'type' => $type,
                 'foo'  => 'bar'
@@ -33,8 +33,8 @@ class EntityController
 
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     * @param string    $type
-     * @param array $criteria
+     * @param string $type
+     * @param array  $criteria
      *
      * @return array
      */
@@ -43,7 +43,7 @@ class EntityController
         $entities = [];
 
         foreach ($criteria as $i => $criterion) {
-            $entities[] = [
+            $entities[] = (object)[
                 'id'   => $i + 3,
                 'type' => $type,
                 'foo'  => 'bar'
@@ -57,11 +57,11 @@ class EntityController
      * @param string $type
      * @param int    $id
      *
-     * @return array
+     * @return \stdClass
      */
     public function get(string $type, int $id)
     {
-        return [
+        return (object)[
             'id'   => $id,
             'type' => $type,
             'foo'  => 'bar'
@@ -73,7 +73,7 @@ class EntityController
      * @param int       $id
      * @param \stdClass $data
      *
-     * @return array
+     * @return \stdClass
      */
     public function put(string $type, int $id, \stdClass $data)
     {
@@ -87,7 +87,7 @@ class EntityController
      * @param string    $type
      * @param \stdClass $data
      *
-     * @return array
+     * @return \stdClass
      */
     public function post(string $type, \stdClass $data)
     {

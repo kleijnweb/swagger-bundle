@@ -68,6 +68,12 @@ class ResponseFactory
         }
         $schema = $meta->getOperation()->getResponse($statusCode)->getSchema();
 
+        if ($this->hydrator && $body !== '') {
+            $body = $this->hydrator->dehydrate($body, $schema);
+        } elseif ($understands204) {
+            $statusCode = 204;
+        }
+
         if ($this->validator) {
             $result = $this->validator->validate($schema, $body);
 
@@ -78,12 +84,6 @@ class ResponseFactory
                     ValidationException::MESSAGE_OUTPUT
                 );
             };
-        }
-
-        if ($body !== '') {
-            $body = $this->hydrator->dehydrate($body, $schema);
-        } elseif ($understands204) {
-            $statusCode = 204;
         }
 
         return new JsonResponse($body, $statusCode);

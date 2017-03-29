@@ -1,7 +1,7 @@
 services:
   swagger.response.factory:
     class: KleijnWeb\SwaggerBundle\EventListener\Response\ResponseFactory
-    arguments: ['@swagger.hydrator']
+    arguments: [~]
 
   swagger.response.error.simple:
     class: KleijnWeb\SwaggerBundle\EventListener\Response\ErrorResponseFactory\SimpleErrorResponseFactory

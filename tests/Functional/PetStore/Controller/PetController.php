@@ -21,7 +21,7 @@ class PetController
     public function findPetsByStatus()
     {
         return [
-            [
+            (object)[
                 'id'        => 1,
                 'name'      => 'Scooby',
                 'photoUrls' => []
@@ -32,7 +32,7 @@ class PetController
     /**
      * @param \stdClass $body
      *
-     * @return array
+     * @return \stdClass
      */
     public function addPet(\stdClass $body)
     {
@@ -44,11 +44,11 @@ class PetController
     /**
      * @param int $petId
      *
-     * @return array
+     * @return \stdClass
      */
     public function getPetById(int $petId)
     {
-        return [
+        return (object)[
             'id'        => $petId,
             'name'      => 'Chuckie',
             'photoUrls' => []

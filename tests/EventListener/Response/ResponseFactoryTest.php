@@ -103,7 +103,11 @@ class ResponseFactoryTest extends \PHPUnit_Framework_TestCase
         }
 
         $hydrator = $this->getMockBuilder(ObjectHydrator::class)->disableOriginalConstructor()->getMock();
-        /** @var ObjectHydrator $hydrator */
+        $hydrator
+            ->expects($this->any())
+            ->method('dehydrate')
+            ->willReturn($data);
+
         $factory = new ResponseFactory($hydrator, $mockValidator);
         $request = new Request();
         $request->attributes->set(RequestMeta::ATTRIBUTE_URI, 'tests/Functional/PetStore/app/swagger/composite.yml');

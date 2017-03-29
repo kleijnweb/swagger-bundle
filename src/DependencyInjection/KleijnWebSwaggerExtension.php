@@ -34,21 +34,19 @@ class KleijnWebSwaggerExtension extends Extension
             $resolverDefinition = $container->getDefinition('swagger.description.repository');
             $resolverDefinition->addArgument(new Reference($config['document']['cache']));
         }
+        $responseFactory = $container->getDefinition('swagger.response.factory');
+
         if (isset($config['hydrator'])) {
             $container
                 ->getDefinition('swagger.hydrator.class_name_resolver')
                 ->replaceArgument(0, $config['hydrator']['namespaces']);
 
+            $hydrator   = new Reference('swagger.hydrator');
             $definition = $container->getDefinition('swagger.request.processor');
-            $definition->addArgument(new Reference('swagger.hydrator'));
+            $definition->addArgument($hydrator);
+            $responseFactory->replaceArgument(0, $hydrator);
         }
         if ($config['validate_responses']) {
-            $responseFactory = $container
-                ->getDefinition('swagger.response.factory');
-
-            if (!isset($config['hydrator'])) {
-                $responseFactory->addArgument(null);
-            }
             $responseFactory->addArgument(new Reference('swagger.request.validator'));
         }
     }
