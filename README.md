@@ -46,8 +46,8 @@ The dependency on `SwaggerAssertions` has been removed, as response validation i
 ## What's the roadmap?
 
  - 4.0 ALPHA: 3.x compatibility plugins, registry controller
- - 4.0 BETA: feature freeze, refactoring, lots of testing (*ETA 2016-09-01*).
- - 4.0 STABLE: ETA 2016-10-01
+ - 4.0 BETA: feature freeze, refactoring, lots of testing.
+ - 4.0 STABLE
  - 4.1: Stubbing
  - 4.2: Proxying, definition registry
  - 4.3: Service routing, [EIP](https://en.wikipedia.org/wiki/Enterprise_Integration_Patterns) recipes.
