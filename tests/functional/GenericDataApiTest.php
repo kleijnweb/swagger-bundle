@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
+ * @group functional
  */
 class GenericDataApiTest extends WebTestCase
 {
@@ -24,7 +25,6 @@ class GenericDataApiTest extends WebTestCase
     protected $env = 'basic';
 
     /**
-     * @group functional
      * @test
      */
     public function canPost()
@@ -43,7 +43,16 @@ class GenericDataApiTest extends WebTestCase
     }
 
     /**
-     * @group functional
+     * @test
+     */
+    public function canGetStatus()
+    {
+        $responseData = $this->get('/data/v1/entity/status');
+
+        $this->assertSame('ok', $responseData->overall);
+    }
+
+    /**
      * @test
      */
     public function canFindUsingDateTimeQuery()
@@ -56,7 +65,6 @@ class GenericDataApiTest extends WebTestCase
     }
 
     /**
-     * @group functional
      * @test
      */
     public function canFindByCriteria()
@@ -84,7 +92,6 @@ class GenericDataApiTest extends WebTestCase
     }
 
     /**
-     * @group functional
      * @test
      */
     public function canGet()
@@ -97,7 +104,6 @@ class GenericDataApiTest extends WebTestCase
     }
 
     /**
-     * @group functional
      * @test
      */
     public function canDelete()
@@ -106,7 +112,6 @@ class GenericDataApiTest extends WebTestCase
     }
 
     /**
-     * @group functional
      * @test
      */
     public function canPut()

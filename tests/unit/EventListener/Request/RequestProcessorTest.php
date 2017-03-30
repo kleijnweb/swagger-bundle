@@ -11,6 +11,7 @@ namespace KleijnWeb\SwaggerBundle\Tests\EventListener\Request;
 use KleijnWeb\PhpApi\Descriptions\Description\Description;
 use KleijnWeb\PhpApi\Descriptions\Description\Operation;
 use KleijnWeb\PhpApi\Descriptions\Description\Parameter;
+use KleijnWeb\PhpApi\Descriptions\Description\Path;
 use KleijnWeb\PhpApi\Descriptions\Description\Repository;
 use KleijnWeb\PhpApi\Descriptions\Description\Schema\ObjectSchema;
 use KleijnWeb\PhpApi\Descriptions\Description\Schema\Schema;
@@ -111,7 +112,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function willAssembleParameters()
     {
-        $processor = $this->createProcessor(true);
+        $processor = $this->createProcessor();
         $this->parametersAssemblerMock->expects($this->once())->method('assemble');
 
         $processor->process($this->createRequest([
@@ -186,7 +187,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 
         $processor = $this->createProcessor(true, true);
 
-        $parameter = new Parameter('theBody', true, new ObjectSchema((object)[]), Parameter::IN_BODY);
+        $parameter       = new Parameter('theBody', true, new ObjectSchema((object)[]), Parameter::IN_BODY);
         $descriptionMock = $this->getMockBuilder(Description::class)->disableOriginalConstructor()->getMock();
         $descriptionMock->expects($this->once())->method('getRequestBodyParameter')->willReturn($parameter);
 
@@ -252,7 +253,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function willThrowExceptionIfRequestIsNotValid()
     {
-        $processor = $this->createProcessor(false);
+        $processor = $this->createProcessor(false, false);
 
         $this->setExpectedException(ValidationException::class);
 
@@ -263,16 +264,45 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param bool $stubValidity
+     * @test
+     */
+    public function willPassNullToValidatorWhenOperationAndRequestHaveNoParams()
+    {
+        $processor = $this->createProcessor();
+
+        $descriptionMock = $this->getMockBuilder(Description::class)->disableOriginalConstructor()->getMock();
+        $pathMock = $this->getMockBuilder(Path::class)->disableOriginalConstructor()->getMock();
+        $descriptionMock->expects($this->once())->method('getPath')->willReturn($pathMock);
+        $operationMock = $this->getMockBuilder(Operation::class)->disableOriginalConstructor()->getMock();
+        $pathMock->expects($this->once())->method('getOperation')->willReturn($operationMock);
+        $operationMock->expects($this->once())->method('hasParameters')->willReturn(false);
+
+        $this->repositoryMock->expects($this->once())->method('get')->willReturn($descriptionMock);
+        $this->parametersAssemblerMock->expects($this->once())->method('assemble')->willReturn((object)[]);
+
+        $this->validatorMock->expects($this->once())->method('validate')->with($this->isInstanceOf(Schema::class), null);
+
+        $processor->process($this->createRequest([
+            RequestMeta::ATTRIBUTE_URI  => '/uri',
+            RequestMeta::ATTRIBUTE_PATH => '/path'
+        ]));
+    }
+
+    /**
      * @param bool $useHydrator
+     * @param null|bool $forcedValidationResult
      *
      * @return RequestProcessor
      */
-    private function createProcessor(bool $stubValidity = true, bool $useHydrator = false): RequestProcessor
+    private function createProcessor(bool $useHydrator = false, $forcedValidationResult = true): RequestProcessor
     {
-        if ($stubValidity) {
-            $this->validatorMock->expects($this->any())->method('validate')->willReturn(new ValidationResult(true));
+        if(null !== $forcedValidationResult){
+            $this->validatorMock
+                ->expects($this->any())
+                ->method('validate')
+                ->willReturn(new ValidationResult($forcedValidationResult));
         }
+
         /** @var Repository $repository */
         $repository = $this->repositoryMock;
         /** @var SchemaValidator $validator */

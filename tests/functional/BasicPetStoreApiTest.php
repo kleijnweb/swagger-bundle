@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
+ * @group functional
  */
 class BasicPetStoreApiTest extends WebTestCase
 {
@@ -24,7 +25,6 @@ class BasicPetStoreApiTest extends WebTestCase
     protected $env = 'basic';
 
     /**
-     * @group functional
      * @test
      */
     public function canFindPetsByStatus()
@@ -35,7 +35,6 @@ class BasicPetStoreApiTest extends WebTestCase
     }
 
     /**
-     * @group functional
      * @test
      */
     public function canAddPet()
@@ -52,7 +51,6 @@ class BasicPetStoreApiTest extends WebTestCase
     }
 
     /**
-     * @group functional
      * @test
      */
     public function canGetPetById()

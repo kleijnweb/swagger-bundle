@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
+ * @group functional
  */
 class HydratorPetStoreApiTest extends WebTestCase
 {
@@ -24,7 +25,6 @@ class HydratorPetStoreApiTest extends WebTestCase
     protected $env = 'hydrator';
 
     /**
-     * @group functional
      * @test
      */
     public function canPlaceOrder()
@@ -48,7 +48,6 @@ class HydratorPetStoreApiTest extends WebTestCase
     }
 
     /**
-     * @group functional
      * @test
      */
     public function canPostPet()

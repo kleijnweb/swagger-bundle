@@ -63,7 +63,8 @@ class RequestProcessor
         RequestParameterAssembler $parametersAssembler,
         ObjectHydrator $hydrator = null,
         DateTimeSerializer $dateTimeSerializer = null
-    ) {
+    )
+    {
         $this->repository          = $repository;
         $this->validator           = $validator;
         $this->hydrator            = $hydrator;
@@ -86,9 +87,7 @@ class RequestProcessor
         $description = $this->repository->get($request->attributes->get(RequestMeta::ATTRIBUTE_URI));
         $operation   = $description
             ->getPath($request->attributes->get(RequestMeta::ATTRIBUTE_PATH))
-            ->getOperation(
-                $request->getMethod()
-            );
+            ->getOperation($request->getMethod());
 
         $body = null;
         if ($request->getContent()) {
@@ -98,19 +97,21 @@ class RequestProcessor
             }
         }
 
+        $coercedParams = $this->parametersAssembler->assemble(
+            $operation,
+            $request->query->all(),
+            $request->attributes->all(),
+            $request->headers->all(),
+            $body
+        );
+
         $result = $this->validator->validate(
             $operation->getRequestSchema(),
-            $coercedParams = $this->parametersAssembler->assemble(
-                $operation,
-                $request->query->all(),
-                $request->attributes->all(),
-                $request->headers->all(),
-                $body
-            )
+            !$operation->hasParameters() && !count((array)$coercedParams) ? null : $coercedParams
         );
 
         foreach ($coercedParams as $attribute => $value) {
-            /** @var ScalarSchema  $schema*/
+            /** @var ScalarSchema $schema */
             if (($schema = $operation->getParameter($attribute)->getSchema()) instanceof ScalarSchema) {
                 if ($schema->isDateTime()) {
                     $value = $this->dateTimeSerializer->deserialize($value, $schema);
