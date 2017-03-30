@@ -14,6 +14,16 @@ namespace KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller;
 class EntityController
 {
     /**
+     * @return \stdClass
+     */
+    public function getStatus()
+    {
+        return (object)[
+            'overall' => 'ok'
+        ];
+    }
+
+    /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      * @param string    $type
      * @param \DateTime $lastModified

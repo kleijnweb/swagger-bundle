@@ -4,6 +4,14 @@ info:
   version: 1.0.0
 basePath: /data/v1
 paths:
+  '/entity/status':
+    get:
+      operationId: 'getStatus'
+      responses:
+        '200':
+          description: "Status summary"
+          schema:
+            type: object
   '/entity/{type}':
     get:
       operationId: 'find'

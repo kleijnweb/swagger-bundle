@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
+ * @group functional
  */
 class ApiTestCaseTest extends WebTestCase
 {
@@ -24,7 +25,6 @@ class ApiTestCaseTest extends WebTestCase
     protected $env = 'basic';
 
     /**
-     * @group functional
      * @test
      * @expectedException \KleijnWeb\SwaggerBundle\Test\ApiResponseErrorException
      */
@@ -34,7 +34,6 @@ class ApiTestCaseTest extends WebTestCase
     }
 
     /**
-     * @group functional
      * @test
      * @expectedException \KleijnWeb\SwaggerBundle\Test\ApiResponseErrorException
      * @expectedExceptionCode 405
