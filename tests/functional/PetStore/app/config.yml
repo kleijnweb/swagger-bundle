@@ -1,7 +1,7 @@
 swagger:
   validate_responses: true
   document:
-    base_path: 'tests/Functional/PetStore/app'
+    base_path: 'tests/functional/PetStore/app'
     cache: 'petstore.cache'
 
 services:

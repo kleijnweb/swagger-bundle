@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Route;
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
+class OpenApiRouteLoaderTest extends \PHPUnit_Framework_TestCase
 {
     const DOCUMENT_PATH = '/totally/non-existent/path';
 
@@ -90,7 +90,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function loadingMultipleDocumentWillPreventRouteKeyCollisions()
+    public function loadingMultipleDocumentsWillPreventRouteKeyCollisions()
     {
         $this->decriptionMock
             ->expects($this->any())
@@ -108,7 +108,7 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
      * @test
      * @expectedException \RuntimeException
      */
-    public function cannotTryToLoadSameDocumentMoreThanOnce()
+    public function cannotLoadSameDocumentMoreThanOnce()
     {
         $this->decriptionMock
             ->expects($this->any())

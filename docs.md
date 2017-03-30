@@ -94,7 +94,7 @@ paths:
 ```
 
 Finally, the `method` segment defaults to the HTTP method name, but may be overridden using Swagger's `operationId` or `x-router-controller-method`. Note the Swagger spec requires `operationId` to be unique, so while `operationId` can contain only the method name, you're usually better off using `x-router-controller-method`.
-You can also use a fully quantified operation id using double colon notation, eg "my.controller.namespace.myresource:methodName". Combining `x-router` or `x-router-controller` and a quantified `operationId` ignores the former.
+You can also use a fully qualified operation id using double colon notation, eg "my.controller.namespace.myresource:methodName". Combining `x-router` or `x-router-controller` and a qualified `operationId` ignores the former.
 
 ```yaml
 paths:

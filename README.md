@@ -63,6 +63,10 @@ The dependency on `SwaggerAssertions` has been removed, as response validation i
   * Support Symfony sub-requests. You won't miss them.
   * Support XML.
   
+## Symfony Compatibility
+ 
+SwaggerBundle is tested against Symfony 2.8.7 and the latest release (3.x.x), at least once a week.
+
 ## Notes
  
 Go to the [release page](https://github.com/kleijnweb/swagger-bundle/releases) to find details about the latest release.

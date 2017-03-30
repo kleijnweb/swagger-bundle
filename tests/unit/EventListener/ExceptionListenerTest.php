@@ -12,6 +12,7 @@ use KleijnWeb\SwaggerBundle\EventListener\ExceptionListener;
 use KleijnWeb\SwaggerBundle\EventListener\Request\RequestMeta;
 use KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilder;
 use KleijnWeb\SwaggerBundle\EventListener\Response\ErrorResponseFactory;
+use KleijnWeb\SwaggerBundle\Tests\Functional\TestCacheSmachingPHPUnitListener;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Request;
@@ -57,6 +58,9 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
+        //$l = new TestCacheSmachingPHPUnitListener();
+        //$l->startTest($this);
+
         $this->event = $this
             ->getMockBuilder(GetResponseForExceptionEvent::class)
             ->disableOriginalConstructor()
