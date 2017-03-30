@@ -96,7 +96,7 @@ class OpenApiRouteLoader extends Loader
                     RequestMeta::ATTRIBUTE_PATH => $pathItem->getPath()
                 ];
 
-                $route = new Route($pathItem->getPath(), $defaults, $this->resolveRequirements($operation));
+                $route = new Route($pathItem->getPath(), $defaults, $this->resolveRequirements($operation), [], '', $description->getSchemes());
                 $route->setMethods($operation->getMethod());
                 $routes->add($this->createRouteId($resource, $pathItem->getPath(), $controllerKey), $route);
             }
@@ -154,7 +154,7 @@ class OpenApiRouteLoader extends Loader
         string $router,
         string $routerController = null
     ): string {
-    
+
         $operationName = $operation->getMethod();
         $diKey         = "$router.$resourceName";
 
