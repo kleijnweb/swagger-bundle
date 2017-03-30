@@ -154,6 +154,35 @@ class SwaggerRouteLoaderTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function shouldCreateRoutesWithTheCorrectHttpSchemes()
+    {
+        $this->decriptionMock
+            ->expects($this->any())
+            ->method('getPaths')
+            ->willReturn([
+                new Path('/a', [
+                    new Operation(uniqid(), '/a', 'get'),
+                    new Operation(uniqid(), '/a', 'post')
+                ]),
+            ]);
+
+        $this->decriptionMock
+            ->expects($this->any())
+            ->method('getSchemes')
+            ->willReturn(['https', 'http']);
+
+        $routes = $this->loader->load(self::DOCUMENT_PATH);
+
+        $this->assertCount(2, $routes);
+
+        foreach ($routes as $route) {
+            $this->assertEquals(['https', 'http'], $route->getSchemes());
+        }
+    }
+
+    /**
+     * @test
+     */
     public function routeCollectionWillIncludeSeparateRoutesForSubPaths()
     {
         $this->decriptionMock
