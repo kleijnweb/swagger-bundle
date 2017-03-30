@@ -68,8 +68,14 @@ class TestCacheSmashingPHPUnitListener implements \PHPUnit_Framework_TestListene
             return;
         }
 
+        $dir = __DIR__ . '/PetStore/app/cache';
+
+        if (!is_dir($dir)) {
+            return;
+        }
+
         $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator(__DIR__ . '/PetStore/app/cache', \FilesystemIterator::SKIP_DOTS),
+            new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
             \RecursiveIteratorIterator::CHILD_FIRST
         );
 
