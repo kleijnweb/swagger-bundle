@@ -9,7 +9,7 @@ matrix:
     - php: 7.0
       env: COMPOSER_FLAGS="--prefer-lowest"
     - php: 7.0
-      script: phpunit --coverage-clover build/logs/clover.xml
+      script: bin/phpunit --coverage-clover build/logs/clover.xml
       before_script:
         - mkdir -p build/logs
       after_script:
