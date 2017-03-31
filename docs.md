@@ -33,6 +33,8 @@ swagger:
     base_path: "%kernel.root_dir%"
 ```
 
+NOTE: It is possible to use network URIs here, but the results may be cached across requests depending on your settings.
+
 ### Bundle Config
 
 You can dump an up-to-date and documented configuration reference using `config:dump-reference` after you've added the bundle to your `AppKernel`.
@@ -59,7 +61,7 @@ All controllers must be defined as services in the DI container. SwaggerBundle s
 
 ```yaml
 paths:
-  x-router: my.default.controller.namespace
+  x-router: my.default.controller.di.namespace
   /foo:
     ...
   /foo/{bar}:
@@ -72,7 +74,7 @@ You can override the whole of `[router].[controller]` using `x-router-controller
 
 ```yaml
 paths:
-  x-router: my.default.controller.namespace
+  x-router: my.default.controller.di.namespace
   /foo:
     ...
   /foo/{bar}:
@@ -84,7 +86,7 @@ The following is also supported (set controller for a specific method):
 
 ```yaml
 paths:
-  x-router: my.default.controller.namespace
+  x-router: my.default.controller.di.namespace
   /foo:
     ...
   /foo/{bar}:
@@ -98,7 +100,7 @@ You can also use a fully qualified operation id using double colon notation, eg 
 
 ```yaml
 paths:
-  x-router: my.default.controller.namespace
+  x-router: my.default.controller.di.namespace
   /foo:
     ...
   /foo/{bar}:
@@ -111,12 +113,12 @@ paths:
 
 ```yaml
 paths:
-  x-router: my.default.controller.namespace
+  x-router: my.default.controller.di.namespace
   /foo:
     ...
   /foo/{bar}:
     post:
-      # Resolves to 'my.default.controller.namespace.foo:methodName'
+      # Resolves to 'my.default.controller.di.namespace.foo:methodName'
       x-router-controller-method: methodName
     ...
 ```
@@ -236,7 +238,7 @@ class ResponseListener
         }
         $request = $event->getRequest();
         $headers = $event->getResponse()->headers;
-        switch ($request->attributes->get('_swagger_path')) {
+        switch ($request->attributes->get('_swagger.path')) {
             case '/user/login':
                 $headers->set('X-Rate-Limit', 123456789);
                 $headers->set('X-Expires-After', date('Y-m-d\TH:i:s\Z'));
