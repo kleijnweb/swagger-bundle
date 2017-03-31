@@ -42,7 +42,7 @@ class HydratorPetStoreApiTest extends WebTestCase
         $this->assertSame($content['quantity'], $actual->quantity);
 
         $this->assertTrue($actual->complete);
-        $this->assertSame('2016-01-02T01:00:00+00:00', $actual->shipDate);
+        $this->assertSame('2016-01-02T01:00:00.000000+00:00', $actual->shipDate);
 
         $this->assertInternalType('integer', $actual->id);
     }
