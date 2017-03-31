@@ -11,6 +11,8 @@ Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig.
 
 **HEADS UP:** _You are looking at the main (4.0 ALPHA) development line, which is PHP 7 only. SwaggerBundle 3.x is stable, maintained, and works with PHP 5.4+._
 
+For a working example, check out https://github.com/kleijnweb/swagger-bundle-example.
+
 ## Contract First
 
 We say your OpenAPI definition *is* your config, and strive towards 'minimal additional config'. At the core, SwaggerBundle does three things:
