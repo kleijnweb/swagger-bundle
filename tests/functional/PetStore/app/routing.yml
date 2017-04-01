@@ -7,3 +7,8 @@ data:
   resource: "swagger/data.yml"
   type: swagger
   prefix: /data/v1
+
+basic_auth:
+  resource: "swagger/basic_auth.yml"
+  type: swagger
+  prefix: /basic-auth/v1

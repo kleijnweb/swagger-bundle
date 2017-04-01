@@ -1,0 +1,26 @@
+---
+swagger: '2.0'
+info:
+  version: "1.0.0"
+  title: Basic Auth Example
+schemes:
+  - http
+securityDefinitions:
+  basicAuth:
+    type: basic
+basePath: /basic-auth/v1
+paths:
+  x-router-controller: swagger.controller.secured
+  /secure:
+    get:
+      x-router-controller-method: secure
+      security:  [{ basicAuth: [] }]
+      responses:
+        200:
+          description:  OK
+  /unsecured:
+    get:
+      x-router-controller-method: unsecured
+      responses:
+        200:
+          description:  OK

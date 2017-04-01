@@ -4,6 +4,7 @@ imports:
   - { resource: request.yml }
   - { resource: response.yml }
   - { resource: hydrator.yml }
+  - { resource: security.yml }
 
 services:
   swagger.route_loader:

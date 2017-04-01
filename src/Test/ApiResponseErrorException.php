@@ -24,11 +24,11 @@ class ApiResponseErrorException extends \Exception
     private $content;
 
     /**
-     * @param string    $content
-     * @param \stdClass $data
-     * @param int       $httpStatusCode
+     * @param string         $content
+     * @param \stdClass|null $data
+     * @param int            $httpStatusCode
      */
-    public function __construct(string $content, \stdClass $data, int $httpStatusCode)
+    public function __construct(string $content, $data, int $httpStatusCode)
     {
         $this->message = "Returned $httpStatusCode";
         if ($data) {

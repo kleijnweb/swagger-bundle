@@ -1,0 +1,20 @@
+imports:
+  - { resource: config.yml }
+
+security:
+  firewalls:
+    default:
+      request_matcher: swagger.security.request_matcher
+      http_basic: ~
+      provider: in_memory
+
+  encoders:
+    Symfony\Component\Security\Core\User\User: plaintext
+
+  providers:
+    in_memory:
+      memory:
+        users:
+          user:
+             password: password
+             roles: 'ROLE_USER'
