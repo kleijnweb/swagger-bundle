@@ -177,6 +177,24 @@ While it is possible to have the full `Request` object injected, this is discour
 
 ---------------------------------------
 
+## <a name="security"></a> Security
+
+SwaggerBundle does not contain authentication or authorization logic, but does include a "request matcher", which can determine if a request requires any form of authentication according to the OpenAPI document.
+
+```yml
+security:
+  firewalls:
+    default:
+      request_matcher: swagger.security.request_matcher
+      #...
+```
+
+For examples on how to do this, have a look at `config_secure.yml` in the functional test directory. For a more advanced example, check out https://github.com/kleijnweb/swagger-bundle-example.
+
+[Back to topics](#topics)
+
+---------------------------------------
+
 ## <a name="errors"></a> Errors
 
 Bastardized `vnd.error` for simplicity. Will include a message and a `logref`. The produced validation errors (if applicable) are included as a simple array of strings.

@@ -41,6 +41,10 @@ Support for 3rd party serializers has been replaced by a new _API Description Ba
  
 The dependency on `SwaggerAssertions` has been removed, as response validation is now facilitated by `KleijnWeb\PhpApi\Descriptions` and [integrated into the request cycle](docs.md#testing).
 
+### Basic Firewall Request Matching
+ 
+Configuration of security has become easier with the inclusion of a request matcher, see [docs](docs.md#security).
+
 ### Errors
  
 `vnd.error` support has been removed in favor of simpler error responses. This also gets rid of some dependencies that were unneeded for most use cases.
