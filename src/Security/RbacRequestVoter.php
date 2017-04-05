@@ -73,7 +73,7 @@ class RbacRequestVoter implements VoterInterface
         }
 
         foreach ($attributes as $attribute) {
-            if (!$this->supports($attribute)) {
+            if (!$this->supportsAttribute($attribute)) {
                 continue;
             }
 
@@ -91,9 +91,20 @@ class RbacRequestVoter implements VoterInterface
         return $vote;
     }
 
-    private function supports($attribute)
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsAttribute($attribute)
     {
         return $attribute === RequestAuthorizationListener::ATTRIBUTE;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsClass($class)
+    {
+        return false;
     }
 
     /**
