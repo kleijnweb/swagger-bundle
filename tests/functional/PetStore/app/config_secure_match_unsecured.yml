@@ -3,7 +3,7 @@ imports:
 
 swagger:
   security:
-    match_unsecured: false
+    match_unsecured: true
 
 security:
   firewalls:

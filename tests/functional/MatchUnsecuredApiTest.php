@@ -16,7 +16,7 @@ use KleijnWeb\SwaggerBundle\Test\ApiTestCase;
  * @author John Kleijn <john@kleijnweb.nl>
  * @group  functional
  */
-class MatchUnsecuredFalseApiTest extends BasicSecuredApiTest
+class MatchUnsecuredApiTest extends BasicSecuredApiTest
 {
     /**
      * @var string

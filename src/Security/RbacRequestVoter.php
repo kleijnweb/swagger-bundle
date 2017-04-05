@@ -65,11 +65,10 @@ class RbacRequestVoter implements VoterInterface
 
 
         // If the operation is secured, IS_AUTHENTICATED_FULLY unless overridden by x-rbac
-        if($operation->isSecured()){
+        if ($operation->isSecured()) {
             $roles = ['IS_AUTHENTICATED_FULLY'];
-        }
-        else {
-            // Otherwise, test against IS_AUTHENTICATED_ANONYMOUSLY to the role voter to abstain
+        } else {
+            // Otherwise, test against IS_AUTHENTICATED_ANONYMOUSLY
             $roles = ['IS_AUTHENTICATED_ANONYMOUSLY'];
         }
 
@@ -104,12 +103,13 @@ class RbacRequestVoter implements VoterInterface
     private function normalizeRoleNames($roleNames): array
     {
         $roleNames = !is_array($roleNames) ? [$roleNames] : $roleNames;
-        foreach($roleNames as &$roleName){
+        foreach ($roleNames as &$roleName) {
             $roleName = strtoupper($roleName);
-            if(0 !== strpos($roleName, 'ROLE_')){
+            if (0 !== strpos($roleName, 'ROLE_')) {
                 $roleName = "ROLE_$roleName";
             }
         }
+
         return $roleNames;
     }
 }

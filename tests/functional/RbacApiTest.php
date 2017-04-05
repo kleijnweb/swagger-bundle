@@ -12,6 +12,7 @@ use KleijnWeb\SwaggerBundle\Test\ApiResponseErrorException;
 use KleijnWeb\SwaggerBundle\Test\ApiTestCase;
 use KleijnWeb\SwaggerBundle\Test\ApiTestClient;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -51,7 +52,7 @@ class RbacApiTest extends WebTestCase
         $this->createClientForUser('guest');
 
         $this->expectException(ApiResponseErrorException::class);
-        $this->expectExceptionCode(403);
+        $this->expectExceptionCode(Response::HTTP_FORBIDDEN);
 
         $string = $this->get('/basic-auth/v1/rbac-user');
 
@@ -66,7 +67,7 @@ class RbacApiTest extends WebTestCase
         $this->createApiTestClient();
 
         $this->expectException(ApiResponseErrorException::class);
-        $this->expectExceptionCode(401);
+        $this->expectExceptionCode(Response::HTTP_UNAUTHORIZED);
 
         $this->get('/basic-auth/v1/rbac-user');
     }
@@ -91,7 +92,7 @@ class RbacApiTest extends WebTestCase
         $this->createClientForUser('user');
 
         $this->expectException(ApiResponseErrorException::class);
-        $this->expectExceptionCode(403);
+        $this->expectExceptionCode(Response::HTTP_FORBIDDEN);
 
         $string = $this->get('/basic-auth/v1/rbac-admin');
 

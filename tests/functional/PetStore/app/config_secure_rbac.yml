@@ -10,7 +10,7 @@ security:
     secure:
       http_basic: ~
       provider: in_memory
-      anonymous: ~
+      swagger: { rbac: true }
 
   encoders:
     Symfony\Component\Security\Core\User\User: plaintext

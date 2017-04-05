@@ -33,7 +33,7 @@ class SwaggerRequestAuthorizationFactory implements SecurityFactoryInterface
     {
         $node
             ->children()
-            ->booleanNode('match_unsecured')->defaultTrue()->end()
+            ->booleanNode('match_unsecured')->defaultFalse()->end()
             ->booleanNode('rbac')->defaultFalse()->end()
             ->end();
     }
@@ -52,7 +52,7 @@ class SwaggerRequestAuthorizationFactory implements SecurityFactoryInterface
         }
 
         $listenerId = 'swagger.security.listener.request_authorization';
-        $container->getDefinition($listenerId)->addArgument(new Reference());
+        //$container->getDefinition($listenerId)->addArgument(new Reference());
 
         return ['swagger.security.provider.noop', $listenerId, null];
     }

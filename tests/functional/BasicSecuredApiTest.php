@@ -35,23 +35,5 @@ class BasicSecuredApiTest extends WebTestCase
         $this->assertSame($string, 'UNSECURED CONTENT');
     }
 
-    /**
-     * @test
-     */
-    public function cannotGetSecuredContentWithoutAuth()
-    {
-        $this->setExpectedException(ApiResponseErrorException::class, '', 401);
 
-        $this->get('/basic-auth/v1/secure');
-    }
-
-    /**
-     * @test
-     */
-    public function canGetSecuredContentWithAuth()
-    {
-        $string = $this->get('/basic-auth/v1/secure', [], ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password']);
-
-        $this->assertSame($string, 'SECURED CONTENT');
-    }
 }

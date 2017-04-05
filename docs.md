@@ -191,36 +191,53 @@ You can of course use standard path based matching, but a more flexible way is t
 ```yml
 security:
   firewalls:
-    default:
+    firewall_name:
       request_matcher: swagger.security.request_matcher
       #...
 ```
 
-By default, the matcher will return TRUE if the request was routed by SwaggerBundle. Optionally you can configure SwaggerBundle to only match when the target operation actually has a security segment defined:
+By default, the matcher will return TRUE if the request was routed by SwaggerBundle *and* the target operation has a security segment defined. Optionally you can configure SwaggerBundle to match any request routed by SwaggerBundle:
 
 ```yml
  swagger:
    security:
-     match_unsecured: false
+     match_unsecured: true
 ```
  
-Note that if you do not match unsecured operations, no token will be added to the token storage (at least not by any firewalls using `swagger.security.request_matcher`). This means that even if you have configured `anonymous: ~` for your firewall, external attempts at using the AuthorizationChecker component will fail.
-
 ### Request Authorization
 
 As an alternative to manually configuring URI based role access (`access_control`), you can use the `RequestAuthorizationListener`. This performs a function similar to the `AccessListener` in the firewall, but instead of a list of roles to test the authentication against, voters are passed the `Request` object. 
-
-Some things to remember:
-
-1. Beware of conflicting `access_control` rules. Omit the whole block if you don't have any non-SwaggerBundle routes.
-2. If `match_unsecured` is set to FALSE and no token is present, operations without security info will not be checked. If `match_unsecured` is not set to FALSE, 
-there's no token and the operation does have security info, a `AuthenticationCredentialsNotFoundException` is thrown. 
 
 This security listener is not enabled by default, to enable:
 
 ```yml
  security:
-   swagger: ~
+  firewalls:
+    firewall_name:
+      swagger: ~
+```
+
+#### Anonymous Authentication
+
+It is currently not possible to use `anonymous` and `swagger` on the same firewall. If you require anonymous access to some of your operations, you can do the following:
+
+1. Make sure `match_unsecured` is not set to TRUE
+2. Add a fallback firewall that allows anonymous access
+
+Example:
+
+```yml
+swagger:
+  security:
+    match_unsecured: true
+     
+security:
+  firewalls:
+    firewall_name:
+      request_matcher: swagger.security.request_matcher
+      swagger: ~
+    fallback:
+      anonymous: ~
 ```
  
 ### Role Based Access (RBAC)
@@ -240,10 +257,12 @@ Group names are normalized to Symfony convention (upper case and prefixed with `
 
 
 To enable OpenAPI based RBAC:
+
 ```yml
- security:
-   swagger:
-     rbac: 
+security:
+  firewalls:
+    firewall_name:
+      swagger: { rbac: true }
 ```
 
 Note this implies `request_voting: true` and is therefore incompatible with `match_unsecured: false`.

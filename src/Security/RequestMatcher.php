@@ -32,7 +32,7 @@ class RequestMatcher implements RequestMatcherInterface
      * @param Repository $repository
      * @param bool       $matchUnsecured
      */
-    public function __construct(Repository $repository, bool $matchUnsecured = true)
+    public function __construct(Repository $repository, bool $matchUnsecured = false)
     {
         $this->repository     = $repository;
         $this->matchUnsecured = $matchUnsecured;

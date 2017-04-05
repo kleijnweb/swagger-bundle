@@ -51,7 +51,7 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->arrayNode('security')
             ->children()
-            ->booleanNode('match_unsecured')->defaultTrue()->end()
+            ->booleanNode('match_unsecured')->defaultFalse()->end()
             ->booleanNode('request_voting')->defaultFalse()->end()
             ->booleanNode('rbac')->defaultFalse()->end()
             ->end()

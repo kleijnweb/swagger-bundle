@@ -6,13 +6,8 @@ security:
     default:
       request_matcher: swagger.security.request_matcher
       http_basic: ~
-      anonymous: ~
       swagger: ~
       provider: in_memory
-
-  access_control:
-    - { path: "/unsecured", roles: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: "/secure", roles: IS_AUTHENTICATED_FULLY }
 
   encoders:
     Symfony\Component\Security\Core\User\User: plaintext
