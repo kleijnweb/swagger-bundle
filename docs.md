@@ -221,7 +221,7 @@ This security listener is not enabled by default, to enable:
 
 It is currently not possible to use `anonymous` and `swagger` on the same firewall. If you require anonymous access to some of your operations, you can do the following:
 
-1. Make sure `match_unsecured` is not set to TRUE
+1. Make sure `match_unsecured` is FALSE (or omitted, since that is the default)
 2. Add a fallback firewall that allows anonymous access
 
 Example:
@@ -229,7 +229,7 @@ Example:
 ```yml
 swagger:
   security:
-    match_unsecured: true
+    match_unsecured: false
      
 security:
   firewalls:
