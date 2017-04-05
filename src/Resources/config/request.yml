@@ -5,9 +5,12 @@ services:
       - '@swagger.description.repository'
       - '@swagger.request.validator'
       - '@swagger.request.parameters_assembler'
+    public: false
 
   swagger.request.parameters_assembler:
     class: KleijnWeb\PhpApi\Descriptions\Request\RequestParameterAssembler
+    public: false
 
   swagger.request.validator:
     class: KleijnWeb\PhpApi\Descriptions\Description\Schema\Validator\DefaultValidator
+    public: false

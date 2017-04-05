@@ -1,8 +1,9 @@
-# <a name="topics"></a> Documentation Topics
+# <a name="topics"></a> Topics
 
  - [Install And Configure](#config)
  - [Routing](#routing)
  - [Validation](#validation)
+ - [Security](#security)
  - [Controllers](#controllers)
  - [Errors](#errors)
  - [Serialization](#serialization)
@@ -179,7 +180,13 @@ While it is possible to have the full `Request` object injected, this is discour
 
 ## <a name="security"></a> Security
 
-SwaggerBundle does not contain authentication or authorization logic, but does include a "request matcher", which can determine if a request requires any form of authentication according to the OpenAPI document.
+### WARNING: 
+
+Using OpenAPI documents to configure security dynamically is a potential security risk. Take care that your source documents and caches (`swagger.document.cache`) are secure. 
+
+### Firewall Request Matching
+
+You can of course use standard path based matching, but a more flexible way is to use the bundled request matcher.
 
 ```yml
 security:
@@ -189,7 +196,75 @@ security:
       #...
 ```
 
-For examples on how to do this, have a look at `config_secure.yml` in the functional test directory. For a more advanced example, check out https://github.com/kleijnweb/swagger-bundle-example.
+By default, the matcher will return TRUE if the request was routed by SwaggerBundle. Optionally you can configure SwaggerBundle to only match when the target operation actually has a security segment defined:
+
+```yml
+ swagger:
+   security:
+     match_unsecured: false
+```
+ 
+Note that if you do not match unsecured operations, no token will be added to the token storage (at least not by any firewalls using `swagger.security.request_matcher`). This means that even if you have configured `anonymous: ~` for your firewall, external attempts at using the AuthorizationChecker component will fail.
+
+### Request Authorization
+
+As an alternative to manually configuring URI based role access (`access_control`), you can use the `RequestAuthorizationListener`. This performs a function similar to the `AccessListener` in the firewall, but instead of a list of roles to test the authentication against, voters are passed the `Request` object. 
+
+Some things to remember:
+
+1. Beware of conflicting `access_control` rules. Omit the whole block if you don't have any non-SwaggerBundle routes.
+2. If `match_unsecured` is set to FALSE and no token is present, operations without security info will not be checked. If `match_unsecured` is not set to FALSE, 
+there's no token and the operation does have security info, a `AuthenticationCredentialsNotFoundException` is thrown. 
+
+This security listener is not enabled by default, to enable:
+
+```yml
+ security:
+   swagger: ~
+```
+ 
+### Role Based Access (RBAC)
+
+The bundled `RbacRequestVoter` inspects the OpenAPI document for security info and uses the standard `security.access.decision_manager`. This means you can still use `role_hierarchy`.
+
+If the target operation has a `security` section, it will require the role `IS_AUTHENTICATED_FULLY`, if not, `IS_AUTHENTICATED_ANONYMOUSLY`. In addition, you can use the `x-rbac` OperationObject extension:
+
+```yml
+paths:
+  /some-path:
+    get:
+      x-rbac: ['group1', 'group2']
+```
+
+Group names are normalized to Symfony convention (upper case and prefixed with `ROLE_`).
+
+
+To enable OpenAPI based RBAC:
+```yml
+ security:
+   swagger:
+     rbac: 
+```
+
+Note this implies `request_voting: true` and is therefore incompatible with `match_unsecured: false`.
+
+### Custom Request Authorization Voters
+
+Creating custom voters is covered in the [Symfony docs](http://symfony.com/doc/current/security/voters.html).
+
+### Why not amend the AccessMap?
+
+An alternate approach would have been to amend the AccessMap (the result of the rules normally in `access_control`).
+The goal is however not to "just" add RBAC based on OpenAPI documents, but to make request-based authorization in general more flexible (e.g. URI based external ACL checks).
+
+### Troubleshooting
+
+**AuthenticationCredentialsNotFoundException for unsecured operation with request_matcher and default options**
+
+The `match_unsecured` option defaults to TRUE, meaning all requests are handled by the authenticator. If you want some operations to allow anonymous access, but don't want to use full RBAC, simply set `match_unsecured: false`.
+
+
+add `anonymous: ~` to your firewall config (preferred) or switch to `match_unsecured: false`.
 
 [Back to topics](#topics)
 

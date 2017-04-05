@@ -40,5 +40,5 @@ monolog:
   handlers:
     stderr:
       type:  stream
-      path:  php://stderr
-      level: notice
+      path:  php://stdout
+      level: debug

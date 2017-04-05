@@ -75,6 +75,7 @@ class RequestMatcherTest extends \PHPUnit_Framework_TestCase
      */
     public function willReturnFalseWhenOperationNotSecured()
     {
+        $this->matcher->setMatchUnsecured(false);
         $this->assertFalse($this->matcher->matches($this->createRequest(false)));
     }
 
@@ -83,6 +84,7 @@ class RequestMatcherTest extends \PHPUnit_Framework_TestCase
      */
     public function willReturnTrueWhenOperationNotSecured()
     {
+        $this->matcher->setMatchUnsecured(false);
         $this->assertTrue($this->matcher->matches($this->createRequest(true)));
     }
 

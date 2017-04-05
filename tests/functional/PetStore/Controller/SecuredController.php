@@ -24,6 +24,22 @@ class SecuredController
     /**
      * @return string
      */
+    public function rbacUser(): string
+    {
+        return 'USER CONTENT';
+    }
+
+    /**
+     * @return string
+     */
+    public function rbacAdmin(): string
+    {
+        return 'ADMIN CONTENT';
+    }
+
+    /**
+     * @return string
+     */
     public function unsecured(): string
     {
         return 'UNSECURED CONTENT';

@@ -24,11 +24,34 @@ class RequestMatcher implements RequestMatcherInterface
     private $repository;
 
     /**
-     * @param Repository $repository
+     * @var bool
      */
-    public function __construct(Repository $repository)
+    private $matchUnsecured;
+
+    /**
+     * @param Repository $repository
+     * @param bool       $matchUnsecured
+     */
+    public function __construct(Repository $repository, bool $matchUnsecured = true)
     {
-        $this->repository = $repository;
+        $this->repository     = $repository;
+        $this->matchUnsecured = $matchUnsecured;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isMatchUnsecured(): bool
+    {
+        return $this->matchUnsecured;
+    }
+
+    /**
+     * @param boolean $matchUnsecured
+     */
+    public function setMatchUnsecured(bool $matchUnsecured)
+    {
+        $this->matchUnsecured = $matchUnsecured;
     }
 
     /**
@@ -37,9 +60,14 @@ class RequestMatcher implements RequestMatcherInterface
      */
     public function matches(Request $request)
     {
-        if(!$request->attributes->has(RequestMeta::ATTRIBUTE_URI)){
+        if (!$request->attributes->has(RequestMeta::ATTRIBUTE_URI)) {
             return false;
         }
+
+        if ($this->matchUnsecured) {
+            return true;
+        }
+
         $description = $this->repository->get($request->attributes->get(RequestMeta::ATTRIBUTE_URI));
         $operation   = $description
             ->getPath($request->attributes->get(RequestMeta::ATTRIBUTE_PATH))

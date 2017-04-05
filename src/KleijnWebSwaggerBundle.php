@@ -9,6 +9,9 @@
 namespace KleijnWeb\SwaggerBundle;
 
 use KleijnWeb\SwaggerBundle\DependencyInjection\KleijnWebSwaggerExtension;
+use KleijnWeb\SwaggerBundle\DependencyInjection\SwaggerRequestAuthorizationFactory;
+use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -23,6 +26,17 @@ class KleijnWebSwaggerBundle extends Bundle
     public function getNamespace()
     {
         return __NAMESPACE__;
+    }
+
+    public function build(ContainerBuilder $container)
+    {
+        parent::build($container);
+
+        if ($container->hasExtension('security')) {
+            /** @var SecurityExtension $extension */
+            $extension = $container->getExtension('security');
+            $extension->addSecurityListenerFactory(new SwaggerRequestAuthorizationFactory());
+        }
     }
 
     /**

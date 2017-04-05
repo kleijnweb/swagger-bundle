@@ -10,8 +10,10 @@ namespace KleijnWeb\SwaggerBundle\EventListener\Response\Error;
 
 use KleijnWeb\SwaggerBundle\Exception\ValidationException;
 use Psr\Log\LogLevel;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -83,6 +85,9 @@ class HttpError
                 $this->severity   = LogLevel::WARNING;
             } elseif ($exception instanceof AuthenticationException) {
                 $this->statusCode = Response::HTTP_UNAUTHORIZED;
+                $this->severity   = LogLevel::WARNING;
+            }  elseif ($exception instanceof AccessDeniedException || $exception instanceof AccessDeniedHttpException) {
+                $this->statusCode = Response::HTTP_FORBIDDEN;
                 $this->severity   = LogLevel::WARNING;
             } else {
                 if (strlen((string)$code) !== 3) {

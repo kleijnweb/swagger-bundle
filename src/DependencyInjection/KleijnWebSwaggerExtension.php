@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\DependencyInjection;
 
+use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
@@ -49,6 +50,8 @@ class KleijnWebSwaggerExtension extends Extension
         if ($config['validate_responses']) {
             $responseFactory->addArgument(new Reference('swagger.request.validator'));
         }
+
+
     }
 
     /**

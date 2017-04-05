@@ -16,14 +16,14 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * @author John Kleijn <john@kleijnweb.nl>
  * @group  functional
  */
-class SecuredApiTest extends WebTestCase
+class BasicSecuredApiTest extends WebTestCase
 {
     use ApiTestCase;
 
     /**
      * @var string
      */
-    protected $env = 'secure';
+    protected $env = 'secure_basic';
 
     /**
      * @test

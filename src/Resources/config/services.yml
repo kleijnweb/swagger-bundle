@@ -12,3 +12,4 @@ services:
     arguments: ['@swagger.description.repository']
     tags:
        - { name: routing.loader }
+    public: false

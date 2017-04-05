@@ -18,6 +18,22 @@ paths:
       responses:
         200:
           description:  OK
+  /rbac-user:
+    get:
+      x-rbac: ['user']
+      x-router-controller-method: rbacUser
+      security:  [{ basicAuth: [] }]
+      responses:
+        200:
+          description:  OK
+  /rbac-admin:
+    get:
+      x-rbac: ['admin']
+      x-router-controller-method: rbacAdmin
+      security:  [{ basicAuth: [] }]
+      responses:
+        200:
+          description:  OK
   /unsecured:
     get:
       x-router-controller-method: unsecured

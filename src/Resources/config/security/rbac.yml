@@ -1,0 +1,10 @@
+imports:
+  - { resource: request_voting.yml }
+
+services:
+  swagger.security.rbac_voter:
+    class: KleijnWeb\SwaggerBundle\Security\RbacRequestVoter
+    arguments: ['@swagger.description.repository', '@security.access.decision_manager']
+    public: false
+    tags:
+       - { name: security.voter }
