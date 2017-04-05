@@ -265,8 +265,6 @@ security:
       swagger: { rbac: true }
 ```
 
-Note this implies `request_voting: true` and is therefore incompatible with `match_unsecured: false`.
-
 ### Custom Request Authorization Voters
 
 Creating custom voters is covered in the [Symfony docs](http://symfony.com/doc/current/security/voters.html).
