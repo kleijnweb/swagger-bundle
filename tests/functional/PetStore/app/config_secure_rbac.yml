@@ -1,10 +1,6 @@
 imports:
   - { resource: config.yml }
 
-swagger:
-  security:
-    rbac: true
-
 security:
   firewalls:
     secure:

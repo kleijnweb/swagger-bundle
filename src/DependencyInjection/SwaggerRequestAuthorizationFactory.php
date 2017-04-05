@@ -33,7 +33,6 @@ class SwaggerRequestAuthorizationFactory implements SecurityFactoryInterface
     {
         $node
             ->children()
-            ->booleanNode('match_unsecured')->defaultFalse()->end()
             ->booleanNode('rbac')->defaultFalse()->end()
             ->end();
     }
@@ -42,9 +41,6 @@ class SwaggerRequestAuthorizationFactory implements SecurityFactoryInterface
     {
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
 
-        $container->setParameter('swagger.match_unsecured', $config['match_unsecured']);
-        // $container->getDefinition('swagger.security.request_matcher')->addArgument($config['match_unsecured']);
-
         $loader->load('security/request_voting.yml');
 
         if (isset($config['rbac']) && $config['rbac']) {
@@ -52,7 +48,6 @@ class SwaggerRequestAuthorizationFactory implements SecurityFactoryInterface
         }
 
         $listenerId = 'swagger.security.listener.request_authorization';
-        //$container->getDefinition($listenerId)->addArgument(new Reference());
 
         return ['swagger.security.provider.noop', $listenerId, null];
     }

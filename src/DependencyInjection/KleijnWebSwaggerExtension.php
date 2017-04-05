@@ -51,7 +51,7 @@ class KleijnWebSwaggerExtension extends Extension
             $responseFactory->addArgument(new Reference('swagger.request.validator'));
         }
 
-
+        $container->setParameter('swagger.match_unsecured', $config['security']['match_unsecured']);
     }
 
     /**
