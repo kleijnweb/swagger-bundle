@@ -9,7 +9,7 @@ Invert your workflow (contract first) using Swagger ([Open API](https://openapis
 
 Aimed to be lightweight, this bundle does not depend on FOSRestBundle or Twig.
 
-**HEADS UP:** _You are looking at the main (4.0 ALPHA) development line, which is PHP 7 only. SwaggerBundle 3.x is stable, maintained, and works with PHP 5.4+._
+**HEADS UP:** _You are looking at the main (4.0 BETA) development line, which is PHP 7 only. SwaggerBundle 3.x is stable, maintained, and works with PHP 5.4+._
 
 For a working example, check out https://github.com/kleijnweb/swagger-bundle-example.
 
@@ -31,7 +31,11 @@ Check out the [User Documentation](docs.md) for more details.
 
 ## What's new in 4.0?
 
-SwaggerBundle 4.0 is currently in the alpha stage. Much of the behavior dealing with OpenAPI documents has been moved to [KleijnWeb\PhpApi\Descriptions](https://github.com/kleijnweb/php-api-descriptions).
+SwaggerBundle 4.0 is currently in the beta stage. Much of the behavior dealing with OpenAPI documents has been moved to [KleijnWeb\PhpApi\Descriptions](https://github.com/kleijnweb/php-api-descriptions).
+
+### Security Integration
+ 
+See [docs](docs.md#security).
 
 ### Serialization
  
@@ -41,23 +45,10 @@ Support for 3rd party serializers has been replaced by a new _API Description Ba
  
 The dependency on `SwaggerAssertions` has been removed, as response validation is now facilitated by `KleijnWeb\PhpApi\Descriptions` and [integrated into the request cycle](docs.md#testing).
 
-### Basic Firewall Request Matching
- 
-Configuration of security has become easier with the inclusion of a request matcher, see [docs](docs.md#security).
-
 ### Errors
  
 `vnd.error` support has been removed in favor of simpler error responses. This also gets rid of some dependencies that were unneeded for most use cases.
 
-## What's the roadmap?
-
- - 4.0 ALPHA: 3.x compatibility plugins, registry controller
- - 4.0 BETA: feature freeze, refactoring, lots of testing.
- - 4.0 STABLE
- - 4.1: Stubbing
- - 4.2: Proxying, definition registry
- - 4.3: Service routing, [EIP](https://en.wikipedia.org/wiki/Enterprise_Integration_Patterns) recipes.
- 
 ## FAQ
  
   - Will SwaggerBundle do `x`?
