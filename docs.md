@@ -217,7 +217,7 @@ This security listener is not enabled by default, to enable:
       swagger: ~
 ```
 
-#### Anonymous Authentication
+#### Authorization Of Anonymous Authenticated Users
 
 It is currently not possible to use `anonymous` and `swagger` on the same firewall. If you require anonymous access to some of your operations, you can do the following:
 
@@ -267,23 +267,7 @@ security:
 
 ### Custom Request Authorization Voters
 
-Creating custom voters is covered in the [Symfony docs](http://symfony.com/doc/current/security/voters.html).
-
-### Why not amend the AccessMap?
-
-An alternate approach would have been to amend the AccessMap (the result of the rules normally in `access_control`).
-The goal is however not to "just" add RBAC based on OpenAPI documents, but to make request-based authorization in general more flexible (e.g. URI based external ACL checks).
-
-### Troubleshooting
-
-**AuthenticationCredentialsNotFoundException for unsecured operation with request_matcher and default options**
-
-The `match_unsecured` option defaults to TRUE, meaning all requests are handled by the authenticator. If you want some operations to allow anonymous access, but don't want to use full RBAC, simply set `match_unsecured: false`.
-
-
-add `anonymous: ~` to your firewall config (preferred) or switch to `match_unsecured: false`.
-
-[Back to topics](#topics)
+Creating custom voters is covered in the [Symfony docs](http://symfony.com/doc/current/security/voters.html). The votes should respond to the attibute `swagger.access` and are passed a `Request` object.
 
 ---------------------------------------
 
