@@ -80,13 +80,11 @@ class RequestProcessor
      */
     public function process(Request $request)
     {
-        if (!$request->attributes->has(RequestMeta::ATTRIBUTE_URI)) {
-            throw  new \UnexpectedValueException("Missing document URI");
+        if (!$requestMeta = RequestMeta::fromRequest($request, $this->repository)) {
+            throw new \UnexpectedValueException("Not a SwaggerBundle request");
         }
-        $description = $this->repository->get($request->attributes->get(RequestMeta::ATTRIBUTE_URI));
-        $operation   = $description
-            ->getPath($request->attributes->get(RequestMeta::ATTRIBUTE_PATH))
-            ->getOperation($request->getMethod());
+
+        $operation = $requestMeta->getOperation();
 
         $body = null;
         if ($request->getContent()) {
@@ -120,16 +118,13 @@ class RequestProcessor
             $request->attributes->set($attribute, $value);
         }
         if ($this->hydrator
-            && $bodyParam = $description->getRequestBodyParameter($operation->getPath(), $operation->getMethod())
+            && $bodyParam = $requestMeta
+                ->getDescription()
+                ->getRequestBodyParameter($operation->getPath(), $operation->getMethod())
         ) {
             $body = $this->hydrator->hydrate($body, $bodyParam->getSchema());
             $request->attributes->set($bodyParam->getName(), $body);
         }
-
-        $request->attributes->set(
-            RequestMeta::ATTRIBUTE,
-            new RequestMeta($description, $operation)
-        );
 
         if (!$result->isValid()) {
             throw new ValidationException($result->getErrorMessages());

@@ -57,9 +57,6 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        //$l = new TestCacheSmachingPHPUnitListener();
-        //$l->startTest($this);
-
         $this->event = $this
             ->getMockBuilder(GetResponseForExceptionEvent::class)
             ->disableOriginalConstructor()

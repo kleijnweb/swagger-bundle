@@ -50,22 +50,23 @@ class RbacRequestVoter implements VoterInterface
             return $vote;
         }
 
-        // TODO Duplicated many times
-        if (!$request->attributes->has(RequestMeta::ATTRIBUTE_URI)) {
+        // Bail early
+        $supported = false;
+        foreach ($attributes as $attribute) {
+            if ($this->supportsAttribute($attribute)) {
+                $supported = true;
+            }
+        }
+        if (!$supported) {
             return $vote;
         }
 
-        // TODO These next 2 statements are duplicated about 3 times now
-        $description = $this->documentRepository
-            ->get($request->attributes->get(RequestMeta::ATTRIBUTE_URI));
-
-        $operation = $description
-            ->getPath($request->attributes->get(RequestMeta::ATTRIBUTE_PATH))
-            ->getOperation($request->getMethod());
-
+        if (!$requestMeta = RequestMeta::fromRequest($request, $this->documentRepository)) {
+            return $vote;
+        }
 
         // If the operation is secured, IS_AUTHENTICATED_FULLY unless overridden by x-rbac
-        if ($operation->isSecured()) {
+        if ($requestMeta->getOperation()->isSecured()) {
             $roles = ['IS_AUTHENTICATED_FULLY'];
         } else {
             // Otherwise, test against IS_AUTHENTICATED_ANONYMOUSLY
@@ -77,7 +78,7 @@ class RbacRequestVoter implements VoterInterface
                 continue;
             }
 
-            if ($rbac = $operation->getExtension('rbac')) {
+            if ($rbac = $requestMeta->getOperation()->getExtension('rbac')) {
                 $roles = $this->normalizeRoleNames($rbac);
             }
 
