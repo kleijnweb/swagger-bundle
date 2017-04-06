@@ -28,7 +28,7 @@ class SimpleErrorResponseFactory implements ErrorResponseFactory
     {
         $data = [
             'message' => $error->getMessage(),
-            'logref'  => $error->getLogRef()
+            'logref'  => $error->getLogRef(),
         ];
 
         $exception = $error->getException();

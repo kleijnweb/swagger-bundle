@@ -24,8 +24,8 @@ class PetController
             (object)[
                 'id'        => 1,
                 'name'      => 'Scooby',
-                'photoUrls' => []
-            ]
+                'photoUrls' => [],
+            ],
         ];
     }
 
@@ -51,7 +51,7 @@ class PetController
         return (object)[
             'id'        => $petId,
             'name'      => 'Chuckie',
-            'photoUrls' => []
+            'photoUrls' => [],
         ];
     }
 }

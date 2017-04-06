@@ -16,8 +16,8 @@ use KleijnWeb\PhpApi\Descriptions\Description\Operation;
  */
 class RequestMeta
 {
-    const ATTRIBUTE = '_swagger.meta';
-    const ATTRIBUTE_URI = '_swagger.uri';
+    const ATTRIBUTE      = '_swagger.meta';
+    const ATTRIBUTE_URI  = '_swagger.uri';
     const ATTRIBUTE_PATH = '_swagger.path';
 
     /**

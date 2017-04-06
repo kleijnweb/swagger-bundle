@@ -12,7 +12,6 @@ use KleijnWeb\SwaggerBundle\EventListener\Request\RequestMeta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestMatcherInterface;
 
-
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */

@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
- * @group functional
+ * @group  functional
  */
 class BasicPetStoreApiTest extends WebTestCase
 {
@@ -41,7 +41,7 @@ class BasicPetStoreApiTest extends WebTestCase
     {
         $content = [
             'name'      => 'Joe',
-            'photoUrls' => ['foobar']
+            'photoUrls' => ['foobar'],
         ];
 
         $responseData = $this->post('/v2/pet', $content);
@@ -57,7 +57,7 @@ class BasicPetStoreApiTest extends WebTestCase
     {
         $id = rand();
 
-        $responseData = $this->get('/v2/pet/' . $id);
+        $responseData = $this->get('/v2/pet/'.$id);
 
         $this->assertSame($id, $responseData->id);
     }

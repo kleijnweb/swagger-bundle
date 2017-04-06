@@ -93,10 +93,17 @@ class OpenApiRouteLoader extends Loader
                 $defaults      = [
                     '_controller'               => $controllerKey,
                     RequestMeta::ATTRIBUTE_URI  => $resource,
-                    RequestMeta::ATTRIBUTE_PATH => $pathItem->getPath()
+                    RequestMeta::ATTRIBUTE_PATH => $pathItem->getPath(),
                 ];
 
-                $route = new Route($pathItem->getPath(), $defaults, $this->resolveRequirements($operation), [], '', $description->getSchemes());
+                $route = new Route(
+                    $pathItem->getPath(),
+                    $defaults,
+                    $this->resolveRequirements($operation),
+                    [],
+                    '',
+                    $description->getSchemes()
+                );
                 $route->setMethods($operation->getMethod());
                 $routes->add($this->createRouteId($resource, $pathItem->getPath(), $controllerKey), $route);
             }
@@ -125,10 +132,11 @@ class OpenApiRouteLoader extends Loader
                         $requirements[$parameter->getName()] = '\d+';
                         break;
                     case Schema::TYPE_STRING:
+                        /** @var $schema ScalarSchema $pattern */
                         if ($pattern = $schema->getPattern()) {
                             $requirements[$parameter->getName()] = $pattern;
                         } elseif ($enum = $schema->getEnum()) {
-                            $requirements[$parameter->getName()] = '(' . implode('|', $enum) . ')';
+                            $requirements[$parameter->getName()] = '('.implode('|', $enum).')';
                         }
                         break;
                     default:

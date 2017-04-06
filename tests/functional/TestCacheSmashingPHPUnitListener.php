@@ -8,9 +8,9 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Functional;
 
-use PHPUnit_Framework_Test;
-use PHPUnit_Framework_AssertionFailedError;
 use Exception;
+use PHPUnit_Framework_AssertionFailedError;
+use PHPUnit_Framework_Test;
 use PHPUnit_Framework_TestSuite;
 
 class TestCacheSmashingPHPUnitListener implements \PHPUnit_Framework_TestListener
@@ -68,7 +68,7 @@ class TestCacheSmashingPHPUnitListener implements \PHPUnit_Framework_TestListene
             return;
         }
 
-        $dir = __DIR__ . '/PetStore/app/cache';
+        $dir = __DIR__.'/PetStore/app/cache';
 
         if (!is_dir($dir)) {
             return;

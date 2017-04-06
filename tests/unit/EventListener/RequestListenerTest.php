@@ -21,7 +21,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 class RequestListenerTest extends \PHPUnit_Framework_TestCase
 {
     const DOCUMENT_PATH = '/hi.yaml';
-    const SWAGGER_PATH = '/a/b/{hello}';
+    const SWAGGER_PATH  = '/a/b/{hello}';
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject

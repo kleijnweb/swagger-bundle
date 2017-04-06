@@ -21,8 +21,8 @@ use KleijnWeb\PhpApi\Descriptions\Request\RequestParameterAssembler;
 use KleijnWeb\PhpApi\Hydrator\ObjectHydrator;
 use KleijnWeb\SwaggerBundle\EventListener\Request\RequestMeta;
 use KleijnWeb\SwaggerBundle\EventListener\Request\RequestProcessor;
-use KleijnWeb\SwaggerBundle\Exception\ValidationException;
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
+use KleijnWeb\SwaggerBundle\Exception\ValidationException;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -101,10 +101,15 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this->setExpectedException(MalformedContentException::class);
 
-        $processor->process($this->createRequest([
-            RequestMeta::ATTRIBUTE_URI  => '/uri',
-            RequestMeta::ATTRIBUTE_PATH => '/path'
-        ], 'not json'));
+        $processor->process(
+            $this->createRequest(
+                [
+                    RequestMeta::ATTRIBUTE_URI  => '/uri',
+                    RequestMeta::ATTRIBUTE_PATH => '/path',
+                ],
+                'not json'
+            )
+        );
     }
 
     /**
@@ -115,10 +120,14 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $processor = $this->createProcessor();
         $this->parametersAssemblerMock->expects($this->once())->method('assemble');
 
-        $processor->process($this->createRequest([
-            RequestMeta::ATTRIBUTE_URI  => '/uri',
-            RequestMeta::ATTRIBUTE_PATH => '/path'
-        ]));
+        $processor->process(
+            $this->createRequest(
+                [
+                    RequestMeta::ATTRIBUTE_URI  => '/uri',
+                    RequestMeta::ATTRIBUTE_PATH => '/path',
+                ]
+            )
+        );
     }
 
     /**
@@ -128,15 +137,17 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $processor         = $this->createProcessor();
         $coercedAttributes = (object)[
-            'foo' => 'bar'
+            'foo' => 'bar',
         ];
 
         $this->parametersAssemblerMock->expects($this->once())->method('assemble')->willReturn($coercedAttributes);
 
-        $request = $this->createRequest([
-            RequestMeta::ATTRIBUTE_URI  => '/uri',
-            RequestMeta::ATTRIBUTE_PATH => '/path'
-        ]);
+        $request = $this->createRequest(
+            [
+                RequestMeta::ATTRIBUTE_URI  => '/uri',
+                RequestMeta::ATTRIBUTE_PATH => '/path',
+            ]
+        );
 
         $processor->process($request);
 
@@ -158,20 +169,25 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $this->parametersAssemblerMock
             ->expects($this->once())
             ->method('assemble')
-            ->willReturnCallback(function (
-                Operation $operation,
-                array $query,
-                array $attributes,
-                array $headers,
-                \stdClass $body
-            ) {
-                return (object)['theBody' => $body];
-            });
+            ->willReturnCallback(
+                function (
+                    Operation $operation,
+                    array $query,
+                    array $attributes,
+                    array $headers,
+                    \stdClass $body
+                ) {
+                    return (object)['theBody' => $body];
+                }
+            );
 
-        $request = $this->createRequest([
-            RequestMeta::ATTRIBUTE_URI  => '/uri',
-            RequestMeta::ATTRIBUTE_PATH => '/path'
-        ], json_encode($body));
+        $request = $this->createRequest(
+            [
+                RequestMeta::ATTRIBUTE_URI  => '/uri',
+                RequestMeta::ATTRIBUTE_PATH => '/path',
+            ],
+            json_encode($body)
+        );
 
         $processor->process($request);
 
@@ -196,15 +212,17 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $this->parametersAssemblerMock
             ->expects($this->once())
             ->method('assemble')
-            ->willReturnCallback(function (
-                Operation $operation,
-                array $query,
-                array $attributes,
-                array $headers,
-                \stdClass $body
-            ) {
-                return (object)['theBody' => $body];
-            });
+            ->willReturnCallback(
+                function (
+                    Operation $operation,
+                    array $query,
+                    array $attributes,
+                    array $headers,
+                    \stdClass $body
+                ) {
+                    return (object)['theBody' => $body];
+                }
+            );
 
         $dto = new \ArrayObject;
 
@@ -212,14 +230,19 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('hydrate')
             ->with($body, $this->isInstanceOf(Schema::class))
-            ->willReturnCallback(function () use ($dto) {
-                return $dto;
-            });
+            ->willReturnCallback(
+                function () use ($dto) {
+                    return $dto;
+                }
+            );
 
-        $request = $this->createRequest([
-            RequestMeta::ATTRIBUTE_URI  => '/uri',
-            RequestMeta::ATTRIBUTE_PATH => '/path'
-        ], json_encode($body));
+        $request = $this->createRequest(
+            [
+                RequestMeta::ATTRIBUTE_URI  => '/uri',
+                RequestMeta::ATTRIBUTE_PATH => '/path',
+            ],
+            json_encode($body)
+        );
 
         $processor->process($request);
 
@@ -233,15 +256,17 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $processor         = $this->createProcessor();
         $coercedAttributes = (object)[
-            'foo' => 'bar'
+            'foo' => 'bar',
         ];
 
         $this->parametersAssemblerMock->expects($this->once())->method('assemble')->willReturn($coercedAttributes);
 
-        $request = $this->createRequest([
-            RequestMeta::ATTRIBUTE_URI  => '/uri',
-            RequestMeta::ATTRIBUTE_PATH => '/path'
-        ]);
+        $request = $this->createRequest(
+            [
+                RequestMeta::ATTRIBUTE_URI  => '/uri',
+                RequestMeta::ATTRIBUTE_PATH => '/path',
+            ]
+        );
 
         $processor->process($request);
 
@@ -257,10 +282,14 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this->setExpectedException(ValidationException::class);
 
-        $processor->process($this->createRequest([
-            RequestMeta::ATTRIBUTE_URI  => '/uri',
-            RequestMeta::ATTRIBUTE_PATH => '/path'
-        ]));
+        $processor->process(
+            $this->createRequest(
+                [
+                    RequestMeta::ATTRIBUTE_URI  => '/uri',
+                    RequestMeta::ATTRIBUTE_PATH => '/path',
+                ]
+            )
+        );
     }
 
     /**
@@ -271,7 +300,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $processor = $this->createProcessor();
 
         $descriptionMock = $this->getMockBuilder(Description::class)->disableOriginalConstructor()->getMock();
-        $pathMock = $this->getMockBuilder(Path::class)->disableOriginalConstructor()->getMock();
+        $pathMock        = $this->getMockBuilder(Path::class)->disableOriginalConstructor()->getMock();
         $descriptionMock->expects($this->once())->method('getPath')->willReturn($pathMock);
         $operationMock = $this->getMockBuilder(Operation::class)->disableOriginalConstructor()->getMock();
         $pathMock->expects($this->once())->method('getOperation')->willReturn($operationMock);
@@ -280,23 +309,30 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $this->repositoryMock->expects($this->once())->method('get')->willReturn($descriptionMock);
         $this->parametersAssemblerMock->expects($this->once())->method('assemble')->willReturn((object)[]);
 
-        $this->validatorMock->expects($this->once())->method('validate')->with($this->isInstanceOf(Schema::class), null);
+        $this->validatorMock->expects($this->once())->method('validate')->with(
+            $this->isInstanceOf(Schema::class),
+            null
+        );
 
-        $processor->process($this->createRequest([
-            RequestMeta::ATTRIBUTE_URI  => '/uri',
-            RequestMeta::ATTRIBUTE_PATH => '/path'
-        ]));
+        $processor->process(
+            $this->createRequest(
+                [
+                    RequestMeta::ATTRIBUTE_URI  => '/uri',
+                    RequestMeta::ATTRIBUTE_PATH => '/path',
+                ]
+            )
+        );
     }
 
     /**
-     * @param bool $useHydrator
+     * @param bool      $useHydrator
      * @param null|bool $forcedValidationResult
      *
      * @return RequestProcessor
      */
     private function createProcessor(bool $useHydrator = false, $forcedValidationResult = true): RequestProcessor
     {
-        if(null !== $forcedValidationResult){
+        if (null !== $forcedValidationResult) {
             $this->validatorMock
                 ->expects($this->any())
                 ->method('validate')

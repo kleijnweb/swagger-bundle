@@ -9,11 +9,15 @@
 namespace KleijnWeb\SwaggerBundle\Test;
 
 use Symfony\Bundle\FrameworkBundle\Client;
-use Symfony\Component\BrowserKit\Request;
+use Symfony\Component\BrowserKit\CookieJar;
+use Symfony\Component\BrowserKit\History;
+use Symfony\Component\BrowserKit\Request as BrowserKitRequest;
+use Symfony\Component\BrowserKit\Response as BrowserKitResponse;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
 use Symfony\Component\DomCrawler\Link;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\HttpKernel\Profiler\Profile as HttpProfile;
@@ -29,6 +33,8 @@ class ApiTestClient extends Client
      */
     private $subject;
 
+    /** @noinspection PhpMissingParentConstructorInspection */
+
     /**
      * ApiTestClient constructor.
      *
@@ -42,13 +48,13 @@ class ApiTestClient extends Client
     /**
      * Makes a request from a Request object directly.
      *
-     * @param Request $request       A Request instance
-     * @param bool    $changeHistory Whether to update the history or not (only used internally for back(), forward(),
-     *                               and reload())
+     * @param BrowserKitRequest $request       A Request instance
+     * @param bool              $changeHistory Whether to update the history or not (only used internally for back(),
+     *                                         forward(), and reload())
      *
      * @return Crawler
      */
-    public function requestFromRequest(Request $request, $changeHistory = true)
+    public function requestFromRequest(BrowserKitRequest $request, $changeHistory = true)
     {
         return $this->subject->requestFromRequest($request, $changeHistory);
     }
@@ -245,7 +251,7 @@ class ApiTestClient extends Client
     /**
      * Returns the current BrowserKit Response instance.
      *
-     * @return Response|null A BrowserKit Response instance
+     * @return BrowserKitResponse|null A BrowserKit Response instance
      *
      * @api
      */
@@ -274,7 +280,7 @@ class ApiTestClient extends Client
     /**
      * Returns the current BrowserKit Request instance.
      *
-     * @return Request|null A BrowserKit Request instance
+     * @return BrowserKitRequest|null A BrowserKit Request instance
      *
      * @api
      */
@@ -368,11 +374,11 @@ class ApiTestClient extends Client
     /**
      * Filters the BrowserKit request to the origin one.
      *
-     * @param Request $request The BrowserKit Request to filter
+     * @param BrowserKitRequest $request The BrowserKit Request to filter
      *
      * @return object An origin request instance
      */
-    protected function filterRequest(Request $request)
+    protected function filterRequest(BrowserKitRequest $request)
     {
         return $this->subject->filterRequest($request);
     }
@@ -380,9 +386,9 @@ class ApiTestClient extends Client
     /**
      * Filters the origin response to the BrowserKit one.
      *
-     * @param object $response The origin response to filter
+     * @param Response $response The origin response to filter
      *
-     * @return Response An BrowserKit Response instance
+     * @return BrowserKitResponse An BrowserKit Response instance
      */
     protected function filterResponse($response)
     {

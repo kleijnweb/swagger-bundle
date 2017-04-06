@@ -42,10 +42,12 @@ trait ApiTestCase
     protected function createApiTestClient()
     {
         return $this->client = new ApiTestClient(
-            static::createClient([
-                'environment' => $this->getEnv(),
-                'debug'       => true
-            ])
+            static::createClient(
+                [
+                    'environment' => $this->getEnv(),
+                    'debug'       => true,
+                ]
+            )
         );
     }
 
@@ -68,9 +70,9 @@ trait ApiTestCase
     /**
      * @param string $path
      * @param array  $params
+     * @param array  $server
      *
      * @return mixed
-     * @throws ApiResponseErrorException
      */
     protected function get(string $path, array $params = [], array $server = [])
     {
@@ -80,9 +82,9 @@ trait ApiTestCase
     /**
      * @param string $path
      * @param array  $params
+     * @param array  $server
      *
      * @return mixed
-     * @throws ApiResponseErrorException
      */
     protected function delete(string $path, array $params = [], array $server = [])
     {
@@ -94,8 +96,8 @@ trait ApiTestCase
      * @param array  $content
      * @param array  $params
      *
+     * @param array  $server
      * @return mixed
-     * @throws ApiResponseErrorException
      */
     protected function patch(string $path, array $content, array $params = [], array $server = [])
     {
@@ -107,8 +109,8 @@ trait ApiTestCase
      * @param array  $content
      * @param array  $params
      *
+     * @param array  $server
      * @return mixed
-     * @throws ApiResponseErrorException
      */
     protected function post(string $path, array $content, array $params = [], array $server = [])
     {
@@ -120,8 +122,8 @@ trait ApiTestCase
      * @param array  $content
      * @param array  $params
      *
+     * @param array  $server
      * @return mixed
-     * @throws ApiResponseErrorException
      */
     protected function put(string $path, array $content, array $params = [], array $server = [])
     {
@@ -138,8 +140,13 @@ trait ApiTestCase
      * @return mixed
      * @throws ApiResponseErrorException
      */
-    protected function request(string $path, string $method, array $params = [], array $content = null, array $server = [])
-    {
+    protected function request(
+        string $path,
+        string $method,
+        array $params = [],
+        array $content = null,
+        array $server = []
+    ) {
         $apiRequest = new ApiRequest($this->assembleUri($path, $params), $method);
         $apiRequest->setServer(
             array_merge($server, ['CONTENT_TYPE' => 'application/json'], $this->getDefaultServerVars())
@@ -162,7 +169,7 @@ trait ApiTestCase
             $this->assertSame(
                 JSON_ERROR_NONE,
                 json_last_error(),
-                "Not valid JSON: " . json_last_error_msg() . "(" . var_export($content, true) . ")"
+                "Not valid JSON: ".json_last_error_msg()."(".var_export($content, true).")"
             );
         }
 
@@ -184,7 +191,7 @@ trait ApiTestCase
     {
         $uri = $path;
         if (count($params)) {
-            $uri = $path . '?' . http_build_query($params);
+            $uri = $path.'?'.http_build_query($params);
         }
 
         return $uri;

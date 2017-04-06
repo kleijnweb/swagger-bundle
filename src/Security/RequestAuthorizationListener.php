@@ -7,7 +7,6 @@
  */
 namespace KleijnWeb\SwaggerBundle\Security;
 
-
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;

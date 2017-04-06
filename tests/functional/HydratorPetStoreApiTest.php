@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
- * @group functional
+ * @group  functional
  */
 class HydratorPetStoreApiTest extends WebTestCase
 {
@@ -33,7 +33,7 @@ class HydratorPetStoreApiTest extends WebTestCase
             'petId'    => 987654321,
             'quantity' => 10,
             'shipDate' => '2016-01-01T01:00:00Z',
-            'complete' => false
+            'complete' => false,
         ];
 
         $actual = $this->post('/v2/store/order', $content);
@@ -56,7 +56,7 @@ class HydratorPetStoreApiTest extends WebTestCase
             'name'      => 'fido',
             'photoUrls' => ['1', '2'],
             'quantity'  => 10,
-            'category'  => ['name' => 'dogs']
+            'category'  => ['name' => 'dogs'],
         ];
 
         $actual = $this->post('/v2/pet', $content);

@@ -33,9 +33,11 @@ class Configuration implements ConfigurationInterface
             ->arrayNode('namespaces')->isRequired()
             ->beforeNormalization()
             ->ifString()
-            ->then(function ($v) {
-                return [$v];
-            })
+            ->then(
+                function ($v) {
+                    return [$v];
+                }
+            )
             ->end()
             ->prototype('scalar')
             ->end()

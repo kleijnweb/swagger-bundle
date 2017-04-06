@@ -8,7 +8,6 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Functional;
 
-use KleijnWeb\SwaggerBundle\Test\ApiResponseErrorException;
 use KleijnWeb\SwaggerBundle\Test\ApiTestCase;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -34,6 +33,4 @@ class BasicSecuredApiTest extends WebTestCase
 
         $this->assertSame($string, 'UNSECURED CONTENT');
     }
-
-
 }

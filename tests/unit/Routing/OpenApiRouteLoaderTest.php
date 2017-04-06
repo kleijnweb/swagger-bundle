@@ -84,7 +84,7 @@ class OpenApiRouteLoaderTest extends \PHPUnit_Framework_TestCase
             ->willReturn([]);
 
         $this->loader->load(self::DOCUMENT_PATH);
-        $this->loader->load(self::DOCUMENT_PATH . '2');
+        $this->loader->load(self::DOCUMENT_PATH.'2');
     }
 
     /**
@@ -95,12 +95,14 @@ class OpenApiRouteLoaderTest extends \PHPUnit_Framework_TestCase
         $this->decriptionMock
             ->expects($this->any())
             ->method('getPaths')
-            ->willReturn([
-                new Path('/a', [new Operation('', '/a', 'get')]),
-            ]);
+            ->willReturn(
+                [
+                    new Path('/a', [new Operation('', '/a', 'get')]),
+                ]
+            );
 
         $routes1 = $this->loader->load(self::DOCUMENT_PATH);
-        $routes2 = $this->loader->load(self::DOCUMENT_PATH . '2');
+        $routes2 = $this->loader->load(self::DOCUMENT_PATH.'2');
         $this->assertSame(count($routes1), count(array_diff_key($routes1->all(), $routes2->all())));
     }
 
@@ -141,10 +143,12 @@ class OpenApiRouteLoaderTest extends \PHPUnit_Framework_TestCase
         $this->decriptionMock
             ->expects($this->any())
             ->method('getPaths')
-            ->willReturn([
-                new Path('/a', [new Operation(uniqid(), '/a', 'get'), new Operation(uniqid(), '/a', 'post')]),
-                new Path('/b', [new Operation(uniqid(), '/b', 'get')]),
-            ]);
+            ->willReturn(
+                [
+                    new Path('/a', [new Operation(uniqid(), '/a', 'get'), new Operation(uniqid(), '/a', 'post')]),
+                    new Path('/b', [new Operation(uniqid(), '/b', 'get')]),
+                ]
+            );
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
 
@@ -162,7 +166,7 @@ class OpenApiRouteLoaderTest extends \PHPUnit_Framework_TestCase
             ->willReturn([
                 new Path('/a', [
                     new Operation(uniqid(), '/a', 'get'),
-                    new Operation(uniqid(), '/a', 'post')
+                    new Operation(uniqid(), '/a', 'post'),
                 ]),
             ]);
 
@@ -188,11 +192,13 @@ class OpenApiRouteLoaderTest extends \PHPUnit_Framework_TestCase
         $this->decriptionMock
             ->expects($this->any())
             ->method('getPaths')
-            ->willReturn([
-                new Path('/a', [new Operation(uniqid(), '/a', 'get')]),
-                new Path('/a/b', [new Operation(uniqid(), '/a/b', 'get')]),
-                new Path('/a/b/c', [new Operation(uniqid(), '/a/b/c', 'get')]),
-            ]);
+            ->willReturn(
+                [
+                    new Path('/a', [new Operation(uniqid(), '/a', 'get')]),
+                    new Path('/a/b', [new Operation(uniqid(), '/a/b', 'get')]),
+                    new Path('/a/b/c', [new Operation(uniqid(), '/a/b/c', 'get')]),
+                ]
+            );
 
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
@@ -211,10 +217,10 @@ class OpenApiRouteLoaderTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('getPaths')
             ->willReturn([
-                new Path('/a', [
-                    new Operation('/a:get', '/a', 'get'),
-                    new Operation($expected, '/a', 'post')
-                ]),
+                new Path(
+                    '/a',
+                    [new Operation('/a:get', '/a', 'get'), new Operation($expected, '/a', 'post'),]
+                ),
                 new Path('/b', [new Operation('/b:get', '/b', 'get')]),
             ]);
 
@@ -236,10 +242,13 @@ class OpenApiRouteLoaderTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('getPaths')
             ->willReturn([
-                new Path('/a', [
-                    new Operation('/a:get', '/a', 'get'),
-                    new Operation('/a:post', '/a', 'post', [], null, [], $extensions)
-                ]),
+                new Path(
+                    '/a',
+                    [
+                        new Operation('/a:get', '/a', 'get'),
+                        new Operation('/a:post', '/a', 'post', [], null, [], $extensions),
+                    ]
+                ),
                 new Path('/b', [new Operation('/b:get', '/b', 'get')]),
             ]);
 
@@ -261,10 +270,13 @@ class OpenApiRouteLoaderTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('getPaths')
             ->willReturn([
-                new Path('/a', [
-                    new Operation('/a:get', '/a', 'get'),
-                    new Operation('/a:post', '/a', 'post', [], null, [], $extensions)
-                ]),
+                new Path(
+                    '/a',
+                    [
+                        new Operation('/a:get', '/a', 'get'),
+                        new Operation('/a:post', '/a', 'post', [], null, [], $extensions),
+                    ]
+                ),
                 new Path('/b', [new Operation('/b:get', '/b', 'get')]),
             ]);
 
@@ -290,9 +302,11 @@ class OpenApiRouteLoaderTest extends \PHPUnit_Framework_TestCase
         $this->decriptionMock
             ->expects($this->atLeast(1))
             ->method('getExtension')
-            ->willReturnCallback(function (string $name) use ($diKey) {
-                return $name == 'router-controller' ? $diKey : null;
-            });
+            ->willReturnCallback(
+                function (string $name) use ($diKey) {
+                    return $name == 'router-controller' ? $diKey : null;
+                }
+            );
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
 
@@ -316,9 +330,11 @@ class OpenApiRouteLoaderTest extends \PHPUnit_Framework_TestCase
         $this->decriptionMock
             ->expects($this->atLeast(1))
             ->method('getExtension')
-            ->willReturnCallback(function (string $name) use ($router) {
-                return $name == 'router' ? $router : null;
-            });
+            ->willReturnCallback(
+                function (string $name) use ($router) {
+                    return $name == 'router' ? $router : null;
+                }
+            );
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
 
@@ -336,13 +352,14 @@ class OpenApiRouteLoaderTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('getPaths')
             ->willReturn([
-                new Path('/a', [
-                    new Operation('/a:get', '/a', 'get'),
-                ]),
-                new Path('/a/b', [
-                    new Operation('/a/b:get', '/a/b', 'get'),
-                    new Operation('/a/b:post', '/a/b', 'post')
-                ]),
+                new Path(
+                    '/a',
+                    [new Operation('/a:get', '/a', 'get')]
+                ),
+                new Path(
+                    '/a/b',
+                    [new Operation('/a/b:get', '/a/b', 'get'), new Operation('/a/b:post', '/a/b', 'post')]
+                ),
                 new Path('/a/b/c', [new Operation('/a/b/c:get', '/a/b/c', 'get')]),
             ]);
 
@@ -373,14 +390,20 @@ class OpenApiRouteLoaderTest extends \PHPUnit_Framework_TestCase
 
         $routes = $this->loader->load(self::DOCUMENT_PATH);
 
-        $descriptionPaths = array_map(function (Path $path) {
-            return $path->getPath();
-        }, $paths);
+        $descriptionPaths = array_map(
+            function (Path $path) {
+                return $path->getPath();
+            },
+            $paths
+        );
         sort($descriptionPaths);
 
-        $routePaths = array_map(function (Route $route) {
-            return $route->getPath();
-        }, $routes->getIterator()->getArrayCopy());
+        $routePaths = array_map(
+            function (Route $route) {
+                return $route->getPath();
+            },
+            $routes->getIterator()->getArrayCopy()
+        );
 
         sort($routePaths);
         $this->assertSame($descriptionPaths, $routePaths);
@@ -417,14 +440,16 @@ class OpenApiRouteLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function willAddRequirementsForStringPatternParams()
     {
-        $expected        = '\d{2}hello';
+        $expected  = '\d{2}hello';
         $parameter = new Parameter(
             'aString',
             true,
-            new ScalarSchema((object)[
-                'type' => Schema::TYPE_STRING,
-                'pattern' => $expected
-            ]),
+            new ScalarSchema(
+                (object)[
+                    'type'    => Schema::TYPE_STRING,
+                    'pattern' => $expected,
+                ]
+            ),
             Parameter::IN_PATH
         );
 
@@ -447,15 +472,17 @@ class OpenApiRouteLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function willAddRequirementsForStringEnumParams()
     {
-        $enum            = ['a', 'b', 'c'];
-        $expected        = '(a|b|c)';
+        $enum      = ['a', 'b', 'c'];
+        $expected  = '(a|b|c)';
         $parameter = new Parameter(
             'aString',
             true,
-            new ScalarSchema((object)[
-                'type' => Schema::TYPE_STRING,
-                'enum' => $enum
-            ]),
+            new ScalarSchema(
+                (object)[
+                    'type' => Schema::TYPE_STRING,
+                    'enum' => $enum,
+                ]
+            ),
             Parameter::IN_PATH
         );
 

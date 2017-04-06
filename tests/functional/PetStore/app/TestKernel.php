@@ -1,4 +1,5 @@
 <?php declare(strict_types = 1);
+
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Kernel;
 
@@ -13,7 +14,7 @@ class TestKernel extends Kernel
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Symfony\Bundle\MonologBundle\MonologBundle(),
             new KleijnWeb\SwaggerBundle\KleijnWebSwaggerBundle(),
-            new KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\PetStoreBundle()
+            new KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\PetStoreBundle(),
         ];
 
         if (0 === strpos($this->getEnvironment(), 'secure')) {
@@ -28,6 +29,6 @@ class TestKernel extends Kernel
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(__DIR__ . '/config_' . $this->getEnvironment() . '.yml');
+        $loader->load(__DIR__.'/config_'.$this->getEnvironment().'.yml');
     }
 }

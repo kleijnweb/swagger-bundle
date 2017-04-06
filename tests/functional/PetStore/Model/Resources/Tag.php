@@ -28,9 +28,9 @@ class Tag
     /**
      * @param int $id
      *
-     * @return Category
+     * @return Tag
      */
-    public function setId(int $id): Category
+    public function setId(int $id): Tag
     {
         $this->id = $id;
 

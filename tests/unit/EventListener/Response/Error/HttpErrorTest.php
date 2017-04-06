@@ -10,7 +10,6 @@ namespace KleijnWeb\SwaggerBundle\Tests\EventListener\Response\Error;
 
 use KleijnWeb\SwaggerBundle\EventListener\Response\Error\HttpError;
 use KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilder;
-use KleijnWeb\SwaggerBundle\EventListener\Response\ErrorResponseFactory;
 use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;

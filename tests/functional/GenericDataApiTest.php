@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
- * @group functional
+ * @group  functional
  */
 class GenericDataApiTest extends WebTestCase
 {
@@ -31,7 +31,7 @@ class GenericDataApiTest extends WebTestCase
     {
         $content = [
             'foo'  => 'bar',
-            'blah' => ['foobar']
+            'blah' => ['foobar'],
         ];
 
         $responseData = $this->post('/data/v1/entity/foo', $content);
@@ -73,14 +73,14 @@ class GenericDataApiTest extends WebTestCase
             (object)[
                 'fieldName' => 'x',
                 'operator'  => 'eq',
-                'value'     => 'y'
+                'value'     => 'y',
             ],
 
             (object)[
                 'fieldName' => 'a',
                 'operator'  => 'eq',
-                'value'     => 'b'
-            ]
+                'value'     => 'b',
+            ],
         ];
         $responseData = $this->post('/data/v1/entity/bar/findByCriteria', $criteria);
 
@@ -118,7 +118,7 @@ class GenericDataApiTest extends WebTestCase
     {
         $content = [
             'foo'  => 'bar',
-            'blah' => ['foobar']
+            'blah' => ['foobar'],
         ];
 
         $responseData = $this->put('/data/v1/entity/foo/999', $content);

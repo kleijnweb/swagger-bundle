@@ -86,7 +86,7 @@ class HttpError
             } elseif ($exception instanceof AuthenticationException) {
                 $this->statusCode = Response::HTTP_UNAUTHORIZED;
                 $this->severity   = LogLevel::WARNING;
-            }  elseif ($exception instanceof AccessDeniedException || $exception instanceof AccessDeniedHttpException) {
+            } elseif ($exception instanceof AccessDeniedException || $exception instanceof AccessDeniedHttpException) {
                 $this->statusCode = Response::HTTP_FORBIDDEN;
                 $this->severity   = LogLevel::WARNING;
             } else {

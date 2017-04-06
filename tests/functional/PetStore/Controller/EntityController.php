@@ -19,7 +19,7 @@ class EntityController
     public function getStatus()
     {
         return (object)[
-            'overall' => 'ok'
+            'overall' => 'ok',
         ];
     }
 
@@ -36,8 +36,8 @@ class EntityController
             (object)[
                 'id'   => 2,
                 'type' => $type,
-                'foo'  => 'bar'
-            ]
+                'foo'  => 'bar',
+            ],
         ];
     }
 
@@ -56,7 +56,7 @@ class EntityController
             $entities[] = (object)[
                 'id'   => $i + 3,
                 'type' => $type,
-                'foo'  => 'bar'
+                'foo'  => 'bar',
             ];
         }
 
@@ -74,7 +74,7 @@ class EntityController
         return (object)[
             'id'   => $id,
             'type' => $type,
-            'foo'  => 'bar'
+            'foo'  => 'bar',
         ];
     }
 

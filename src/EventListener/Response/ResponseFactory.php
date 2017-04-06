@@ -77,7 +77,7 @@ class ResponseFactory
         if ($this->validator) {
             $result = $this->validator->validate($schema, $body);
 
-            if (!$result->isvalid()) {
+            if (!$result->isValid()) {
                 throw new ValidationException(
                     $result->getErrorMessages(),
                     Response::HTTP_INTERNAL_SERVER_ERROR,

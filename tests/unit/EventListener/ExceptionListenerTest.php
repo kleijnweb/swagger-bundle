@@ -12,7 +12,6 @@ use KleijnWeb\SwaggerBundle\EventListener\ExceptionListener;
 use KleijnWeb\SwaggerBundle\EventListener\Request\RequestMeta;
 use KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilder;
 use KleijnWeb\SwaggerBundle\EventListener\Response\ErrorResponseFactory;
-use KleijnWeb\SwaggerBundle\Tests\Functional\TestCacheSmachingPHPUnitListener;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Request;

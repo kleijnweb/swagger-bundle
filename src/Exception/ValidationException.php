@@ -13,7 +13,7 @@ namespace KleijnWeb\SwaggerBundle\Exception;
  */
 class ValidationException extends \Exception
 {
-    const MESSAGE_INPUT = 'Input validation failed';
+    const MESSAGE_INPUT  = 'Input validation failed';
     const MESSAGE_OUTPUT = 'Output validation failed';
 
     /**

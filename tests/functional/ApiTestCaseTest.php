@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
- * @group functional
+ * @group  functional
  */
 class ApiTestCaseTest extends WebTestCase
 {
