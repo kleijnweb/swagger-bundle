@@ -48,7 +48,7 @@ class RequestMatcher implements RequestMatcherInterface
     /**
      * @param boolean $matchUnsecured
      */
-    public function setMatchUnsecured(bool $matchUnsecured)
+    public function setMatchUnsecured(bool $matchUnsecured = true)
     {
         $this->matchUnsecured = $matchUnsecured;
     }
@@ -63,7 +63,7 @@ class RequestMatcher implements RequestMatcherInterface
             return false;
         }
 
-        if ($this->matchUnsecured) {
+        if ($this->isMatchUnsecured()) {
             return true;
         }
 

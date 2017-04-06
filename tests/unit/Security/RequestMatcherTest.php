@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KleijnWeb\SwaggerBundle\Tests\Routing;
+namespace KleijnWeb\SwaggerBundle\Tests\Security;
 
 use KleijnWeb\PhpApi\Descriptions\Description\Description;
 use KleijnWeb\PhpApi\Descriptions\Description\Operation;
@@ -26,12 +26,12 @@ class RequestMatcherTest extends \PHPUnit_Framework_TestCase
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $repositoryMock;
+    private $repositoryStub;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $decriptionMock;
+    private $decriptionStub;
 
     /**
      * @var RequestMatcher
@@ -43,21 +43,21 @@ class RequestMatcherTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->decriptionMock = $this
+        $this->decriptionStub = $this
             ->getMockBuilder(Description::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         /** @var Repository $repository */
-        $this->repositoryMock = $repository = $this
+        $this->repositoryStub = $repository = $this
             ->getMockBuilder(Repository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->repositoryMock
+        $this->repositoryStub
             ->expects($this->any())
             ->method('get')
-            ->willReturn($this->decriptionMock);
+            ->willReturn($this->decriptionStub);
 
         $this->matcher = new RequestMatcher($repository);
     }
@@ -75,7 +75,6 @@ class RequestMatcherTest extends \PHPUnit_Framework_TestCase
      */
     public function willReturnFalseWhenOperationNotSecured()
     {
-        $this->matcher->setMatchUnsecured(false);
         $this->assertFalse($this->matcher->matches($this->createRequest(false)));
     }
 
@@ -84,8 +83,16 @@ class RequestMatcherTest extends \PHPUnit_Framework_TestCase
      */
     public function willReturnTrueWhenOperationNotSecured()
     {
-        $this->matcher->setMatchUnsecured(false);
         $this->assertTrue($this->matcher->matches($this->createRequest(true)));
+    }
+
+    /**
+     * @test
+     */
+    public function settingMatchUnsecuredToTrueWillReturnTrueEvenIfMatchHasNoSecurityInfo()
+    {
+        $this->matcher->setMatchUnsecured();
+        $this->assertTrue($this->matcher->matches($this->createRequest(false)));
     }
 
     /**
@@ -94,23 +101,23 @@ class RequestMatcherTest extends \PHPUnit_Framework_TestCase
      */
     private function createRequest(bool $securedOperation): Request
     {
-        $this->repositoryMock
-            ->expects($this->once())
+        $this->repositoryStub
+            ->expects($this->any())
             ->method('get')
-            ->willReturn($this->decriptionMock);
+            ->willReturn($this->decriptionStub);
 
-        $pathMock = $this
+        $pathStub = $this
             ->getMockBuilder(Path::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->decriptionMock
-            ->expects($this->once())
+        $this->decriptionStub
+            ->expects($this->any())
             ->method('getPath')
-            ->willReturn($pathMock);
+            ->willReturn($pathStub);
 
-        $pathMock
-            ->expects($this->once())
+        $pathStub
+            ->expects($this->any())
             ->method('getOperation')
             ->willReturn(
                 new Operation('', '', '', [], null, [], [], $securedOperation)
