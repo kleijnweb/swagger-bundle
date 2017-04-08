@@ -17,6 +17,10 @@
       "KleijnWeb\\SwaggerBundle\\": "src"
     }
   },
+  "keywords": [
+    "openapi",
+    "swagger"
+  ],
   "require": {
     "php": "^7.0.0",
     "psr/log": "^1.0",
