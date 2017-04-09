@@ -13,6 +13,7 @@ use KleijnWeb\PhpApi\Descriptions\Description\Parameter;
 use KleijnWeb\PhpApi\Descriptions\Description\Repository;
 use KleijnWeb\PhpApi\Descriptions\Description\Schema\ScalarSchema;
 use KleijnWeb\PhpApi\Descriptions\Description\Schema\Schema;
+use KleijnWeb\PhpApi\Middleware\Util\ParameterTypePatternResolver;
 use KleijnWeb\SwaggerBundle\EventListener\Request\RequestMeta;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\Route;
@@ -34,11 +35,17 @@ class OpenApiRouteLoader extends Loader
     private $repository;
 
     /**
+     * @var ParameterTypePatternResolver
+     */
+    private $parameterTypePatternResolver;
+
+    /**
      * @param Repository $repository
      */
     public function __construct(Repository $repository)
     {
-        $this->repository = $repository;
+        $this->repository                   = $repository;
+        $this->parameterTypePatternResolver = new ParameterTypePatternResolver();
     }
 
     /**
@@ -127,21 +134,7 @@ class OpenApiRouteLoader extends Loader
             if ($parameter->getIn() === Parameter::IN_PATH
                 && ($schema = $parameter->getSchema()) instanceof ScalarSchema
             ) {
-                switch ($schema->getType()) {
-                    case Schema::TYPE_INT:
-                        $requirements[$parameter->getName()] = '\d+';
-                        break;
-                    case Schema::TYPE_STRING:
-                        /** @var $schema ScalarSchema $pattern */
-                        if ($pattern = $schema->getPattern()) {
-                            $requirements[$parameter->getName()] = $pattern;
-                        } elseif ($enum = $schema->getEnum()) {
-                            $requirements[$parameter->getName()] = '('.implode('|', $enum).')';
-                        }
-                        break;
-                    default:
-                        //NOOP
-                }
+                $requirements[$parameter->getName()] = $this->parameterTypePatternResolver->resolve($schema);
             }
         }
 

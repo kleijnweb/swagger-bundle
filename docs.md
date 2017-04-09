@@ -186,7 +186,7 @@ Using OpenAPI documents to configure security dynamically is a potential securit
 
 ### Firewall Request Matching
 
-You can of course use standard path based matching, but a more flexible way is to use the bundled request matcher.
+You can of course use standard path based matching, but a more flexible way is to use the bundled request matcher. You can use it as directly as a firewall request matcher, or in a listener to wrap to authenticator you want to use (see subsection).
 
 ```yml
 security:
@@ -203,6 +203,10 @@ By default, the matcher will return TRUE if the request was routed by SwaggerBun
    security:
      match_unsecured: true
 ```
+
+#### Using The Request Matcher With An Authenticator
+
+It is possible to decorate another 
  
 ### Request Authorization
 
@@ -214,12 +218,14 @@ This security listener is not enabled by default, to enable:
  security:
   firewalls:
     firewall_name:
-      swagger: ~
+      swagger: { request_voting: true }
 ```
+
+**NOTE:** The "request voting" takes place before anonymous authentication and enforcing of `access_control` rules.
 
 #### Authorization Of Anonymous Authenticated Users
 
-It is currently not possible to use `anonymous` and `swagger` on the same firewall. If you require anonymous access to some of your operations, you can do the following:
+It is currently not possible to use `anonymous` and `swagger.request_voting` on the same firewall. If you require anonymous access to some of your operations, you can do the following:
 
 1. Make sure `match_unsecured` is FALSE (or omitted, since that is the default)
 2. Add a fallback firewall that allows anonymous access
@@ -235,9 +241,26 @@ security:
   firewalls:
     firewall_name:
       request_matcher: swagger.security.request_matcher
-      swagger: ~
+      swagger: { request_voting: true }
     fallback:
       anonymous: ~
+```
+
+To prevent exposure of operations by unintentionally omitting `security` in your OpenAPI document, you may want to be explicit:
+
+```yml
+security:
+  firewalls:
+    firewall_name:
+      request_matcher: swagger.security.request_matcher
+      swagger: { request_voting: true }
+    fallback:
+      patters: '^/v1/allows-anon'
+      anonymous: ~
+      
+access_control:
+  - { path: '/', roles: 'IS_AUTHENTICATED_FULLY' }
+  - { path: '/v1/allows-anon', roles: 'IS_AUTHENTICATED_ANONYMOUSLY' }
 ```
  
 ### Role Based Access (RBAC)
@@ -262,7 +285,7 @@ To enable OpenAPI based RBAC:
 security:
   firewalls:
     firewall_name:
-      swagger: { rbac: true }
+      swagger: { request_voting: true , rbac: true }
 ```
 
 ### Custom Request Authorization Voters
@@ -309,6 +332,13 @@ swagger:
  
 When a controller action returns `NULL` or an empty string, SwaggerBundle will return an empty `204` response, provided that one is defined in the specification.
 Otherwise, it will default to the first 2xx type response defined in your spec, or if all else fails, simply 200.
+
+This behavior is defined by `KleijnWeb\PhpApi\Middleware\Util\OkStatusResolver`. You can override it by overriding it and injecting it into the `ResponseFactory`:
+
+```yaml
+swagger:
+  ok_status_resolver: "my.custom.resolver"
+```
 
 You cannot return Symfony responses from your controllers. Any response manipulation (including custom status codes) you want needs to be implemented using "Response Listeners". Example that sets some headers:
 

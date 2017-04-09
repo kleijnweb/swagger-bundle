@@ -26,7 +26,9 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-            ->scalarNode('validate_responses')->defaultFalse()
+            ->booleanNode('validate_responses')->defaultFalse()
+            ->end()
+            ->scalarNode('ok_status_resolver')->defaultFalse()
             ->end()
             ->arrayNode('hydrator')
             ->children()

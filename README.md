@@ -33,9 +33,13 @@ Check out the [User Documentation](docs.md) for more details.
 
 SwaggerBundle 4.0 is currently in the beta stage. Much of the behavior dealing with OpenAPI documents has been moved to [KleijnWeb\PhpApi\Descriptions](https://github.com/kleijnweb/php-api-descriptions).
 
+### Routing
+ 
+Now using [KleijnWeb\PhpApi\Middleware\Util\ParameterTypePatternResolver](https://github.com/kleijnweb/php-api-middleware/blob/master/src/Util/ParameterTypePatternResolver.php).
+
 ### Security Integration
  
-See [docs](docs.md#security).
+Request matching, voting, OpenAPI configured RBAC. See [docs](docs.md#security).
 
 ### Serialization
  
@@ -45,9 +49,10 @@ Support for 3rd party serializers has been replaced by a new _API Description Ba
  
 The dependency on `SwaggerAssertions` has been removed, as response validation is now facilitated by `KleijnWeb\PhpApi\Descriptions` and [integrated into the request cycle](docs.md#testing).
 
-### Errors
+### Errors And Exceptions
  
-`vnd.error` support has been removed in favor of simpler error responses. This also gets rid of some dependencies that were unneeded for most use cases.
+ - `vnd.error` support has been removed in favor of simpler error responses. This also gets rid of some dependencies that were unneeded for most use cases.
+ - `HttpError` now supports `AccessDeniedException`.
 
 ## FAQ
  

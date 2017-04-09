@@ -10,6 +10,7 @@ namespace KleijnWeb\SwaggerBundle\EventListener\Response;
 
 use KleijnWeb\PhpApi\Descriptions\Description\Schema\Validator\SchemaValidator;
 use KleijnWeb\PhpApi\Hydrator\ObjectHydrator;
+use KleijnWeb\PhpApi\Middleware\Util\OkStatusResolver;
 use KleijnWeb\SwaggerBundle\EventListener\Request\RequestMeta;
 use KleijnWeb\SwaggerBundle\Exception\ValidationException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,60 +33,61 @@ class ResponseFactory
     private $validator;
 
     /**
-     * @param ObjectHydrator  $hydrator
-     * @param SchemaValidator $validator
+     * @var OkStatusResolver
      */
-    public function __construct(ObjectHydrator $hydrator = null, SchemaValidator $validator = null)
-    {
-        $this->hydrator  = $hydrator;
-        $this->validator = $validator;
+    private $okStatusResolver;
+
+    /**
+     * @param ObjectHydrator   $hydrator
+     * @param SchemaValidator  $validator
+     * @param OkStatusResolver $okStatusResolver
+     */
+    public function __construct(
+        ObjectHydrator $hydrator = null,
+        SchemaValidator $validator = null,
+        OkStatusResolver $okStatusResolver = null
+    ) {
+        $this->hydrator         = $hydrator;
+        $this->validator        = $validator;
+        $this->okStatusResolver = $okStatusResolver ?: new OkStatusResolver();
     }
 
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      *
      * @param Request $request
-     * @param mixed   $data
+     * @param mixed   $operationResult
      *
      * @return Response
      * @throws ValidationException
      */
-    public function createResponse(Request $request, $data = null)
+    public function createResponse(Request $request, $operationResult = null)
     {
         /** @var RequestMeta $meta */
-        $meta           = $request->attributes->get(RequestMeta::ATTRIBUTE);
-        $operation      = $meta->getOperation();
-        $body           = $data === null ? '' : $data;
-        $statusCode     = 200;
-        $codes          = $operation->getStatusCodes();
-        $understands204 = in_array(204, $codes);
+        $meta = $request->attributes->get(RequestMeta::ATTRIBUTE);
 
-        foreach ($codes as $code) {
-            if ('2' == substr((string)$code, 0, 1)) {
-                $statusCode = $code;
-                break;
-            }
-        }
+        $statusCode = $this->okStatusResolver->resolve($operationResult, $meta->getOperation());
+
         $schema = $meta->getOperation()->getResponse($statusCode)->getSchema();
 
-        if ($this->hydrator && $body !== '') {
-            $body = $this->hydrator->dehydrate($body, $schema);
-        } elseif ($understands204) {
-            $statusCode = 204;
+        if ($this->hydrator && $operationResult !== null) {
+            $operationResult = $this->hydrator->dehydrate($operationResult, $schema);
         }
 
-        if ($this->validator) {
-            $result = $this->validator->validate($schema, $body);
+        $operationResult = $operationResult === null ? '' : $operationResult;
 
-            if (!$result->isValid()) {
+        if ($this->validator) {
+            $validationResult = $this->validator->validate($schema, $operationResult);
+
+            if (!$validationResult->isValid()) {
                 throw new ValidationException(
-                    $result->getErrorMessages(),
+                    $validationResult->getErrorMessages(),
                     Response::HTTP_INTERNAL_SERVER_ERROR,
                     ValidationException::MESSAGE_OUTPUT
                 );
             };
         }
 
-        return new JsonResponse($body, $statusCode);
+        return new JsonResponse($operationResult, $statusCode);
     }
 }
