@@ -35,7 +35,7 @@ SwaggerBundle 4.0 is currently in the beta stage. Much of the behavior dealing w
 
 ### Routing
  
-Now using [KleijnWeb\PhpApi\Middleware\Util\ParameterTypePatternResolver](https://github.com/kleijnweb/php-api-middleware/blob/master/src/Util/ParameterTypePatternResolver.php).
+Now using [kleijnweb/php-api-routing-bundle](https://github.com/kleijnweb/php-api-routing-bundle) with a number of small improvements.
 
 ### Security Integration
  
