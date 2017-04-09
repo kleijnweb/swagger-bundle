@@ -8,8 +8,8 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\EventListener;
 
+use KleijnWeb\PhpApi\RoutingBundle\Routing\RequestMeta;
 use KleijnWeb\SwaggerBundle\EventListener\ExceptionListener;
-use KleijnWeb\SwaggerBundle\EventListener\Request\RequestMeta;
 use KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilder;
 use KleijnWeb\SwaggerBundle\EventListener\Response\ErrorResponseFactory;
 use Psr\Log\LoggerInterface;

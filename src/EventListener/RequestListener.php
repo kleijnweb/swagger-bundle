@@ -8,7 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\EventListener;
 
-use KleijnWeb\SwaggerBundle\EventListener\Request\RequestMeta;
+use KleijnWeb\PhpApi\RoutingBundle\Routing\RequestMeta;
 use KleijnWeb\SwaggerBundle\EventListener\Request\RequestProcessor;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 

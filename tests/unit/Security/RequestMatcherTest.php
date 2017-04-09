@@ -12,7 +12,7 @@ use KleijnWeb\PhpApi\Descriptions\Description\Description;
 use KleijnWeb\PhpApi\Descriptions\Description\Operation;
 use KleijnWeb\PhpApi\Descriptions\Description\Path;
 use KleijnWeb\PhpApi\Descriptions\Description\Repository;
-use KleijnWeb\SwaggerBundle\EventListener\Request\RequestMeta;
+use KleijnWeb\PhpApi\RoutingBundle\Routing\RequestMeta;
 use KleijnWeb\SwaggerBundle\Security\RequestMatcher;
 use Symfony\Component\HttpFoundation\Request;
 

@@ -8,7 +8,7 @@
 namespace KleijnWeb\SwaggerBundle\Security;
 
 use KleijnWeb\PhpApi\Descriptions\Description\Repository;
-use KleijnWeb\SwaggerBundle\EventListener\Request\RequestMeta;
+use KleijnWeb\PhpApi\RoutingBundle\Routing\RequestMeta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestMatcherInterface;
 

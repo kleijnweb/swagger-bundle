@@ -8,7 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\EventListener;
 
-use KleijnWeb\SwaggerBundle\EventListener\Request\RequestMeta;
+use KleijnWeb\PhpApi\RoutingBundle\Routing\RequestMeta;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 /**

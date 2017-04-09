@@ -11,7 +11,7 @@ namespace KleijnWeb\SwaggerBundle\Tests\Security;
 use KleijnWeb\PhpApi\Descriptions\Description\Description;
 use KleijnWeb\PhpApi\Descriptions\Description\Operation;
 use KleijnWeb\PhpApi\Descriptions\Description\Repository;
-use KleijnWeb\SwaggerBundle\EventListener\Request\RequestMeta;
+use KleijnWeb\PhpApi\RoutingBundle\Routing\RequestMeta;
 use KleijnWeb\SwaggerBundle\Security\RbacRequestVoter;
 use KleijnWeb\SwaggerBundle\Security\RequestAuthorizationListener;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;

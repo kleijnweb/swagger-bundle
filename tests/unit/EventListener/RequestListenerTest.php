@@ -8,7 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\EventListener;
 
-use KleijnWeb\SwaggerBundle\EventListener\Request\RequestMeta;
+use KleijnWeb\PhpApi\RoutingBundle\Routing\RequestMeta;
 use KleijnWeb\SwaggerBundle\EventListener\Request\RequestProcessor;
 use KleijnWeb\SwaggerBundle\EventListener\RequestListener;
 use Symfony\Component\HttpFoundation\ParameterBag;

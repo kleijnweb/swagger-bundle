@@ -29,6 +29,7 @@ class KleijnWebSwaggerExtension extends Extension
         $loader->load('services.yml');
 
         $container->setParameter('swagger.document.base_path', $config['document']['base_path']);
+        $container->setParameter('phpapi.router_name', 'swagger');
 
         if (isset($config['document']['cache'])) {
             $resolverDefinition = $container->getDefinition('swagger.description.repository');
