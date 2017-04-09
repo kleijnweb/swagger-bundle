@@ -12,7 +12,6 @@ use KleijnWeb\PhpApi\Descriptions\Description\Operation;
 use KleijnWeb\PhpApi\Descriptions\Description\Parameter;
 use KleijnWeb\PhpApi\Descriptions\Description\Repository;
 use KleijnWeb\PhpApi\Descriptions\Description\Schema\ScalarSchema;
-use KleijnWeb\PhpApi\Descriptions\Description\Schema\Schema;
 use KleijnWeb\PhpApi\Middleware\Util\ParameterTypePatternResolver;
 use KleijnWeb\SwaggerBundle\EventListener\Request\RequestMeta;
 use Symfony\Component\Config\Loader\Loader;
@@ -37,15 +36,15 @@ class OpenApiRouteLoader extends Loader
     /**
      * @var ParameterTypePatternResolver
      */
-    private $parameterTypePatternResolver;
+    private $typePatternResolver;
 
     /**
      * @param Repository $repository
      */
     public function __construct(Repository $repository)
     {
-        $this->repository                   = $repository;
-        $this->parameterTypePatternResolver = new ParameterTypePatternResolver();
+        $this->repository          = $repository;
+        $this->typePatternResolver = new ParameterTypePatternResolver();
     }
 
     /**
@@ -134,7 +133,7 @@ class OpenApiRouteLoader extends Loader
             if ($parameter->getIn() === Parameter::IN_PATH
                 && ($schema = $parameter->getSchema()) instanceof ScalarSchema
             ) {
-                $requirements[$parameter->getName()] = $this->parameterTypePatternResolver->resolve($schema);
+                $requirements[$parameter->getName()] = $this->typePatternResolver->resolve($schema);
             }
         }
 
@@ -154,7 +153,8 @@ class OpenApiRouteLoader extends Loader
         string $resourceName,
         string $router,
         string $routerController = null
-    ): string {
+    ): string
+    {
 
         $operationName = $operation->getMethod();
         $diKey         = "$router.$resourceName";
