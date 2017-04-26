@@ -114,10 +114,7 @@ By default, the matcher will return TRUE if the request was routed by SwaggerBun
      match_unsecured: true
 ```
 
-#### Using The Request Matcher With An Authenticator
 
-It is possible to decorate another 
- 
 ### Request Authorization
 
 As an alternative to manually configuring URI based role access (`access_control`), you can use the `RequestAuthorizationListener`. This performs a function similar to the `AccessListener` in the firewall, but instead of a list of roles to test the authentication against, voters are passed the `Request` object. 
