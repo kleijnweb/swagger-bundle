@@ -108,6 +108,10 @@ class RequestProcessor
             !$operation->hasParameters() && !count((array)$coercedParams) ? null : $coercedParams
         );
 
+        if (!$result->isValid()) {
+            throw new ValidationException($result->getErrorMessages());
+        }
+
         foreach ($coercedParams as $attribute => $value) {
             /** @var ScalarSchema $schema */
             if (($schema = $operation->getParameter($attribute)->getSchema()) instanceof ScalarSchema) {
@@ -125,10 +129,6 @@ class RequestProcessor
         ) {
             $body = $this->hydrator->hydrate($body, $bodyParam->getSchema());
             $request->attributes->set($bodyParam->getName(), $body);
-        }
-
-        if (!$result->isValid()) {
-            throw new ValidationException($result->getErrorMessages());
         }
     }
 }
