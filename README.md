@@ -1,4 +1,6 @@
 # KleijnWeb\SwaggerBundle 
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/dcd0367a-0371-443a-b258-5c9356cbc953/small.png)](https://insight.sensiolabs.com/projects/dcd0367a-0371-443a-b258-5c9356cbc953)
+
 [![Build Status](https://travis-ci.org/kleijnweb/swagger-bundle.svg?branch=master)](https://travis-ci.org/kleijnweb/swagger-bundle)
 [![Coverage Status](https://coveralls.io/repos/github/kleijnweb/swagger-bundle/badge.svg?branch=master)](https://coveralls.io/github/kleijnweb/swagger-bundle?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kleijnweb/swagger-bundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/kleijnweb/swagger-bundle/?branch=master)
