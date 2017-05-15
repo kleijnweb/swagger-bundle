@@ -240,7 +240,7 @@ swagger:
 When a controller action returns `NULL` or an empty string, SwaggerBundle will return an empty `204` response, provided that one is defined in the specification.
 Otherwise, it will default to the first 2xx type response defined in your spec, or if all else fails, simply 200.
 
-This behavior is defined by `KleijnWeb\PhpApi\Middleware\Util\OkStatusResolver`. You can override it by overriding it and injecting it into the `ResponseFactory`:
+This behavior is defined by `KleijnWeb\PhpApi\Middleware\Util\OkStatusResolver`. You can override it by subclassing it and injecting it into the `ResponseFactory`:
 
 ```yaml
 swagger:
@@ -269,7 +269,7 @@ class ResponseListener
         }
         $request = $event->getRequest();
         $headers = $event->getResponse()->headers;
-        switch ($request->attributes->get('_swagger.path')) {
+        switch ($request->attributes->get(RequestMeta::ATTRIBUTE)) {
             case '/user/login':
                 $headers->set('X-Rate-Limit', 123456789);
                 $headers->set('X-Expires-After', date('Y-m-d\TH:i:s\Z'));
