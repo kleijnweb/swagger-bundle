@@ -44,11 +44,6 @@ class HttpError
     private $message;
 
     /**
-     * @var Request
-     */
-    private $request;
-
-    /**
      * @var \Exception
      */
     private $exception;
@@ -56,13 +51,12 @@ class HttpError
     /**
      * HttpError constructor.
      *
-     * @param Request       $request
-     * @param \Exception    $exception
-     * @param LogRefBuilder $logRefBuilder
+     * @param Request                $request
+     * @param \Exception             $exception
+     * @param LogRefBuilderInterface $logRefBuilder
      */
-    public function __construct(Request $request, \Exception $exception, LogRefBuilder $logRefBuilder)
+    public function __construct(Request $request, \Exception $exception, LogRefBuilderInterface $logRefBuilder)
     {
-        $this->request   = $request;
         $this->exception = $exception;
         $this->logRef    = $logRefBuilder->create($request, $exception);
 

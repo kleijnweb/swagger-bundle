@@ -8,13 +8,13 @@
 
 namespace KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilder;
 
-use KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilder;
+use KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class UniqueIdLogRefBuilder implements LogRefBuilder
+class UniqueIdLogRefBuilder implements LogRefBuilderInterface
 {
     /**
      * @param Request    $request

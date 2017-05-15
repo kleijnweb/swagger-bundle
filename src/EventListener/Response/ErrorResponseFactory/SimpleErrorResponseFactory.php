@@ -9,7 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\EventListener\Response\ErrorResponseFactory;
 
 use KleijnWeb\SwaggerBundle\EventListener\Response\Error\HttpError;
-use KleijnWeb\SwaggerBundle\EventListener\Response\ErrorResponseFactory;
+use KleijnWeb\SwaggerBundle\EventListener\Response\ErrorResponseFactoryInterface;
 use KleijnWeb\SwaggerBundle\Exception\ValidationException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class SimpleErrorResponseFactory implements ErrorResponseFactory
+class SimpleErrorResponseFactory implements ErrorResponseFactoryInterface
 {
     /**
      * @param HttpError $error

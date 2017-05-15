@@ -10,8 +10,8 @@ namespace KleijnWeb\SwaggerBundle\Tests\EventListener;
 
 use KleijnWeb\PhpApi\RoutingBundle\Routing\RequestMeta;
 use KleijnWeb\SwaggerBundle\EventListener\ExceptionListener;
-use KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilder;
-use KleijnWeb\SwaggerBundle\EventListener\Response\ErrorResponseFactory;
+use KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilderInterface;
+use KleijnWeb\SwaggerBundle\EventListener\Response\ErrorResponseFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Request;
@@ -81,14 +81,14 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
             ->method('getRequest')
             ->willReturn($this->request);
 
-        /** @var ErrorResponseFactory $errorResponseFactory */
+        /** @var ErrorResponseFactoryInterface $errorResponseFactory */
         $errorResponseFactory = $this
-            ->getMockBuilder(ErrorResponseFactory::class)
+            ->getMockBuilder(ErrorResponseFactoryInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        /** @var LogRefBuilder $logRefBuilder */
-        $lofRefBuilderMock = $logRefBuilder = $this->getMockForAbstractClass(LogRefBuilder::class);
+        /** @var LogRefBuilderInterface $logRefBuilder */
+        $lofRefBuilderMock = $logRefBuilder = $this->getMockForAbstractClass(LogRefBuilderInterface::class);
         $lofRefBuilderMock->expects($this->any())->method('create')->willReturn((string)rand());
 
         $this->logger            = $this->getMockForAbstractClass(LoggerInterface::class);

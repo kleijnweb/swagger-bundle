@@ -9,7 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\Tests\EventListener\Response\Error;
 
 use KleijnWeb\SwaggerBundle\EventListener\Response\Error\HttpError;
-use KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilder;
+use KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilderInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -21,13 +21,13 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 class HttpErrorTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var LogRefBuilder
+     * @var LogRefBuilderInterface
      */
     private $logRefBuilder;
 
     protected function setUp()
     {
-        $this->logRefBuilder = new LogRefBuilder\UniqueIdLogRefBuilder();
+        $this->logRefBuilder = $this->getMockForAbstractClass(LogRefBuilderInterface::class);
     }
 
     /**

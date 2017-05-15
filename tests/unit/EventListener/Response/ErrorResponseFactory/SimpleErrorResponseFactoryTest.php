@@ -9,7 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\Tests\EventListener\Response\ErrorResponseFactory;
 
 use KleijnWeb\SwaggerBundle\EventListener\Response\Error\HttpError;
-use KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilder;
+use KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilderInterface;
 use KleijnWeb\SwaggerBundle\EventListener\Response\ErrorResponseFactory\SimpleErrorResponseFactory;
 use KleijnWeb\SwaggerBundle\Exception\ValidationException;
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -29,14 +29,14 @@ class SimpleErrorResponseFactoryTest extends \PHPUnit_Framework_TestCase
     private $factory;
 
     /**
-     * @var LogRefBuilder
+     * @var LogRefBuilderInterface
      */
     private $logRefBuilder;
 
     protected function setUp()
     {
         $this->factory       = new SimpleErrorResponseFactory();
-        $this->logRefBuilder = $mockObject = $this->getMockForAbstractClass(LogRefBuilder::class);
+        $this->logRefBuilder = $mockObject = $this->getMockForAbstractClass(LogRefBuilderInterface::class);
         $mockObject->expects($this->any())->method('create')->willReturn(self::LOGREF);
     }
 

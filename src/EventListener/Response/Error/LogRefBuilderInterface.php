@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-interface LogRefBuilder
+interface LogRefBuilderInterface
 {
     /**
      * @param Request    $request

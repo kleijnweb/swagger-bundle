@@ -9,8 +9,8 @@
 namespace KleijnWeb\SwaggerBundle\EventListener;
 
 use KleijnWeb\SwaggerBundle\EventListener\Response\Error\HttpError;
-use KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilder;
-use KleijnWeb\SwaggerBundle\EventListener\Response\ErrorResponseFactory;
+use KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilderInterface;
+use KleijnWeb\SwaggerBundle\EventListener\Response\ErrorResponseFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
@@ -25,23 +25,23 @@ class ExceptionListener
     private $logger;
 
     /**
-     * @var ErrorResponseFactory
+     * @var ErrorResponseFactoryInterface
      */
     private $errorResponseFactory;
 
     /**
-     * @var LogRefBuilder
+     * @var LogRefBuilderInterface
      */
     private $logRefBuilder;
 
     /**
-     * @param ErrorResponseFactory $errorResponseFactory
-     * @param LogRefBuilder        $logRefBuilder
-     * @param LoggerInterface      $logger
+     * @param ErrorResponseFactoryInterface $errorResponseFactory
+     * @param LogRefBuilderInterface        $logRefBuilder
+     * @param LoggerInterface               $logger
      */
     public function __construct(
-        ErrorResponseFactory $errorResponseFactory,
-        LogRefBuilder $logRefBuilder,
+        ErrorResponseFactoryInterface $errorResponseFactory,
+        LogRefBuilderInterface $logRefBuilder,
         LoggerInterface $logger
     ) {
         $this->logger               = $logger;

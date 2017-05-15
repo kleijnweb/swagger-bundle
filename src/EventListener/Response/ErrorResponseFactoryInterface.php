@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-interface ErrorResponseFactory
+interface ErrorResponseFactoryInterface
 {
     /**
      * @param HttpError $error
