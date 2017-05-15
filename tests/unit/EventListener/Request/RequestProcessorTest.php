@@ -295,6 +295,28 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function willThrowExceptionIfRequestBodyIsNotValid()
+    {
+        $this->hydratorMock->expects($this->never())
+            ->method('hydrate');
+
+        $processor = $this->createProcessor(true, false);
+        $this->expectException(ValidationException::class);
+
+        $processor->process(
+            $this->createRequest(
+                [
+                    RequestMeta::ATTRIBUTE_URI  => '/uri',
+                    RequestMeta::ATTRIBUTE_PATH => '/path',
+                ],
+                json_encode([])
+            )
+        );
+    }
+
+    /**
+     * @test
+     */
     public function willPassNullToValidatorWhenOperationAndRequestHaveNoParams()
     {
         $processor = $this->createProcessor();
