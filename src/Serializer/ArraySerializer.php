@@ -33,8 +33,11 @@ class ArraySerializer
      */
     public function deserialize($data)
     {
+        if ($data === null) {
+            return $data;
+        }
+        
         $array = json_decode($data, true);
-
         if (!is_array($array)) {
             throw new \UnexpectedValueException("Expected result to be an array");
         }
