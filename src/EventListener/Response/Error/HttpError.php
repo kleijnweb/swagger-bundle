@@ -10,7 +10,7 @@ namespace KleijnWeb\SwaggerBundle\EventListener\Response\Error;
 
 use KleijnWeb\SwaggerBundle\Exception\ValidationException;
 use Psr\Log\LogLevel;
-use Symfony\Component\Finder\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
