@@ -72,7 +72,10 @@ class ResponseFactory
         foreach (array_keys((array)$operationDefinition->responses) as $statusCode) {
             if ($statusCode == 204) {
                 $understands204 = true;
+                break;
             }
+        }
+        foreach (array_keys((array)$operationDefinition->responses) as $statusCode) {
             if (2 == substr($statusCode, 0, 1)) {
                 $responseCode = $statusCode;
                 break;
