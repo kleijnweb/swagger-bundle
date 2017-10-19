@@ -63,6 +63,22 @@ paths:
           description: "The requested resource"
           schema:
             type: object
+  /maintenance:
+    get:
+      summary: 'Check for maintenance messages'
+      description: ''
+      operationId: getMaintenance
+      produces:
+        - application/json
+      responses:
+        200:
+          description: 'There is a maintenance message'
+          schema:
+            type: object
+            additionalProperties:
+              type: string
+        204:
+          description: 'Succesfull operation, but no maintenance message to show'
 
 responses:
   Created:
