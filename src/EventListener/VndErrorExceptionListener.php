@@ -16,7 +16,6 @@ use Psr\Log\LogLevel;
 use Ramsey\VndError\VndError;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -77,24 +76,17 @@ class VndErrorExceptionListener
                 $statusCode = Response::HTTP_BAD_REQUEST;
                 $vndError   = $this->validationErrorFactory->create($request, $exception, $logRef);
             } else {
-                switch(true) {
-                    case $exception instanceof NotFoundHttpException:
-                        $statusCode = Response::HTTP_NOT_FOUND;
-                        $severity   = LogLevel::INFO;
-                        break;
-                    case $exception instanceof MethodNotAllowedHttpException:
+                if ($exception instanceof NotFoundHttpException) {
+                    $statusCode = Response::HTTP_NOT_FOUND;
+                    $severity   = LogLevel::INFO;
+                } else {
+                    if ($exception instanceof MethodNotAllowedHttpException) {
                         $statusCode = Response::HTTP_METHOD_NOT_ALLOWED;
                         $severity   = LogLevel::WARNING;
-                        break;
-                    case $exception instanceof AuthenticationException:
+                    } elseif ($exception instanceof AuthenticationException) {
                         $statusCode = Response::HTTP_UNAUTHORIZED;
                         $severity   = LogLevel::WARNING;
-                        break;
-                    case $exception instanceof AccessDeniedHttpException:
-                        $statusCode = Response::HTTP_FORBIDDEN;
-                        $severity   = LogLevel::WARNING;
-                        break;
-                    default:
+                    } else {
                         $is3Digits = strlen($code) === 3;
                         $class     = (int)substr($code, 0, 1);
                         if (!$is3Digits) {
@@ -115,8 +107,8 @@ class VndErrorExceptionListener
                                     $severity   = LogLevel::CRITICAL;
                             }
                         }
+                    }
                 }
-
                 $message  = Response::$statusTexts[$statusCode];
                 $vndError = new VndError($message, $logRef);
                 $vndError->addLink('help', $request->get('_definition'), ['title' => 'Error Information']);
