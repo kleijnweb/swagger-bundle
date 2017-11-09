@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\EventListener;
 
+use KleijnWeb\PhpApi\RoutingBundle\Routing\RequestMeta;
 use KleijnWeb\SwaggerBundle\EventListener\Response\Error\HttpError;
 use KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilderInterface;
 use KleijnWeb\SwaggerBundle\EventListener\Response\ErrorResponseFactoryInterface;
@@ -54,7 +55,12 @@ class ExceptionListener
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        $error = new HttpError($event->getRequest(), $event->getException(), $this->logRefBuilder);
+        $request = $event->getRequest();
+        if (!$request->attributes->has(RequestMeta::ATTRIBUTE_URI)) {
+            return;
+        }
+
+        $error = new HttpError($request, $event->getException(), $this->logRefBuilder);
 
         $this->logger->log(
             $error->getSeverity(),
