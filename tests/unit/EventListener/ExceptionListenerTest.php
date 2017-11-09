@@ -60,7 +60,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $this->event = $this
             ->getMockBuilder(GetResponseForExceptionEvent::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getException', 'getRequest'])
+            ->setMethods(['getException', 'getRequest', 'setResponse'])
             ->getMock();
 
         $this->exception    = new \Exception("Mary had a little lamb");
@@ -93,6 +93,32 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
 
         $this->logger            = $this->getMockForAbstractClass(LoggerInterface::class);
         $this->exceptionListener = new ExceptionListener($errorResponseFactory, $logRefBuilder, $this->logger);
+    }
+
+    /**
+     * @test
+     */
+    public function willNotHandleIfNoDocumentUriInAttributes()
+    {
+        $event = $this
+            ->getMockBuilder(GetResponseForExceptionEvent::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $event
+            ->expects($this->any())
+            ->method('getRequest')
+            ->willReturn(new Request());
+
+        $event
+            ->expects($this->never())
+            ->method('getException');
+
+        $event
+            ->expects($this->never())
+            ->method('setResponse');
+
+        $this->exceptionListener->onKernelException($event);
     }
 
     /**
