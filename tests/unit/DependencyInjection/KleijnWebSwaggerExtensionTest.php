@@ -13,7 +13,7 @@ class KleijnWebSwaggerExtensionTest extends AbstractExtensionTestCase
     protected function getContainerExtensions()
     {
         return [
-            new KleijnWebSwaggerExtension()
+            new KleijnWebSwaggerExtension(),
         ];
     }
 
@@ -26,9 +26,7 @@ class KleijnWebSwaggerExtensionTest extends AbstractExtensionTestCase
     public function testExceptionListenerNotRegisteredWhenDisabled()
     {
         $this->load([
-            'listeners' => [
-                'exception' => false,
-            ],
+            'handle_exceptions' => false,
         ]);
         $this->assertContainerBuilderNotHasService('kernel.listener.swagger.exception');
     }
