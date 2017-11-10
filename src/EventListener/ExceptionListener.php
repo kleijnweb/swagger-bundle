@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\EventListener;
 
+use KleijnWeb\PhpApi\RoutingBundle\Routing\RequestMeta;
 use KleijnWeb\SwaggerBundle\EventListener\Response\Error\HttpError;
 use KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilderInterface;
 use KleijnWeb\SwaggerBundle\EventListener\Response\ErrorResponseFactoryInterface;

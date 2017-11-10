@@ -1,0 +1,7 @@
+services:
+  kernel.listener.swagger.exception:
+    class: KleijnWeb\SwaggerBundle\EventListener\ExceptionListener
+    arguments: ['@swagger.response.error_response_factory.simple', '@swagger.response.error.logref_builder', '@logger']
+    tags:
+      - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+    public: true

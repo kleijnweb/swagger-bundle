@@ -60,7 +60,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $this->event = $this
             ->getMockBuilder(GetResponseForExceptionEvent::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getException', 'getRequest'])
+            ->setMethods(['getException', 'getRequest', 'setResponse'])
             ->getMock();
 
         $this->exception    = new \Exception("Mary had a little lamb");
