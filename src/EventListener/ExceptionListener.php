@@ -55,12 +55,7 @@ class ExceptionListener
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        $request = $event->getRequest();
-        if (!$request->attributes->has(RequestMeta::ATTRIBUTE_URI)) {
-            return;
-        }
-
-        $error = new HttpError($request, $event->getException(), $this->logRefBuilder);
+        $error = new HttpError($event->getRequest(), $event->getException(), $this->logRefBuilder);
 
         $this->logger->log(
             $error->getSeverity(),

@@ -98,32 +98,6 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function willNotHandleIfNoDocumentUriInAttributes()
-    {
-        $event = $this
-            ->getMockBuilder(GetResponseForExceptionEvent::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $event
-            ->expects($this->any())
-            ->method('getRequest')
-            ->willReturn(new Request());
-
-        $event
-            ->expects($this->never())
-            ->method('getException');
-
-        $event
-            ->expects($this->never())
-            ->method('setResponse');
-
-        $this->exceptionListener->onKernelException($event);
-    }
-
-    /**
-     * @test
-     */
     public function willLogExceptionsWith4xxCodesAsBadRequestNotices()
     {
         for ($i = 0; $i < 99; $i++) {
