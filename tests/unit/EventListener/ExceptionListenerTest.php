@@ -16,6 +16,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -93,6 +94,70 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
 
         $this->logger            = $this->getMockForAbstractClass(LoggerInterface::class);
         $this->exceptionListener = new ExceptionListener($errorResponseFactory, $logRefBuilder, $this->logger);
+    }
+
+    /**
+     * @test
+     */
+    public function willNotHandleIfNoDocumentUriInAttributesAndNotHttpException()
+    {
+        $event = $this
+            ->getMockBuilder(GetResponseForExceptionEvent::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getException', 'getRequest', 'setResponse'])
+            ->getMock();
+
+        $event
+            ->expects($this->any())
+            ->method('getException')
+            ->willReturn(new \Exception("Mary had a little lamb"))
+        ;
+
+        $event
+            ->expects($this->any())
+            ->method('getRequest')
+            ->willReturn(new Request())
+        ;
+
+        $event
+            ->expects($this->never())
+            ->method('setResponse')
+        ;
+
+        /** @var GetResponseForExceptionEvent $event */
+        $this->exceptionListener->onKernelException($event);
+    }
+
+    /**
+     * @test
+     */
+    public function willHandleIfNoDocumentUriInAttributesButHttpException()
+    {
+        $event = $this
+            ->getMockBuilder(GetResponseForExceptionEvent::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getException', 'getRequest', 'setResponse'])
+            ->getMock();
+
+        $event
+            ->expects($this->any())
+            ->method('getException')
+            ->willReturn(new NotFoundHttpException())
+        ;
+
+        $event
+            ->expects($this->any())
+            ->method('getRequest')
+            ->willReturn(new Request())
+        ;
+
+        $event
+            ->expects($this->once())
+            ->method('setResponse')
+        ;
+
+        /** @var GetResponseForExceptionEvent $event */
+        $this->exceptionListener->onKernelException($event);
     }
 
     /**

@@ -14,6 +14,7 @@ use KleijnWeb\SwaggerBundle\EventListener\Response\Error\LogRefBuilderInterface;
 use KleijnWeb\SwaggerBundle\EventListener\Response\ErrorResponseFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -55,11 +56,20 @@ class ExceptionListener
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        $error = new HttpError($event->getRequest(), $event->getException(), $this->logRefBuilder);
+        $request = $event->getRequest();
+        $exception = $event->getException();
+        if (!(
+            $request->attributes->has(RequestMeta::ATTRIBUTE_URI)
+            || $exception instanceof HttpException
+        )) {
+            return;
+        }
+
+        $error = new HttpError($request, $exception, $this->logRefBuilder);
 
         $this->logger->log(
             $error->getSeverity(),
-            "{$error->getMessage()} [logref {$error->getLogRef()}]: {$event->getException()}"
+            "{$error->getMessage()} [logref {$error->getLogRef()}]: {$exception}"
         );
 
         $event->setResponse($this->errorResponseFactory->create($error));
