@@ -96,10 +96,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $this->exceptionListener = new ExceptionListener($errorResponseFactory, $logRefBuilder, $this->logger);
     }
 
-    /**
-     * @test
-     */
-    public function willNotHandleIfNoDocumentUriInAttributesAndNotHttpException()
+    public function testWillNotHandleIfNoDocumentUriInAttributesAndNotHttpException()
     {
         $event = $this
             ->getMockBuilder(GetResponseForExceptionEvent::class)
@@ -128,10 +125,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $this->exceptionListener->onKernelException($event);
     }
 
-    /**
-     * @test
-     */
-    public function willHandleIfNoDocumentUriInAttributesButHttpException()
+    public function testWillHandleIfNoDocumentUriInAttributesButHttpException()
     {
         $event = $this
             ->getMockBuilder(GetResponseForExceptionEvent::class)
@@ -160,10 +154,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $this->exceptionListener->onKernelException($event);
     }
 
-    /**
-     * @test
-     */
-    public function willLogExceptionsWith4xxCodesAsBadRequestNotices()
+    public function testWillLogExceptionsWith4xxCodesAsBadRequestNotices()
     {
         for ($i = 0; $i < 99; $i++) {
             $logger = $this->getMockForAbstractClass(LoggerInterface::class);
@@ -179,10 +170,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * @test
-     */
-    public function willLogExceptionsWith5xxCodesAsRuntimeErrors()
+    public function testWillLogExceptionsWith5xxCodesAsRuntimeErrors()
     {
         for ($i = 0; $i < 99; $i++) {
             $logger = $this->getMockForAbstractClass(LoggerInterface::class);
@@ -198,10 +186,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * @test
-     */
-    public function willLogExceptionsWithUnexpectedCodesAsCriticalErrors()
+    public function testWillLogExceptionsWithUnexpectedCodesAsCriticalErrors()
     {
         $sample = [4096, 777, 22, 5, 0];
         foreach ($sample as $code) {
