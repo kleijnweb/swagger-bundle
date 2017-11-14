@@ -16,6 +16,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -95,10 +96,65 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $this->exceptionListener = new ExceptionListener($errorResponseFactory, $logRefBuilder, $this->logger);
     }
 
-    /**
-     * @test
-     */
-    public function willLogExceptionsWith4xxCodesAsBadRequestNotices()
+    public function testWillNotHandleIfNoDocumentUriInAttributesAndNotHttpException()
+    {
+        $event = $this
+            ->getMockBuilder(GetResponseForExceptionEvent::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getException', 'getRequest', 'setResponse'])
+            ->getMock();
+
+        $event
+            ->expects($this->any())
+            ->method('getException')
+            ->willReturn(new \Exception("Mary had a little lamb"))
+        ;
+
+        $event
+            ->expects($this->any())
+            ->method('getRequest')
+            ->willReturn(new Request())
+        ;
+
+        $event
+            ->expects($this->never())
+            ->method('setResponse')
+        ;
+
+        /** @var GetResponseForExceptionEvent $event */
+        $this->exceptionListener->onKernelException($event);
+    }
+
+    public function testWillHandleIfNoDocumentUriInAttributesButHttpException()
+    {
+        $event = $this
+            ->getMockBuilder(GetResponseForExceptionEvent::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getException', 'getRequest', 'setResponse'])
+            ->getMock();
+
+        $event
+            ->expects($this->any())
+            ->method('getException')
+            ->willReturn(new NotFoundHttpException())
+        ;
+
+        $event
+            ->expects($this->any())
+            ->method('getRequest')
+            ->willReturn(new Request())
+        ;
+
+        $event
+            ->expects($this->once())
+            ->method('setResponse')
+        ;
+
+        /** @var GetResponseForExceptionEvent $event */
+        $this->exceptionListener->onKernelException($event);
+    }
+
+    public function testWillLogExceptionsWith4xxCodesAsBadRequestNotices()
     {
         for ($i = 0; $i < 99; $i++) {
             $logger = $this->getMockForAbstractClass(LoggerInterface::class);
@@ -114,10 +170,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * @test
-     */
-    public function willLogExceptionsWith5xxCodesAsRuntimeErrors()
+    public function testWillLogExceptionsWith5xxCodesAsRuntimeErrors()
     {
         for ($i = 0; $i < 99; $i++) {
             $logger = $this->getMockForAbstractClass(LoggerInterface::class);
@@ -133,10 +186,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * @test
-     */
-    public function willLogExceptionsWithUnexpectedCodesAsCriticalErrors()
+    public function testWillLogExceptionsWithUnexpectedCodesAsCriticalErrors()
     {
         $sample = [4096, 777, 22, 5, 0];
         foreach ($sample as $code) {
