@@ -1,4 +1,4 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -9,66 +9,73 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Functional;
 
 use Exception;
-use PHPUnit_Framework_AssertionFailedError;
-use PHPUnit_Framework_Test;
-use PHPUnit_Framework_TestSuite;
+use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\Test;
+use PHPUnit\Framework\TestListener;
+use PHPUnit\Framework\TestSuite;
+use PHPUnit\Framework\Warning;
 
-class TestCacheSmashingPHPUnitListener implements \PHPUnit_Framework_TestListener
+class TestCacheSmashingPHPUnitListener implements TestListener
 {
     const SUITE_NAME = 'Functional';
 
-    public function addError(PHPUnit_Framework_Test $test, Exception $e, $time)
+    public function addError(Test $test, Exception $e, $time)
     {
         //NOOP
     }
 
-    public function addFailure(PHPUnit_Framework_Test $test, PHPUnit_Framework_AssertionFailedError $e, $time)
+    public function addWarning(Test $test, Warning $e, $time)
     {
         //NOOP
     }
 
-    public function addIncompleteTest(PHPUnit_Framework_Test $test, Exception $e, $time)
+    public function addFailure(Test $test, AssertionFailedError $e, $time)
     {
         //NOOP
     }
 
-    public function addRiskyTest(PHPUnit_Framework_Test $test, Exception $e, $time)
+    public function addIncompleteTest(Test $test, Exception $e, $time)
     {
         //NOOP
     }
 
-    public function addSkippedTest(PHPUnit_Framework_Test $test, Exception $e, $time)
+    public function addRiskyTest(Test $test, Exception $e, $time)
     {
         //NOOP
     }
 
-    public function startTest(PHPUnit_Framework_Test $test)
+    public function addSkippedTest(Test $test, Exception $e, $time)
     {
         //NOOP
     }
 
-    public function endTest(PHPUnit_Framework_Test $test, $time)
+    public function startTest(Test $test)
     {
         //NOOP
     }
 
-    public function startTestSuite(PHPUnit_Framework_TestSuite $suite)
+    public function endTest(Test $test, $time)
+    {
+        //NOOP
+    }
+
+    public function startTestSuite(TestSuite $suite)
     {
         $this->smashIfFunctionalSuite($suite);
     }
 
-    public function endTestSuite(PHPUnit_Framework_TestSuite $suite)
+    public function endTestSuite(TestSuite $suite)
     {
         $this->smashIfFunctionalSuite($suite);
     }
 
-    private function smashIfFunctionalSuite(PHPUnit_Framework_TestSuite $suite)
+    private function smashIfFunctionalSuite(TestSuite $suite)
     {
         if ($suite->getName() !== self::SUITE_NAME) {
             return;
         }
 
-        $dir = __DIR__.'/PetStore/app/cache';
+        $dir = __DIR__ . '/PetStore/app/cache';
 
         if (!is_dir($dir)) {
             return;

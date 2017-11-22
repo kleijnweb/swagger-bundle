@@ -13,11 +13,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class RequestAuthorizationListenerTest extends \PHPUnit_Framework_TestCase
+class RequestAuthorizationListenerTest extends TestCase
 {
     /**
      * @var AuthorizationCheckerInterface
@@ -40,6 +41,12 @@ class RequestAuthorizationListenerTest extends \PHPUnit_Framework_TestCase
      */
     public function willNotHandleUnlessMasterRequest()
     {
+        /** @var \PHPUnit_Framework_MockObject_MockObject $mock */
+        $mock = $this->authorizationChecker;
+        $mock
+            ->expects($this->never())
+            ->method('isGranted');
+
         $this->listener->handle($this->createKernelEventWithRequest(new Request(), false));
     }
 

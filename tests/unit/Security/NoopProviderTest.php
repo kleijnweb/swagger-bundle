@@ -10,11 +10,12 @@ namespace KleijnWeb\SwaggerBundle\Tests\Security;
 
 use KleijnWeb\SwaggerBundle\Security\NoopProvider;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class NoopProviderTest extends \PHPUnit_Framework_TestCase
+class NoopProviderTest extends TestCase
 {
     /**
      * @test

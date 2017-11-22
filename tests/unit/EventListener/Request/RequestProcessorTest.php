@@ -25,11 +25,12 @@ use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
 use KleijnWeb\SwaggerBundle\Exception\ValidationException;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class RequestProcessorTest extends \PHPUnit_Framework_TestCase
+class RequestProcessorTest extends TestCase
 {
     /**
      * @var  \PHPUnit_Framework_MockObject_MockObject
@@ -88,7 +89,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $processor = $this->createProcessor();
 
-        $this->setExpectedException(\UnexpectedValueException::class);
+        $this->expectException(\UnexpectedValueException::class);
         $processor->process(new Request());
     }
 
@@ -99,7 +100,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $processor = $this->createProcessor();
 
-        $this->setExpectedException(MalformedContentException::class);
+        $this->expectException(MalformedContentException::class);
 
         $processor->process(
             $this->createRequest(
@@ -280,7 +281,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $processor = $this->createProcessor(false, false);
 
-        $this->setExpectedException(ValidationException::class);
+        $this->expectException(ValidationException::class);
 
         $processor->process(
             $this->createRequest(

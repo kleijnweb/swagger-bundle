@@ -9,11 +9,12 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Test;
 
 use KleijnWeb\SwaggerBundle\Test\ApiRequest;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class ApiRequestTest extends \PHPUnit_Framework_TestCase
+class ApiRequestTest extends TestCase
 {
     /**
      * @test
@@ -28,5 +29,7 @@ class ApiRequestTest extends \PHPUnit_Framework_TestCase
             ->setParameters([])
             ->setServer([])
             ->setUri('/');
+
+        $this->assertTrue(true, "Just testing the interface");
     }
 }

@@ -1,4 +1,4 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -14,6 +14,7 @@ use KleijnWeb\PhpApi\Descriptions\Description\Repository;
 use KleijnWeb\PhpApi\RoutingBundle\Routing\RequestMeta;
 use KleijnWeb\SwaggerBundle\Security\RbacRequestVoter;
 use KleijnWeb\SwaggerBundle\Security\RequestAuthorizationListener;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -23,7 +24,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class RbacRequestVoterTestTest extends \PHPUnit_Framework_TestCase
+class RbacRequestVoterTestTest extends TestCase
 {
     /**
      * @var AccessDecisionManagerInterface
@@ -155,17 +156,6 @@ class RbacRequestVoterTestTest extends \PHPUnit_Framework_TestCase
             VoterInterface::ACCESS_GRANTED,
             $this->voter->vote($token, $request, [RequestAuthorizationListener::ATTRIBUTE])
         );
-    }
-
-    /**
-     * @test
-     */
-    public function willPassTokenToAccessDecisionManager()
-    {
-        /** @var TokenInterface $token */
-        $token = $this->getMockForAbstractClass(TokenInterface::class);
-
-        $this->voter->vote($token, $this->createRequest([]), []);
     }
 
     /**

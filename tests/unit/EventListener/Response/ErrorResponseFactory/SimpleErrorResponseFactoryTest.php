@@ -15,11 +15,12 @@ use KleijnWeb\SwaggerBundle\Exception\ValidationException;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class SimpleErrorResponseFactoryTest extends \PHPUnit_Framework_TestCase
+class SimpleErrorResponseFactoryTest extends TestCase
 {
     const LOGREF = '123456789';
 

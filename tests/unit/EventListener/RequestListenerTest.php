@@ -14,11 +14,12 @@ use KleijnWeb\SwaggerBundle\EventListener\RequestListener;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class RequestListenerTest extends \PHPUnit_Framework_TestCase
+class RequestListenerTest extends TestCase
 {
     const DOCUMENT_PATH = '/hi.yaml';
     const SWAGGER_PATH  = '/a/b/{hello}';

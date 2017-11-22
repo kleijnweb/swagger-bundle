@@ -13,11 +13,12 @@ use KleijnWeb\SwaggerBundle\EventListener\ViewListener;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class ViewListenerTest extends \PHPUnit_Framework_TestCase
+class ViewListenerTest extends TestCase
 {
     /**
      * @test

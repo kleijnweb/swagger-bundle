@@ -15,11 +15,12 @@ use KleijnWeb\PhpApi\Descriptions\Description\Repository;
 use KleijnWeb\PhpApi\RoutingBundle\Routing\RequestMeta;
 use KleijnWeb\SwaggerBundle\Security\RequestMatcher;
 use Symfony\Component\HttpFoundation\Request;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class RequestMatcherTest extends \PHPUnit_Framework_TestCase
+class RequestMatcherTest extends TestCase
 {
     const DOCUMENT_PATH = '/totally/non-existent/path';
 

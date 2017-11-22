@@ -10,11 +10,12 @@ namespace KleijnWeb\SwaggerBundle\Tests\Test;
 
 use KleijnWeb\SwaggerBundle\Test\ApiResponseErrorException;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class ApiResponseErrorExceptionTest extends \PHPUnit_Framework_TestCase
+class ApiResponseErrorExceptionTest extends TestCase
 {
     /**
      * @test

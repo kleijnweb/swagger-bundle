@@ -14,11 +14,12 @@ use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class HttpErrorTest extends \PHPUnit_Framework_TestCase
+class HttpErrorTest extends TestCase
 {
     /**
      * @var LogRefBuilderInterface
