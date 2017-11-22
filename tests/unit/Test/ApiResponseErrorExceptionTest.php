@@ -1,4 +1,4 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -9,8 +9,8 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Test;
 
 use KleijnWeb\SwaggerBundle\Test\ApiResponseErrorException;
-use Symfony\Component\HttpFoundation\Response;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>

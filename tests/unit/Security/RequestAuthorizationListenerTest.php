@@ -1,4 +1,4 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -9,11 +9,11 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Security;
 
 use KleijnWeb\SwaggerBundle\Security\RequestAuthorizationListener;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
@@ -33,7 +33,7 @@ class RequestAuthorizationListenerTest extends TestCase
     protected function setUp()
     {
         $this->authorizationChecker = $this->getMockForAbstractClass(AuthorizationCheckerInterface::class);
-        $this->listener = new RequestAuthorizationListener($this->authorizationChecker);
+        $this->listener             = new RequestAuthorizationListener($this->authorizationChecker);
     }
 
     /**
@@ -55,7 +55,7 @@ class RequestAuthorizationListenerTest extends TestCase
      */
     public function willInvokeAuthorizationCheckerWithCorrectAttributeAndRequest()
     {
-        $request  = new Request();
+        $request = new Request();
 
         /** @var \PHPUnit_Framework_MockObject_MockObject $mock */
         $mock = $this->authorizationChecker;

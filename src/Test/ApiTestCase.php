@@ -1,4 +1,4 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -169,7 +169,7 @@ trait ApiTestCase
             $this->assertSame(
                 JSON_ERROR_NONE,
                 json_last_error(),
-                "Not valid JSON: ".json_last_error_msg()."(".var_export($content, true).")"
+                "Not valid JSON: " . json_last_error_msg() . "(" . var_export($content, true) . ")"
             );
         }
 
@@ -191,7 +191,7 @@ trait ApiTestCase
     {
         $uri = $path;
         if (count($params)) {
-            $uri = $path.'?'.http_build_query($params);
+            $uri = $path . '?' . http_build_query($params);
         }
 
         return $uri;

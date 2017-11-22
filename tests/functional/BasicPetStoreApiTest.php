@@ -1,4 +1,4 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -57,7 +57,7 @@ class BasicPetStoreApiTest extends WebTestCase
     {
         $id = rand();
 
-        $responseData = $this->get('/v2/pet/'.$id);
+        $responseData = $this->get('/v2/pet/' . $id);
 
         $this->assertSame($id, $responseData->id);
     }

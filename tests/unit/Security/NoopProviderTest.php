@@ -1,4 +1,4 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -9,8 +9,8 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Security;
 
 use KleijnWeb\SwaggerBundle\Security\NoopProvider;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * @author John Kleijn <john@kleijnweb.nl>
