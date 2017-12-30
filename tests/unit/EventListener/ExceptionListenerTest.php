@@ -108,19 +108,16 @@ class ExceptionListenerTest extends TestCase
         $event
             ->expects($this->any())
             ->method('getException')
-            ->willReturn(new \Exception("Mary had a little lamb"))
-        ;
+            ->willReturn(new \Exception("Mary had a little lamb"));
 
         $event
             ->expects($this->any())
             ->method('getRequest')
-            ->willReturn(new Request())
-        ;
+            ->willReturn(new Request());
 
         $event
             ->expects($this->never())
-            ->method('setResponse')
-        ;
+            ->method('setResponse');
 
         /** @var GetResponseForExceptionEvent $event */
         $this->exceptionListener->onKernelException($event);
@@ -137,19 +134,16 @@ class ExceptionListenerTest extends TestCase
         $event
             ->expects($this->any())
             ->method('getException')
-            ->willReturn(new NotFoundHttpException())
-        ;
+            ->willReturn(new NotFoundHttpException());
 
         $event
             ->expects($this->any())
             ->method('getRequest')
-            ->willReturn(new Request())
-        ;
+            ->willReturn(new Request());
 
         $event
             ->expects($this->once())
-            ->method('setResponse')
-        ;
+            ->method('setResponse');
 
         /** @var GetResponseForExceptionEvent $event */
         $this->exceptionListener->onKernelException($event);

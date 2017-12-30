@@ -64,9 +64,9 @@ class ViewListenerTest extends TestCase
     public function willSetResponseFromFactoryOnEvent()
     {
         $attributes = [RequestMeta::ATTRIBUTE_URI => '/foo/bar'];
-        $request = new Request($query = [], $request = [], $attributes);
-        $response = new Response();
-        $result = [uniqid()];
+        $request    = new Request($query = [], $request = [], $attributes);
+        $response   = new Response();
+        $result     = [uniqid()];
 
         $eventMock = $this
             ->getMockBuilder(GetResponseForControllerResultEvent::class)
