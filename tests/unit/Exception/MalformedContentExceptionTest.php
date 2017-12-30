@@ -1,4 +1,4 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
 /*
  * This file is part of the KleijnWeb\SwaggerBundle package.
  *
@@ -9,9 +9,9 @@
 namespace KleijnWeb\SwaggerBundle\Tests\Exception;
 
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class MalformedContentExceptionTest extends PHPUnit_Framework_TestCase
+class MalformedContentExceptionTest extends TestCase
 {
     /**
      * @test
