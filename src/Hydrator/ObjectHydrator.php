@@ -9,7 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\Hydrator;
 
 use KleijnWeb\PhpApi\Descriptions\Description\Schema\Schema;
-use KleijnWeb\PhpApi\Hydrator\ProcessorBuilder;
+use KleijnWeb\PhpApi\Descriptions\Hydrator\ProcessorBuilder;
 
 /**
  * Wrapper around ProcessorBuilder for compatibility

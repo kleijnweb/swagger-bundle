@@ -217,26 +217,18 @@ Bastardized `vnd.error` for simplicity. Will include a message and a `logref`. T
 
 ---------------------------------------
 
-## <a name="serialization"></a> Serialization
+## <a name="serialization"></a> Serialization/Hydration
 
-SwaggerBundle will *only* (de-) serialize JSON, outputting `stdClass|stdClass[]`.
+SwaggerBundle will *only* (de-) serialize JSON, by default outputting `stdClass|stdClass[]`. When configured, after (de-)serialization SwaggerBundle will (de-)hydrate your values. 
 
-## Object Hydration
+## Hydration Options
 
-Optionally SwaggerBundle can use [KleijnWeb\PhpApi\Hydrator](https://github.com/kleijnweb/php-api-hydrator):
+Configuring type namespaces (required for any sort of "typed" object hydration):   
 
 ```yml
 swagger:
   hydrator: 
     namespaces: [My\Bundle\Resource\Namespace]
-```
-
-To add custom processors:
-
-```yml
-swagger:
-  hydrator: 
-    processors: [some.service.key]
 ```
 
 Custom dateformat(s):
@@ -245,10 +237,17 @@ Custom dateformat(s):
 swagger:
   date_formats: ['RFC3339_MSEC', 'Y-m-d\ H:i:s']
 ```
-Values that correspond to `KleijnWeb\PhpApi\Hydrator\DateTimeSerializer::FORMAT_` constants are resolved to that value. Values are passed to `DateTimeSerializer` constructor.
+Values that correspond to `KleijnWeb\Descriptions\Hydrator\DateTimeSerializer::FORMAT_` constants are resolved to that value. Values are passed to `DateTimeSerializer` constructor.
 
-Custom processors can be a very powerful tool. See [KleijnWeb\PhpApi\Hydrator](https://github.com/kleijnweb/php-api-hydrator) docs foor more details on date formats and custom processors.
-    
+To add custom processors:
+
+```yml
+swagger:
+  hydrator: 
+    processors: [some.service.key]
+```
+Custom processors can be a very powerful tool. See [KleijnWeb\PhpApi\Descriptions](https://github.com/kleijnweb/php-api-descriptions) docs for more details on date formats and custom processors.
+
 [Back to topics](#topics)
 
 ---------------------------------------
@@ -258,7 +257,7 @@ Custom processors can be a very powerful tool. See [KleijnWeb\PhpApi\Hydrator](h
 When a controller action returns `NULL` or an empty string, SwaggerBundle will return an empty `204` response, provided that one is defined in the specification.
 Otherwise, it will default to the first 2xx type response defined in your spec, or if all else fails, simply 200.
 
-This behavior is defined by `KleijnWeb\PhpApi\Middleware\Util\OkStatusResolver`. You can override it by subclassing it and injecting it into the `ResponseFactory`:
+This behavior is defined by `KleijnWeb\PhpApi\Descriptions\Util\OkStatusResolver`. You can override it by subclassing it and injecting it into the `ResponseFactory`:
 
 ```yaml
 swagger:

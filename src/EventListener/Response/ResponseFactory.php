@@ -9,7 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\EventListener\Response;
 
 use KleijnWeb\PhpApi\Descriptions\Description\Schema\Validator\SchemaValidator;
-use KleijnWeb\PhpApi\Middleware\Util\OkStatusResolver;
+use KleijnWeb\PhpApi\Descriptions\Util\OkStatusResolver;
 use KleijnWeb\PhpApi\RoutingBundle\Routing\RequestMeta;
 use KleijnWeb\SwaggerBundle\Exception\ValidationException;
 use KleijnWeb\SwaggerBundle\Hydrator\ObjectHydrator;

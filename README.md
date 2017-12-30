@@ -43,9 +43,11 @@ Now using [kleijnweb/php-api-routing-bundle](https://github.com/kleijnweb/php-ap
  
 Request matching, voting, OpenAPI configured RBAC. See [docs](docs.md#security).
 
-### Serialization
+### Serialization/Hydration
  
-Support for 3rd party serializers has been replaced by a new _API Description Based_ hyrator ([KleijnWeb\PhpApi\Hydrator](https://github.com/kleijnweb/php-api-hydrator)). The hydrator is optional, but without it in- and output will be `stdClass|stdClass[]`, not a combination of arrays and associative arrays as was the `<4.0` default. 
+Support for 3rd party serializers has been replaced by a new _API Description Based_ (de-)hyrator. Hydrating of untyped data is expected to be `stdClass|stdClass[]`, not a combination of arrays and associative arrays as was the `<4.0` default.
+
+The new procoess has support for JSON-Schema specifics such as default values and smart NULL/undefined handling, as well as high extensibility. This allows you to hook pretty much anything you like into the (de-)hydration process, such as loading objects to be populated with request values from a data store or preserving identity of objects that occur more than once in a request. 
 
 ### Testing
  

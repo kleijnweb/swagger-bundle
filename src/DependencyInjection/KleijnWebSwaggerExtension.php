@@ -8,7 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\DependencyInjection;
 
-use KleijnWeb\PhpApi\Hydrator\DateTimeSerializer;
+use KleijnWeb\PhpApi\Descriptions\Hydrator\DateTimeSerializer;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;

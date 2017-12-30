@@ -1,11 +1,11 @@
 services:
   swagger.hydrator.class_name_resolver:
-    class:   KleijnWeb\PhpApi\Hydrator\ClassNameResolver
+    class:   KleijnWeb\PhpApi\Descriptions\Hydrator\ClassNameResolver
     arguments: [[]]
     public: false
 
   swagger.hydrator.date_time_serializer:
-    class:   KleijnWeb\PhpApi\Hydrator\DateTimeSerializer
+    class:   KleijnWeb\PhpApi\Descriptions\Hydrator\DateTimeSerializer
     public: false
 
   swagger.hydrator:
@@ -14,6 +14,6 @@ services:
     public: false
 
   swagger.hydrator.processor.builder:
-    class: KleijnWeb\PhpApi\Hydrator\ProcessorBuilder
+    class: KleijnWeb\PhpApi\Descriptions\Hydrator\ProcessorBuilder
     arguments: ['@swagger.hydrator.class_name_resolver', '@swagger.hydrator.date_time_serializer']
     public: false
