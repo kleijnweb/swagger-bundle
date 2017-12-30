@@ -9,6 +9,11 @@ services:
     public: false
 
   swagger.hydrator:
-    class:   KleijnWeb\PhpApi\Hydrator\ObjectHydrator
+    class:   KleijnWeb\SwaggerBundle\Hydrator\ObjectHydrator
+    arguments: ['@swagger.hydrator.processor.builder']
+    public: false
+
+  swagger.hydrator.processor.builder:
+    class: KleijnWeb\PhpApi\Hydrator\ProcessorBuilder
     arguments: ['@swagger.hydrator.class_name_resolver', '@swagger.hydrator.date_time_serializer']
     public: false

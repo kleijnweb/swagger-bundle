@@ -12,7 +12,7 @@ use KleijnWeb\PhpApi\Descriptions\Description\Operation;
 use KleijnWeb\PhpApi\Descriptions\Description\Schema\Schema;
 use KleijnWeb\PhpApi\Descriptions\Description\Schema\Validator\SchemaValidator;
 use KleijnWeb\PhpApi\Descriptions\Description\Schema\Validator\ValidationResult;
-use KleijnWeb\PhpApi\Hydrator\ObjectHydrator;
+use KleijnWeb\SwaggerBundle\Hydrator\ObjectHydrator;
 use KleijnWeb\PhpApi\RoutingBundle\Routing\RequestMeta;
 use KleijnWeb\SwaggerBundle\EventListener\Response\ResponseFactory;
 use KleijnWeb\SwaggerBundle\Exception\ValidationException;

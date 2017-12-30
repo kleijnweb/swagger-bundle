@@ -9,10 +9,10 @@
 namespace KleijnWeb\SwaggerBundle\EventListener\Response;
 
 use KleijnWeb\PhpApi\Descriptions\Description\Schema\Validator\SchemaValidator;
-use KleijnWeb\PhpApi\Hydrator\ObjectHydrator;
 use KleijnWeb\PhpApi\Middleware\Util\OkStatusResolver;
 use KleijnWeb\PhpApi\RoutingBundle\Routing\RequestMeta;
 use KleijnWeb\SwaggerBundle\Exception\ValidationException;
+use KleijnWeb\SwaggerBundle\Hydrator\ObjectHydrator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

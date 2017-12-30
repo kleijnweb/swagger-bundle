@@ -231,6 +231,24 @@ swagger:
     namespaces: [My\Bundle\Resource\Namespace]
 ```
 
+To add custom processors:
+
+```yml
+swagger:
+  hydrator: 
+    processors: [some.service.key]
+```
+
+Custom dateformat(s):
+
+```yml
+swagger:
+  date_formats: ['RFC3339_MSEC', 'Y-m-d\ H:i:s']
+```
+Values that correspond to `KleijnWeb\PhpApi\Hydrator\DateTimeSerializer::FORMAT_` constants are resolved to that value. Values are passed to `DateTimeSerializer` constructor.
+
+Custom processors can be a very powerful tool. See [KleijnWeb\PhpApi\Hydrator](https://github.com/kleijnweb/php-api-hydrator) docs foor more details on date formats and custom processors.
+    
 [Back to topics](#topics)
 
 ---------------------------------------

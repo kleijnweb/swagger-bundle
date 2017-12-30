@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\DependencyInjection;
 
+use KleijnWeb\PhpApi\Hydrator\DateTimeSerializer;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
@@ -45,6 +46,25 @@ class KleijnWebSwaggerExtension extends Extension
             $container
                 ->getDefinition('swagger.hydrator.class_name_resolver')
                 ->replaceArgument(0, $config['hydrator']['namespaces']);
+
+            $dateTimeSerializerDefinition = $container->getDefinition('swagger.hydrator.class_name_resolver');
+            if (isset($config['hydrator']['date_formats'])) {
+                foreach ($config['hydrator']['date_formats'] as $format) {
+                    $predefinedFormat = DateTimeSerializer::class . "::FORMAT_{$format}";
+                    if (defined($predefinedFormat)) {
+                        $format = constant($predefinedFormat);
+                    }
+                    $dateTimeSerializerDefinition->addArgument(new Reference($format));
+                }
+            }
+
+            $builderDefinition = $container->getDefinition('swagger.hydrator.processor.builder');
+
+            if (isset($config['hydrator']['processors'])) {
+                foreach ($config['hydrator']['processors'] as $processor) {
+                    $builderDefinition->addMethodCall('add', new Reference($processor));
+                }
+            }
 
             $hydrator   = new Reference('swagger.hydrator');
             $definition = $container->getDefinition('swagger.request.processor');
