@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\EventListener;
 
+use KleijnWeb\PhpApi\RoutingBundle\Routing\RequestMeta;
 use KleijnWeb\SwaggerBundle\EventListener\Response\ResponseFactory;
 use KleijnWeb\SwaggerBundle\Exception\MalformedContentException;
 use KleijnWeb\SwaggerBundle\Exception\UnsupportedContentTypeException;
@@ -39,9 +40,13 @@ class ViewListener
      */
     public function onKernelView(GetResponseForControllerResultEvent $event)
     {
+        $request = $event->getRequest();
+        if (!$request->attributes->has(RequestMeta::ATTRIBUTE_URI)) {
+            return;
+        }
         $event->setResponse(
             $this->responseFactory->createResponse(
-                $event->getRequest(),
+                $request,
                 $event->getControllerResult()
             )
         );

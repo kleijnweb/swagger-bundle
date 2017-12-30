@@ -8,6 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\EventListener;
 
+use KleijnWeb\PhpApi\RoutingBundle\Routing\RequestMeta;
 use KleijnWeb\SwaggerBundle\EventListener\Response\ResponseFactory;
 use KleijnWeb\SwaggerBundle\EventListener\ViewListener;
 use PHPUnit\Framework\TestCase;
@@ -23,11 +24,49 @@ class ViewListenerTest extends TestCase
     /**
      * @test
      */
+    public function willNotHandleIfNoDocumentUriInAttributes()
+    {
+        $eventMock = $this
+            ->getMockBuilder(GetResponseForControllerResultEvent::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $eventMock
+            ->expects($this->any())
+            ->method('getRequest')
+            ->willReturn(new Request());
+
+        $eventMock
+            ->expects($this->never())
+            ->method('getControllerResult');
+
+        $eventMock
+            ->expects($this->never())
+            ->method('setResponse');
+
+        $factoryMock = $this
+            ->getMockBuilder(ResponseFactory::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $factoryMock
+            ->expects($this->never())
+            ->method('createResponse');
+
+        /** @var ResponseFactory $factoryMock */
+        $listener = new ViewListener($factoryMock);
+        /** @var GetResponseForControllerResultEvent $eventMock */
+        $listener->onKernelView($eventMock);
+    }
+
+    /**
+     * @test
+     */
     public function willSetResponseFromFactoryOnEvent()
     {
-        $request  = new Request();
+        $attributes = [RequestMeta::ATTRIBUTE_URI => '/foo/bar'];
+        $request = new Request($query = [], $request = [], $attributes);
         $response = new Response();
-        $result   = [uniqid()];
+        $result = [uniqid()];
 
         $eventMock = $this
             ->getMockBuilder(GetResponseForControllerResultEvent::class)

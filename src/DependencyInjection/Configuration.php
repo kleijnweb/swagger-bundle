@@ -59,6 +59,7 @@ class Configuration implements ConfigurationInterface
             ->booleanNode('match_unsecured')->defaultFalse()->end()
             ->end()
             ->end()
+            ->booleanNode('handle_exceptions')->defaultTrue()->end()
             ->end();
 
         return $treeBuilder;

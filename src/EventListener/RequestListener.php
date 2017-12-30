@@ -41,7 +41,7 @@ class RequestListener
             return;
         }
         $request = $event->getRequest();
-        if (!$request->attributes->get(RequestMeta::ATTRIBUTE_URI)) {
+        if (!$request->attributes->has(RequestMeta::ATTRIBUTE_URI)) {
             return;
         }
         $this->processor->process($request);
