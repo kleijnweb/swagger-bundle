@@ -69,7 +69,7 @@ The dependency on `SwaggerAssertions` has been removed, as response validation i
   
 ## Symfony Compatibility
  
-SwaggerBundle is tested against Symfony 2.8.7 and the latest release (3.x.x), at least once a week.
+SwaggerBundle is tested against Symfony 2.8.7 and the latest release (4.x.x), at least once a week.
 
 ## Notes
  
