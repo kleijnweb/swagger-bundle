@@ -13,14 +13,14 @@ use Symfony\Component\BrowserKit\Request;
 /**
  * @author John Kleijn <john@kleijnweb.nl>
  */
-class ApiRequest extends Request
+class ApiTestRequest extends Request
 {
     /**
      * @param string $uri
      *
-     * @return ApiRequest
+     * @return ApiTestRequest
      */
-    public function setUri(string $uri): ApiRequest
+    public function setUri(string $uri): ApiTestRequest
     {
         $this->uri = $uri;
 
@@ -30,9 +30,9 @@ class ApiRequest extends Request
     /**
      * @param string $method
      *
-     * @return ApiRequest
+     * @return ApiTestRequest
      */
-    public function setMethod(string $method): ApiRequest
+    public function setMethod(string $method): ApiTestRequest
     {
         $this->method = $method;
 
@@ -42,9 +42,9 @@ class ApiRequest extends Request
     /**
      * @param array $parameters
      *
-     * @return ApiRequest
+     * @return ApiTestRequest
      */
-    public function setParameters(array $parameters): ApiRequest
+    public function setParameters(array $parameters): ApiTestRequest
     {
         $this->parameters = $parameters;
 
@@ -54,9 +54,9 @@ class ApiRequest extends Request
     /**
      * @param array $files
      *
-     * @return ApiRequest
+     * @return ApiTestRequest
      */
-    public function setFiles(array $files): ApiRequest
+    public function setFiles(array $files): ApiTestRequest
     {
         $this->files = $files;
 
@@ -66,9 +66,9 @@ class ApiRequest extends Request
     /**
      * @param array $cookies
      *
-     * @return ApiRequest
+     * @return ApiTestRequest
      */
-    public function setCookies(array $cookies): ApiRequest
+    public function setCookies(array $cookies): ApiTestRequest
     {
         $this->cookies = $cookies;
 
@@ -78,9 +78,9 @@ class ApiRequest extends Request
     /**
      * @param array $server
      *
-     * @return ApiRequest
+     * @return ApiTestRequest
      */
-    public function setServer(array $server): ApiRequest
+    public function setServer(array $server): ApiTestRequest
     {
         $this->server = $server;
 
@@ -90,9 +90,9 @@ class ApiRequest extends Request
     /**
      * @param mixed $content
      *
-     * @return ApiRequest
+     * @return ApiTestRequest
      */
-    public function setContent($content): ApiRequest
+    public function setContent($content): ApiTestRequest
     {
         $this->content = $content;
 

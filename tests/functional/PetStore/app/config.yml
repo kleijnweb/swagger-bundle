@@ -6,7 +6,7 @@ swagger:
 
 services:
   petstore.cache:
-    class: Doctrine\Common\Cache\ArrayCache
+    class: Symfony\Component\Cache\Simple\ArrayCache
   swagger.controller.pet:
     class: KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\Controller\PetController
   swagger.controller.store:

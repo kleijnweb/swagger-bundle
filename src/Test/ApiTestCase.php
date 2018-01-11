@@ -147,7 +147,7 @@ trait ApiTestCase
         array $content = null,
         array $server = []
     ) {
-        $apiRequest = new ApiRequest($this->assembleUri($path, $params), $method);
+        $apiRequest = new ApiTestRequest($this->assembleUri($path, $params), $method);
         $apiRequest->setServer(
             array_merge($server, ['CONTENT_TYPE' => 'application/json'], $this->getDefaultServerVars())
         );

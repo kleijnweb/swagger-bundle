@@ -8,7 +8,7 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Test;
 
-use KleijnWeb\SwaggerBundle\Test\ApiRequest;
+use KleijnWeb\SwaggerBundle\Test\ApiTestRequest;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -21,7 +21,7 @@ class ApiRequestTest extends TestCase
      */
     public function canChain()
     {
-        (new ApiRequest('/', 'POST'))
+        (new ApiTestRequest('/', 'POST'))
             ->setContent('')
             ->setCookies([])
             ->setFiles([])
