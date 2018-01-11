@@ -14,4 +14,9 @@ matrix:
         - mkdir -p build/logs
       after_script:
         - travis_retry php bin/coveralls -v
+        - >
+          curl --silent https://github.com/kleijnweb/swagger-bundle
+            | grep -oP 'https://camo.githubusercontent.com/[0-9a-z]+/[0-9a-z]+'
+            | xargs curl -X PURGE
+
   fast_finish: true
