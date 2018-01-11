@@ -252,7 +252,7 @@ Custom processors can be a very powerful tool. See [KleijnWeb\PhpApi\Description
 
 ---------------------------------------
 
-## <a name="serialization"></a> Responses
+## <a name="responses"></a> Responses
  
 When a controller action returns `NULL` or an empty string, SwaggerBundle will return an empty `204` response, provided that one is defined in the specification.
 Otherwise, it will default to the first 2xx type response defined in your spec, or if all else fails, simply 200.
