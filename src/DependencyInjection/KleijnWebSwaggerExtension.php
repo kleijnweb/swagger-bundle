@@ -36,7 +36,7 @@ class KleijnWebSwaggerExtension extends Extension
         $container->setParameter('swagger.document.base_path', $config['document']['base_path']);
         $container->setParameter('phpapi.router_name', 'swagger');
 
-        if (isset($config['document']['cache'])) {
+        if (isset($config['document']['cache']) && is_string($config['document']['cache'])) {
             $resolverDefinition = $container->getDefinition('swagger.description.repository');
             $resolverDefinition->addArgument(new Reference($config['document']['cache']));
         }
