@@ -26,5 +26,6 @@
 
     <php>
         <server name="KERNEL_DIR" value="./tests/functional/PetStore/app"/>
+        <server name="KERNEL_CLASS" value="KleijnWeb\SwaggerBundle\Tests\Functional\PetStore\app\TestKernel"/>
     </php>
 </phpunit>
