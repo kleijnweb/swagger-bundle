@@ -12,9 +12,13 @@
   "description": "Makes your Swagger definition into a routing and validation spec",
   "autoload": {
     "psr-4": {
-      "KleijnWeb\\SwaggerBundle\\Tests\\": "tests/unit",
-      "KleijnWeb\\SwaggerBundle\\Tests\\Functional\\": "tests/functional",
       "KleijnWeb\\SwaggerBundle\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "KleijnWeb\\SwaggerBundle\\Tests\\": "tests/unit",
+      "KleijnWeb\\SwaggerBundle\\Tests\\Functional\\": "tests/functional"
     }
   },
   "keywords": [
