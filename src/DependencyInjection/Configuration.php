@@ -49,7 +49,7 @@ class Configuration implements ConfigurationInterface
             ->arrayNode('document')
             ->addDefaultsIfNotSet()
             ->children()
-            ->scalarNode('cache')->isRequired()->defaultFalse()->end()
+            ->scalarNode('cache')->cannotBeEmpty()->defaultFalse()->end()
             ->scalarNode('base_path')->defaultValue('')->end()
             ->end()
             ->end()
