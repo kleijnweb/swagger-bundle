@@ -9,6 +9,7 @@
 namespace KleijnWeb\SwaggerBundle\Test;
 
 use KleijnWeb\PhpApi\Descriptions\Description\Schema\Validator\SchemaValidator;
+use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -20,7 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 trait ApiTestCase
 {
     /**
-     * @var ApiTestClient
+     * @var Client
      */
     protected $client;
 
