@@ -75,7 +75,7 @@ class TestCacheSmashingPHPUnitListener implements TestListener
             return;
         }
 
-        $dir = __DIR__ . '/PetStore/app/cache';
+        $dir = __DIR__ . '/var';
 
         if (!is_dir($dir)) {
             return;

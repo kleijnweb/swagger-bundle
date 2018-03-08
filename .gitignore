@@ -1,8 +1,7 @@
 /bin/
 /vendor
 /build
-/tests/Functional/PetStore/app/cache
-/tests/Functional/PetStore/app/logs
+tests/functional/_app/var
 /composer.lock
 phpunit.xml
 studio.json

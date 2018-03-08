@@ -1,7 +1,7 @@
 swagger:
   validate_responses: true
   document:
-    base_path: 'tests/functional/PetStore/app'
+    base_path: 'tests/functional/_app/config'
     cache: 'petstore.cache'
 
 services:
@@ -27,7 +27,7 @@ framework:
   test: true
   secret: test
   router:
-    resource: "%kernel.root_dir%/routing.yml"
+    resource: "%kernel.root_dir%/config/routing.yml"
     strict_requirements: ~
   fragments:       ~
   http_method_override: true

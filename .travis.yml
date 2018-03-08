@@ -8,6 +8,8 @@ matrix:
   include:
     - php: 7.0
       env: COMPOSER_FLAGS="--prefer-lowest"
+      script: bin/phpunit
+
     - php: 7.0
       script: bin/phpunit --coverage-clover build/logs/clover.xml
       before_script:
@@ -18,5 +20,10 @@ matrix:
           curl --silent https://github.com/kleijnweb/swagger-bundle |\
             grep -oP 'https://camo.githubusercontent.com/[0-9a-z]+/[0-9a-z]+' |\
             xargs curl -X PURGE
+
+    - php: 7.1
+      script:
+        - bin/phpunit
+        - bin/phpcs --standard=PSR2 src tests --ignore=tests/functional/_app/var
 
   fast_finish: true

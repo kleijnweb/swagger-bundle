@@ -111,7 +111,7 @@ class ResponseFactoryTest extends TestCase
 
         $factory = new ResponseFactory($hydrator, $mockValidator);
         $request = new Request();
-        $request->attributes->set(RequestMeta::ATTRIBUTE_URI, 'tests/Functional/PetStore/app/swagger/composite.yml');
+        $request->attributes->set(RequestMeta::ATTRIBUTE_URI, 'tests/Functional/PetStore/config/swagger/composite.yml');
         $request->attributes->set(RequestMeta::ATTRIBUTE, $metaMock);
 
         return $factory->createResponse($request, $data);
