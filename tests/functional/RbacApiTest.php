@@ -10,7 +10,6 @@ namespace KleijnWeb\SwaggerBundle\Tests\Functional;
 
 use KleijnWeb\SwaggerBundle\Test\ApiResponseErrorException;
 use KleijnWeb\SwaggerBundle\Test\ApiTestCase;
-use KleijnWeb\SwaggerBundle\Test\ApiTestClient;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -101,11 +100,9 @@ class RbacApiTest extends WebTestCase
 
     private function createClientForUser(string $user)
     {
-        $this->client = new ApiTestClient(
-            static::createClient(
-                ['environment' => $this->getEnv(), 'debug' => true],
-                ['PHP_AUTH_USER' => $user, 'PHP_AUTH_PW' => 'password']
-            )
+        $this->client = static::createClient(
+            ['environment' => $this->getEnv(), 'debug' => true],
+            ['PHP_AUTH_USER' => $user, 'PHP_AUTH_PW' => 'password']
         );
     }
 }

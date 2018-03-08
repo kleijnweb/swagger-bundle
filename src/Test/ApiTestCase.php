@@ -41,13 +41,11 @@ trait ApiTestCase
      */
     protected function createApiTestClient()
     {
-        return $this->client = new ApiTestClient(
-            static::createClient(
-                [
-                    'environment' => $this->getEnv(),
-                    'debug'       => true,
-                ]
-            )
+        return $this->client = static::createClient(
+            [
+                'environment' => $this->getEnv(),
+                'debug'       => true,
+            ]
         );
     }
 
@@ -156,7 +154,11 @@ trait ApiTestCase
             $apiRequest->setContent(json_encode($content));
         }
 
-        $this->client->requestFromRequest($apiRequest);
+        // Originally this was using a decorator, but that was causing version incompatibility issues
+        $refl = new \ReflectionObject($this->client);
+        $reflMethod = $refl->getMethod('requestFromRequest');
+        $reflMethod->setAccessible(true);
+        $reflMethod->invoke($this->client, $apiRequest);
 
         /** @var Response $response */
         $response = $this->client->getResponse();
