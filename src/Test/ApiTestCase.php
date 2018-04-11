@@ -87,7 +87,7 @@ trait ApiTestCase
             json_encode(self::$document->getDefinition())
         );
 
-        self::$schemaManager = new SchemaManager(vfsStream::url('root') . '/swagger.json');
+        self::$schemaManager = new SchemaManager(self::$document->getDefinition());
     }
 
     /**
@@ -95,7 +95,7 @@ trait ApiTestCase
      */
     protected function setUp()
     {
-        $this->client = new ApiTestClient(static::createClient(['environment' => $this->getEnv(), 'debug' => true]));
+        $this->client = static::createClient(['environment' => $this->getEnv(), 'debug' => true]);
 
         parent::setUp();
     }

@@ -22,11 +22,11 @@ services:
 
   swagger.serializer.type_resolver:
     class:   KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver
-    arguments: [%swagger.serializer.namespace%]
+    arguments: ['%swagger.serializer.namespace%']
 
   swagger.document.repository:
     class: KleijnWeb\SwaggerBundle\Document\DocumentRepository
-    arguments: [%swagger.document.base_path%]
+    arguments: ['%swagger.document.base_path%']
 
   swagger.response.factory:
     class: KleijnWeb\SwaggerBundle\Response\ResponseFactory
@@ -69,3 +69,7 @@ services:
     arguments: ['@swagger.document.repository', '@swagger.request.processor']
     tags:
       - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+  test.client:
+    class: KleijnWeb\SwaggerBundle\Test\ApiTestClient
+    arguments: ['@kernel', '%test.client.parameters%', '@test.client.history', '@test.client.cookiejar']
