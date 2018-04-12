@@ -73,3 +73,4 @@ services:
   test.client:
     class: KleijnWeb\SwaggerBundle\Test\ApiTestClient
     arguments: ['@kernel', '%test.client.parameters%', '@test.client.history', '@test.client.cookiejar']
+    scope: prototype
