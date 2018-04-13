@@ -8,7 +8,9 @@
 
 namespace KleijnWeb\SwaggerBundle;
 
+use KleijnWeb\SwaggerBundle\DependencyInjection\InjectTestClientCompilerPass;
 use KleijnWeb\SwaggerBundle\DependencyInjection\KleijnWebSwaggerExtension;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -35,5 +37,11 @@ class KleijnWebSwaggerBundle extends Bundle
         }
 
         return $this->extension;
+    }
+
+    public function build(ContainerBuilder $container)
+    {
+        parent::build($container);
+        $container->addCompilerPass(new InjectTestClientCompilerPass());
     }
 }
