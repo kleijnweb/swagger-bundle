@@ -22,11 +22,11 @@ services:
 
   swagger.serializer.type_resolver:
     class:   KleijnWeb\SwaggerBundle\Serializer\SerializationTypeResolver
-    arguments: [%swagger.serializer.namespace%]
+    arguments: ['%swagger.serializer.namespace%']
 
   swagger.document.repository:
     class: KleijnWeb\SwaggerBundle\Document\DocumentRepository
-    arguments: [%swagger.document.base_path%]
+    arguments: ['%swagger.document.base_path%']
 
   swagger.response.factory:
     class: KleijnWeb\SwaggerBundle\Response\ResponseFactory

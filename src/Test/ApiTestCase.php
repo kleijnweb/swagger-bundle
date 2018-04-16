@@ -82,12 +82,18 @@ trait ApiTestCase
         vfsStreamWrapper::register();
         vfsStreamWrapper::setRoot(new vfsStreamDirectory('root'));
 
+        $swaggerUri = vfsStream::url('root') . '/swagger.json';
         file_put_contents(
-            vfsStream::url('root') . '/swagger.json',
+            $swaggerUri,
             json_encode(self::$document->getDefinition())
         );
 
-        self::$schemaManager = new SchemaManager(vfsStream::url('root') . '/swagger.json');
+        // Support for SwaggerAssertions v0.6+
+        if (method_exists('FR3D\SwaggerAssertions\SchemaManager', 'fromUri')) {
+            self::$schemaManager = SchemaManager::fromUri($swaggerUri);
+        } else {
+            self::$schemaManager = new SchemaManager($swaggerUri);
+        }
     }
 
     /**
@@ -95,7 +101,7 @@ trait ApiTestCase
      */
     protected function setUp()
     {
-        $this->client = new ApiTestClient(static::createClient(['environment' => $this->getEnv(), 'debug' => true]));
+        $this->client = static::createClient(['environment' => $this->getEnv(), 'debug' => true]);
 
         parent::setUp();
     }
