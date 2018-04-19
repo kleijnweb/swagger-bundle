@@ -18,6 +18,8 @@ class InjectTestClientCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $container->getDefinition('test.client')->setClass('KleijnWeb\SwaggerBundle\Test\ApiTestClient');
+        if ($container->hasDefinition('test.client')) {
+            $container->getDefinition('test.client')->setClass('KleijnWeb\SwaggerBundle\Test\ApiTestClient');
+        }
     }
 }
