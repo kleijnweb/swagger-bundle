@@ -8,9 +8,12 @@
 
 namespace KleijnWeb\SwaggerBundle\DependencyInjection;
 
+use KleijnWeb\PhpApi\Descriptions\Description\DescriptionFactory;
+use KleijnWeb\PhpApi\Descriptions\Description\Document\Definition\Loader\DefinitionLoader;
 use KleijnWeb\PhpApi\Descriptions\Hydrator\DateTimeSerializer;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -43,11 +46,30 @@ class KleijnWebSwaggerExtension extends Extension
         $responseFactory = $container->getDefinition('swagger.response.factory');
 
         if (isset($config['hydrator'])) {
-            $container
-                ->getDefinition('swagger.hydrator.class_name_resolver')
-                ->replaceArgument(0, $config['hydrator']['namespaces']);
+            if (isset($config['hydrator']['namespaces'])) {
+                $classNameResolver = $container->getDefinition('swagger.hydrator.class_name_resolver');
+                $classNameResolver
+                    ->replaceArgument(0, $config['hydrator']['namespaces']);
+
+                $factoryDefinition = new Definition(
+                    DescriptionFactory::class,
+                    [
+                        DescriptionFactory::BUILDER_OPEN_API,
+                        $classNameResolver,
+                    ]
+                );
+
+                $container
+                    ->getDefinition('swagger.description.repository')
+                    ->setArgument(DefinitionLoader::class,  new Definition(DefinitionLoader::class));
+
+                $container
+                    ->getDefinition('swagger.description.repository')
+                    ->setArgument(DescriptionFactory::class, $factoryDefinition);
+            }
 
             $dateTimeSerializerDefinition = $container->getDefinition('swagger.hydrator.class_name_resolver');
+
             if (isset($config['hydrator']['date_formats'])) {
                 foreach ($config['hydrator']['date_formats'] as $format) {
                     $predefinedFormat = DateTimeSerializer::class . "::FORMAT_{$format}";
