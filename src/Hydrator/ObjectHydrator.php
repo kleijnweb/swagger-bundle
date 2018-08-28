@@ -10,6 +10,7 @@ namespace KleijnWeb\SwaggerBundle\Hydrator;
 
 use KleijnWeb\PhpApi\Descriptions\Description\Schema\Schema;
 use KleijnWeb\PhpApi\Descriptions\Hydrator\ProcessorBuilder;
+use KleijnWeb\PhpApi\Descriptions\Hydrator\Processors\Processor;
 
 /**
  * Wrapper around ProcessorBuilder for compatibility
@@ -24,7 +25,13 @@ class ObjectHydrator
     private $builder;
 
     /**
+     * @var Processor
+     */
+    private $processors = [];
+
+    /**
      * ObjectHydrator constructor.
+     *
      * @param ProcessorBuilder $builder
      */
     public function __construct(ProcessorBuilder $builder)
@@ -35,20 +42,30 @@ class ObjectHydrator
     /**
      * @param mixed  $value
      * @param Schema $schema
+     *
      * @return mixed
      */
     public function hydrate($value, Schema $schema)
     {
-        return $this->builder->build($schema)->hydrate($value);
+        return $this->getProcessor($schema)->hydrate($value);
     }
 
     /**
      * @param mixed  $value
      * @param Schema $schema
+     *
      * @return mixed
      */
     public function dehydrate($value, Schema $schema)
     {
-        return $this->builder->build($schema)->dehydrate($value);
+        return $this->getProcessor($schema)->dehydrate($value);
+    }
+
+    private function getProcessor(Schema $schema): Processor
+    {
+        if (!isset($this->processors[spl_object_id($schema)])) {
+            $this->processors[spl_object_id($schema)] = $this->builder->build($schema);
+        }
+        return $this->processors[spl_object_id($schema)];
     }
 }
