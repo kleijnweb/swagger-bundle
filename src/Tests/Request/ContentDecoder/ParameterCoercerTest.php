@@ -110,7 +110,7 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
      */
     public static function conversionProvider()
     {
-        $now       = new \DateTime('2016-01-01 12:00:00:00');
+        $now       = new \DateTime('2016-01-01 12:00:00.00000');
         $midnight  = new \DateTime('midnight today');
         $object    = new \stdClass;
         $object->a = 'b';
