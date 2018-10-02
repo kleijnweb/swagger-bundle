@@ -44,6 +44,24 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function willCastArrayItems()
+    {
+        $spec = [
+            'type' => 'array',
+            'collectionFormat' => 'csv',
+            'items' => (object)[
+                'type' => 'integer'
+            ]
+        ];
+
+        $actual = ParameterCoercer::coerceParameter((object)$spec, '1,2,3');
+        $expected = [1, 2, 3];
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
      * @dataProvider malformedConversionProvider
      * @test
      *
@@ -92,7 +110,7 @@ class ParameterCoercerTest extends \PHPUnit_Framework_TestCase
      */
     public static function conversionProvider()
     {
-        $now       = new \DateTime();
+        $now       = new \DateTime('2016-01-01 12:00:00:00');
         $midnight  = new \DateTime('midnight today');
         $object    = new \stdClass;
         $object->a = 'b';
