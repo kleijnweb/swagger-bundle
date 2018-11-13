@@ -207,5 +207,5 @@ trait ApiTestCase
      *
      * @return mixed
      */
-    abstract public function assertSame($expected, $actual, $message = '');
+    abstract public function assertSame($expected, $actual, string $message = ''): void;
 }

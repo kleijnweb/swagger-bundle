@@ -30,7 +30,7 @@
     "swagger"
   ],
   "require": {
-    "php": "^7.0.0",
+    "php": "^7.1.0",
     "psr/log": "^1.0",
     "symfony/dependency-injection": ">=2.8.18",
     "symfony/config": ">=2.8.18",
@@ -49,14 +49,14 @@
     "symfony/psr-http-message-bridge": "^1.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^6.4",
+    "phpunit/phpunit": "^7.0",
     "symfony/framework-bundle": ">=2.8.18",
     "symfony/security-bundle": ">=2.8.18",
     "symfony/monolog-bridge": ">=2.8.18",
     "symfony/monolog-bundle": "^2.8",
     "symfony/browser-kit": ">=2.8.18",
     "satooshi/php-coveralls": "^1.0",
-    "matthiasnoback/symfony-dependency-injection-test": "^2.3",
+    "matthiasnoback/symfony-dependency-injection-test": "^3.0",
     "squizlabs/php_codesniffer": "^3.2"
   },
   "config": {

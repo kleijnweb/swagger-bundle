@@ -8,7 +8,6 @@
 
 namespace KleijnWeb\SwaggerBundle\Tests\Functional;
 
-use Exception;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Test;
 use PHPUnit\Framework\TestListener;
@@ -19,52 +18,52 @@ class TestCacheSmashingPHPUnitListener implements TestListener
 {
     const SUITE_NAME = 'Functional';
 
-    public function addError(Test $test, Exception $e, $time)
+    public function addError(Test $test, \Throwable $t, float $time): void
     {
         //NOOP
     }
 
-    public function addWarning(Test $test, Warning $e, $time)
+    public function addWarning(Test $test, Warning $e, float $time): void
     {
         //NOOP
     }
 
-    public function addFailure(Test $test, AssertionFailedError $e, $time)
+    public function addFailure(Test $test, AssertionFailedError $e, float $time): void
     {
         //NOOP
     }
 
-    public function addIncompleteTest(Test $test, Exception $e, $time)
+    public function addIncompleteTest(Test $test, \Throwable $t, float $time): void
     {
         //NOOP
     }
 
-    public function addRiskyTest(Test $test, Exception $e, $time)
+    public function addRiskyTest(Test $test, \Throwable $t, float $time): void
     {
         //NOOP
     }
 
-    public function addSkippedTest(Test $test, Exception $e, $time)
+    public function addSkippedTest(Test $test, \Throwable $t, float$time): void
     {
         //NOOP
     }
 
-    public function startTest(Test $test)
+    public function startTest(Test $test): void
     {
         //NOOP
     }
 
-    public function endTest(Test $test, $time)
+    public function endTest(Test $test, float $time): void
     {
         //NOOP
     }
 
-    public function startTestSuite(TestSuite $suite)
+    public function startTestSuite(TestSuite $suite): void
     {
         $this->smashIfFunctionalSuite($suite);
     }
 
-    public function endTestSuite(TestSuite $suite)
+    public function endTestSuite(TestSuite $suite): void
     {
         $this->smashIfFunctionalSuite($suite);
     }
