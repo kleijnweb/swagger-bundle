@@ -12,9 +12,7 @@ use KleijnWeb\SwaggerBundle\Exception\ValidationException;
 use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
@@ -48,6 +46,13 @@ class HttpError
      */
     private $exception;
 
+    const HTTP_CODE_SEVERITY = [
+        Response::HTTP_UNAUTHORIZED       => LogLevel::WARNING,
+        Response::HTTP_FORBIDDEN          => LogLevel::WARNING,
+        Response::HTTP_NOT_FOUND          => LogLevel::INFO,
+        Response::HTTP_METHOD_NOT_ALLOWED => LogLevel::WARNING,
+    ];
+
     /**
      * HttpError constructor.
      *
@@ -70,39 +75,41 @@ class HttpError
             return;
         }
 
-        if ($exception instanceof NotFoundHttpException) {
-            $this->statusCode = Response::HTTP_NOT_FOUND;
-            $this->severity   = LogLevel::INFO;
-        } else {
-            if ($exception instanceof MethodNotAllowedHttpException) {
-                $this->statusCode = Response::HTTP_METHOD_NOT_ALLOWED;
-                $this->severity   = LogLevel::WARNING;
-            } elseif ($exception instanceof AuthenticationException) {
-                $this->statusCode = Response::HTTP_UNAUTHORIZED;
-                $this->severity   = LogLevel::WARNING;
-            } elseif ($exception instanceof AccessDeniedException || $exception instanceof AccessDeniedHttpException) {
-                $this->statusCode = Response::HTTP_FORBIDDEN;
-                $this->severity   = LogLevel::WARNING;
+        if ($exception instanceof HttpException) {
+            $this->statusCode = $exception->getStatusCode();
+        } else if ($exception instanceof AuthenticationException) {
+            $this->statusCode = Response::HTTP_UNAUTHORIZED;
+        } elseif ($exception instanceof AccessDeniedException) {
+            $this->statusCode = Response::HTTP_FORBIDDEN;
+        }
+
+        if ($this->statusCode && isset(self::HTTP_CODE_SEVERITY[$this->statusCode])) {
+            $this->severity = self::HTTP_CODE_SEVERITY[$this->statusCode];
+        }
+
+        if (!$this->severity) {
+            $guessedStatusCode = null;
+            if (strlen((string)$code) !== 3) {
+                $guessedStatusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+                $this->severity    = LogLevel::CRITICAL;
             } else {
-                if (strlen((string)$code) !== 3) {
-                    $this->statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
-                    $this->severity   = LogLevel::CRITICAL;
-                } else {
-                    $class = (int)substr((string)$code, 0, 1);
-                    switch ($class) {
-                        case 4:
-                            $this->statusCode = Response::HTTP_BAD_REQUEST;
-                            $this->severity   = LogLevel::NOTICE;
-                            break;
-                        case 5:
-                            $this->statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
-                            $this->severity   = LogLevel::ERROR;
-                            break;
-                        default:
-                            $this->statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
-                            $this->severity   = LogLevel::CRITICAL;
-                    }
+                $class = (int)substr((string)$code, 0, 1);
+                switch ($class) {
+                    case 4:
+                        $guessedStatusCode = Response::HTTP_BAD_REQUEST;
+                        $this->severity    = LogLevel::NOTICE;
+                        break;
+                    case 5:
+                        $guessedStatusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+                        $this->severity    = LogLevel::ERROR;
+                        break;
+                    default:
+                        $guessedStatusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+                        $this->severity    = LogLevel::CRITICAL;
                 }
+            }
+            if (!$this->statusCode) {
+                $this->statusCode = $guessedStatusCode;
             }
         }
         $this->message = Response::$statusTexts[$this->statusCode];
