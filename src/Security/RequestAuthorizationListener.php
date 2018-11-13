@@ -11,6 +11,8 @@ namespace KleijnWeb\SwaggerBundle\Security;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 
 /**
@@ -44,8 +46,12 @@ class RequestAuthorizationListener implements ListenerInterface
             return;
         }
 
-        if (!$this->authorizationChecker->isGranted(self::ATTRIBUTE, $event->getRequest())) {
-            throw new AccessDeniedException();
+        try {
+            if (!$this->authorizationChecker->isGranted(self::ATTRIBUTE, $event->getRequest())) {
+                throw new AccessDeniedException();
+            }
+        } catch (AuthenticationCredentialsNotFoundException $e) {
+            throw new AuthenticationException();
         }
     }
 }
