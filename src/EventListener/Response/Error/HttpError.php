@@ -77,7 +77,7 @@ class HttpError
 
         if ($exception instanceof HttpException) {
             $this->statusCode = $exception->getStatusCode();
-        } else if ($exception instanceof AuthenticationException) {
+        } elseif ($exception instanceof AuthenticationException) {
             $this->statusCode = Response::HTTP_UNAUTHORIZED;
         } elseif ($exception instanceof AccessDeniedException) {
             $this->statusCode = Response::HTTP_FORBIDDEN;
