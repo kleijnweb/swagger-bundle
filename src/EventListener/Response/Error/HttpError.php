@@ -88,7 +88,6 @@ class HttpError
         }
 
         if (!$this->severity) {
-            $guessedStatusCode = null;
             if (strlen((string)$code) !== 3) {
                 $guessedStatusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
                 $this->severity    = LogLevel::CRITICAL;
