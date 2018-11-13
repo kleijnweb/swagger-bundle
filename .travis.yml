@@ -6,12 +6,14 @@ install:
   - composer update $COMPOSER_FLAGS
 matrix:
   include:
-    - php: 7.0
+    - php: 7.1
       env: COMPOSER_FLAGS="--prefer-lowest"
       script: bin/phpunit
 
-    - php: 7.0
-      script: bin/phpunit --coverage-clover build/logs/clover.xml
+    - php: 7.1
+      script:
+        - bin/phpunit --coverage-clover build/logs/clover.xml
+        - bin/phpcs --standard=PSR2 src tests --ignore=tests/functional/_app/var
       before_script:
         - mkdir -p build/logs
       after_script:
@@ -20,10 +22,5 @@ matrix:
           curl --silent https://github.com/kleijnweb/swagger-bundle |\
             grep -oP 'https://camo.githubusercontent.com/[0-9a-z]+/[0-9a-z]+' |\
             xargs curl -X PURGE
-
-    - php: 7.1
-      script:
-        - bin/phpunit
-        - bin/phpcs --standard=PSR2 src tests --ignore=tests/functional/_app/var
 
   fast_finish: true
