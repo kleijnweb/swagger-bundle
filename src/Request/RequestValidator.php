@@ -62,9 +62,10 @@ class RequestValidator
         );
 
         if (!$validator->isValid()) {
+            $error = $validator->getErrors()[0];
+            $errorString = $error['property'] . ' ' . $error['message'];
             throw new InvalidParametersException(
-                "Parameters incompatible with operation schema: "
-                . implode(', ', $validator->getErrors()[0]),
+                'Parameters incompatible with operation schema: ' . $errorString,
                 $validator->getErrors()
             );
         }

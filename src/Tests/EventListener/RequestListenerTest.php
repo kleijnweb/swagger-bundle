@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 class RequestListenerTest extends \PHPUnit_Framework_TestCase
 {
     const DOCUMENT_PATH = '/what/a/crock';
-    const SWAGGER_PATH = '/a/b/{hello}';
+    const SWAGGER_PATH  = '/a/b/{hello}';
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -217,5 +217,59 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
             ->with($this->request);
 
         $this->listener->onKernelRequest($this->eventMock);
+    }
+
+    /**
+     * @dataProvider mimeTypeProvider
+     * @test
+     *
+     * @param array $types
+     * @param bool  $process
+     */
+    public function willIgnoreRequestThatExplicitlyDoesNotConsumeJson(array $types, $process)
+    {
+        $this->eventMock
+            ->expects($this->once())
+            ->method('isMasterRequest')
+            ->willReturn(true);
+
+        $this->documentMock
+            ->expects($this->once())
+            ->method('getOperationObject')
+            ->with(self::SWAGGER_PATH)
+            ->willReturn(
+                OperationObject::createFromOperationDefinition((object)[
+                    'consumes' => $types,
+                ])
+            );
+
+        $this->repositoryMock
+            ->expects($this->once())
+            ->method('get')
+            ->with(self::DOCUMENT_PATH)
+            ->willReturn($this->documentMock);
+
+        $this->eventMock
+            ->expects($this->once())
+            ->method('getRequest')
+            ->willReturn($this->request);
+
+        $this->transformerMock
+            ->expects($process ? $this->once() : $this->never())
+            ->method('process')
+            ->with($this->request);
+
+        $this->listener->onKernelRequest($this->eventMock);
+    }
+
+    public static function mimeTypeProvider()
+    {
+        return [
+            [['text/csv'], false],
+            [['text/csv', 'image/jpg'], false],
+            [['text/json'], true],
+            [['application/json'], true],
+            [['application/foo.bar+json'], true],
+        ];
     }
 }

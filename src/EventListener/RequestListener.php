@@ -34,7 +34,7 @@ class RequestListener
     public function __construct(DocumentRepository $schemaRepository, RequestProcessor $processor)
     {
         $this->documentRepository = $schemaRepository;
-        $this->processor = $processor;
+        $this->processor          = $processor;
     }
 
     /**
@@ -45,18 +45,32 @@ class RequestListener
         if (!$event->isMasterRequest()) {
             return;
         }
+
         $request = $event->getRequest();
-        if (!$request->get('_definition')) {
+
+        if (!$definition = $request->get('_definition')) {
             return;
         }
-        if (!$request->get('_swagger_path')) {
+        if (!$swaggerPath = $request->get('_swagger_path')) {
             throw new \LogicException("Request does not contain reference to Swagger path");
         }
-        $swaggerDocument = $this->documentRepository->get($request->get('_definition'));
-        $request->attributes->set('_swagger_document', $swaggerDocument);
 
-        $operation = $swaggerDocument->getOperationObject($request->get('_swagger_path'), $request->getMethod());
+        $swaggerDocument = $this->documentRepository->get($definition);
+
+        $operation = $swaggerDocument->getOperationObject($swaggerPath, $request->getMethod());
+
+        if (isset($operation->getDefinition()->{'consumes'})) {
+            $types = array_map(function ($type) {
+                return preg_replace('#(.*)/([a-z\.]+\+)?(.*?)#', '$3', $type);
+            }, $operation->getDefinition()->{'consumes'});
+
+            if (!in_array('json', $types)) {
+                return;
+            }
+        }
+
         $request->attributes->set('_swagger_operation', $operation);
+        $request->attributes->set('_swagger_document', $swaggerDocument);
 
         $this->processor->process($request, $operation);
     }
