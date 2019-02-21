@@ -89,15 +89,26 @@ class ParameterCoercer
                     ? $paramDefinition->collectionFormat
                     : 'csv';
 
+                $itemCaster = function ($value) use ($paramDefinition) {
+                    if (!isset($paramDefinition->items)) {
+                        return $value;
+                    }
+                    return self::coerceParameter($paramDefinition->items, $value);
+                };
+
+                $arrayCaster = function($separator, $value) use($itemCaster){
+                    return array_map($itemCaster, explode($separator, $value));
+                };
+
                 switch ($format) {
                     case 'csv':
-                        return explode(',', $value);
+                        return $arrayCaster(',', $value);
                     case 'ssv':
-                        return explode(' ', $value);
+                        return $arrayCaster(' ', $value);
                     case 'tsv':
-                        return explode("\t", $value);
+                        return $arrayCaster("\t", $value);
                     case 'pipes':
-                        return explode('|', $value);
+                        return $arrayCaster('|', $value);
                     default:
                         throw new UnsupportedException(
                             "Array 'collectionFormat' '$format' is not currently supported"
