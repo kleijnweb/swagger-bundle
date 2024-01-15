@@ -1,3 +1,5 @@
+# This project is no longer maintained
+
 # KleijnWeb\SwaggerBundle 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/dcd0367a-0371-443a-b258-5c9356cbc953/small.png)](https://insight.sensiolabs.com/projects/dcd0367a-0371-443a-b258-5c9356cbc953)
 
